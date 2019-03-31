@@ -1,2 +1,0 @@
-# mylibrary
-my library
