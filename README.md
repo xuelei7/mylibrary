@@ -10,5 +10,5 @@ and categorize them. **IN THE FUTURE**
 ※Please Notice: The aim for me to make this library is **ONLY** to tidy up knowledges and codes of my own.
 
 ## Contents
-- AtCoder Problem Editorials (Unfinished)
+- AtCoder Editorials (Unfinished)
 - Algorithms (Unfinished)
