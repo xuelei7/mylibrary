@@ -1,7 +1,7 @@
 # My Library
 ## Introduction
 I will add the editorial to [AtCoder](https://atcoder.jp/) Problems.
-These editorials are wroten by me (xuelei). There might be some mistakes in it.
+These editorials are wroten by me (xuelei) **in Japanese**. There might be some mistakes in it.
 Please contact me if you find some place wrong, and I **might** fix it.
 
 Also I want to give links to the algorithms used in the problems, write the algorithms into templates (wroten in c++)
