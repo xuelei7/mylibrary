@@ -1,7 +1,7 @@
-#include <bist/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-int main() {
+int main(){
   //input
   double Deg, Dis;
 
@@ -31,6 +31,22 @@ int main() {
   else if (Deg < 326.25) Dir = "NW";
   else if (Deg < 348.75) Dir = "NNW";
   else Dir = "N";
-  
+
+  if (Dis < 0.25) W = 0;
+  else if (Dis < 1.55) W = 1 ;
+  else if (Dis < 3.35) W = 2;
+  else if (Dis < 5.45) W = 3;
+  else if (Dis < 7.95) W = 4;
+  else if (Dis < 10.75) W = 5;
+  else if (Dis < 13.85) W = 6;
+  else if (Dis < 17.15) W = 7;
+  else if (Dis < 20.75) W = 8;
+  else if (Dis < 24.45) W = 9;
+  else if (Dis < 28.45) W = 10;
+  else if (Dis < 32.65) W = 11;
+  else W = 12;
+
+  if (W == 0) cout << "C 0" << endl;
+  else cout << Dir << " " << W << endl;
   return 0;
 }
