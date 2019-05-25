@@ -18,4 +18,6 @@
   
   [Insertion Sort](https://github.com/xuelei7/mylibrary/blob/master/Algorithms/InsertionSort.cpp)
 
+## Number theory
+
   [Prime judgement](https://github.com/xuelei7/mylibrary/blob/master/Algorithms/isPrime.cpp)
