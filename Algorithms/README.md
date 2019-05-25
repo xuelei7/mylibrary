@@ -17,3 +17,5 @@
 ## Sort
   
   [Insertion Sort](https://github.com/xuelei7/mylibrary/blob/master/Algorithms/InsertionSort.cpp)
+
+  [Prime judgement](https://github.com/xuelei7/mylibrary/blob/master/Algorithms/isPrime.cpp)
