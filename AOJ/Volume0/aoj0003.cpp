@@ -10,6 +10,7 @@
 // Output
 // For each data set, print "YES" or "NO".
 
+// to geometry
 #include <bits/stdc++.h>
 using namespace std;
 

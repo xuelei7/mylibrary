@@ -9,6 +9,9 @@
 // The number of datasets ≤ 200
 // Output
 // Print the number of digits of a + b for each data set.
+
+// to utils
+
 #include <bits/stdc++.h>
 using namespace std;
 
