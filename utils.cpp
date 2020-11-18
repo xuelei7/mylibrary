@@ -1,5 +1,6 @@
 // from
 // aoj0002
+// return the digit number
 int digitnum(int k) {
     if (k == 0) return 1;
     int cnt = 0;

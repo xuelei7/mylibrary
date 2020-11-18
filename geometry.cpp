@@ -1,5 +1,6 @@
 // from
 // aoj0003
+// given 3 length of edges, judge whether these edges forms a RIGHT triangle
 bool isRightTriangle(int a, int b, int c) {
     if (b > a) {
         int k = b;

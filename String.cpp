@@ -1,5 +1,6 @@
 // from
 // aoj0011
+// split string s by character c and return all the integer elements
 vector<int> split_string(string s, char c) {
     vector<int> v;
     int left_side = 0;

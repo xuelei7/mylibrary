@@ -1,6 +1,7 @@
 // from
 // aoj0004
 pair<double,double> solveLinearEquation(double a, double b, double c, double d, double e, double f) {
+    // solve this equation
     /****************
     |  ax + by = c  |
     |  dx + ey = f  |
