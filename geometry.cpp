@@ -71,6 +71,9 @@ int contains(Polygon g,Point p){
   }
   return ( x ? 2:0);
 }
+bool parallel(Vector a, Vector b) {
+  return abs(cross(a,b)) < EPS;
+}
 
 // from
 // aoj0012
