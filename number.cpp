@@ -28,3 +28,10 @@ vector<int> getPrimeList() {
     for (int i = 2; i < MAXN; i++) if (isprime[i]) v.push_back(i);
     return v;
 }
+
+// from aoj0019
+long long factorial(long long n) {
+    long long ans = 1;
+    for (long long i = 2LL; i <= n; i++) ans *= i;
+    return ans;
+}
