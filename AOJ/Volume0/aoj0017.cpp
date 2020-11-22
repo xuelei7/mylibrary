@@ -22,6 +22,8 @@
 // Output for the Sample Input
 // this is the picture that i took in the trip.
 
+// to string
+
 #include <bits/stdc++.h>
 using namespace std;
 vector<string> split_string(string s, char c) {
