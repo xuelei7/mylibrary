@@ -76,6 +76,30 @@ bool parallel(Vector a, Vector b) {
 }
 
 // from
+// aoj0023
+class Circle {
+public:
+  Point o;
+  double r;
+  Circle(Point o, double r = 0):o(o), r(r) {}
+}
+// 1: intersect, 0: outside, 2: B in A, -2: A in B
+int intersection(Circle a, Circle b) {
+  double dist = sqrt((a.o.x-b.o.x)*(a.o.x-b.o.x)+(a.o.y-b.o.y)*(a.o.y-b.o.y));
+  // 交叉
+  if (dist >= abs(a.r - b.r) && dist <= a.r + b.r) {
+    return 1;
+  }
+  // 外部
+  if (dist > a.r + b.r) {
+    return 0;
+  }
+  // 内部
+  if (b.r < a.r) return 2;
+  else return -2;
+}
+
+// from
 // aoj0012
 // return if the triangle contains a point
 bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3, double y3, double xp, double yp) {
