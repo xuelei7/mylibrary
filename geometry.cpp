@@ -83,6 +83,7 @@ public:
   double r;
   Circle(Point o, double r = 0):o(o), r(r) {}
 }
+// return the relation ship between 2 circles
 // 1: intersect, 0: outside, 2: B in A, -2: A in B
 int intersection(Circle a, Circle b) {
   double dist = sqrt((a.o.x-b.o.x)*(a.o.x-b.o.x)+(a.o.y-b.o.y)*(a.o.y-b.o.y));
