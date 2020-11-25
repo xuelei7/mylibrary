@@ -30,6 +30,7 @@ vector<int> getPrimeList() {
 }
 
 // from aoj0019
+// 階乗
 long long factorial(long long n) {
     long long ans = 1;
     for (long long i = 2LL; i <= n; i++) ans *= i;

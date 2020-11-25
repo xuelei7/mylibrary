@@ -24,6 +24,8 @@
 
 #include <bits/stdc++.h>
 using namespace std;
+
+// from string
 // split string s by character c and return all the integer elements
 vector<int> split_string_to_int(string s, char c) {
     vector<int> v;

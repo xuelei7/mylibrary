@@ -20,6 +20,8 @@
 // Output
 // For each dataset, print "YES" or "NO" in a line.
 
+// to geometry
+
 /* solution1 */
 // #include <bits/stdc++.h>
 // using namespace std;
