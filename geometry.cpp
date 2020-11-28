@@ -28,7 +28,7 @@ pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, doub
 }
 
 // from
-// aoj0012
+// aoj0012, aoj0035
 // returns if a polygon contains a point
 #define EPS (1e-10)
 class Point{

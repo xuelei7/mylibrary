@@ -25,6 +25,20 @@ vector<int> split_string_to_int(string s, char c) {
 }
 
 // from
+// aoj0035
+// split the string by a character to real numbers
+vector<double> split_string_to_double (string s, char c) {
+    for (int i = 0; i < s.size(); i++) if (s[i] == c) s[i] = ' ';
+    stringstream ss(s);
+    vector<double> ret;
+    double num;
+    while (ss >> num) {
+        ret.push_back(num);
+    }
+    return ret;
+}
+
+// from
 // aoj0017
 // split the string by a character to substrings
 vector<string> split_string(string s, char c) {
