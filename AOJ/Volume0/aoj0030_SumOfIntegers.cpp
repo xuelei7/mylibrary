@@ -18,26 +18,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int dp[10][110];
+int dp[10][11][110];
 
-int dfs(int n, int s, int cnt, int ts, int mx) {
-    if (n == 1) return s <= 9;
-    if (ts == s && cnt == n) return 1;
-    if (ts == s) return 0;
-    if (cnt >= n) return 0;
-    int ans = 0;
-    for (int i = mx + 1; i <= 9; i++) {
-        if (ts + i > s) break;
-        ans += dfs(n,s,cnt+1,ts+i,i);
-    }
-    return ans;
-}
+// int dfs(int n, int s, int cnt, int ts, int mx) {
+//     if (n == 1) return s <= 9;
+//     if (ts == s && cnt == n) return 1;
+//     if (ts == s) return 0;
+//     if (cnt >= n) return 0;
+//     int ans = 0;
+//     for (int i = mx + 1; i <= 9; i++) {
+//         if (ts + i > s) break;
+//         ans += dfs(n,s,cnt+1,ts+i,i);
+//     }
+//     return ans;
+// }
+
+// int main() {
+//     int n,s;
+//     while (cin >> n >> s) {
+//         if (n == 0 && s == 0) break;
+//         cout << dfs(n,s,0,0,-1) << endl;
+//     }
+//     return 0;
+// }
 
 int main() {
+    dp[0][0][0] = 1;
+    dp[0][1][0] = 1;
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j <= i+1; j++) {
+            for (int k = 0; k <= 45; k++) {
+                dp[i+1][j][k] += dp[i][j][k];
+                dp[i+1][j+1][k+i+1] += dp[i][j][k];
+            }
+        }
+    }
     int n,s;
     while (cin >> n >> s) {
         if (n == 0 && s == 0) break;
-        cout << dfs(n,s,0,0,-1) << endl;
+        cout << dp[9][n][s] << endl;
     }
     return 0;
 }

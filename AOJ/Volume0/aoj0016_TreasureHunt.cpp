@@ -14,6 +14,8 @@
 // Output
 // Print the integer portion of x and y in a line respectively.
 
+// to string
+
 #include <bits/stdc++.h>
 using namespace std;
 
