@@ -41,3 +41,26 @@ string poker_hand(vector<int> v) {
     if (v[0] == v[1] || v[1] == v[2] || v[2] == v[3] || v[3] == v[4]) return "one pair";
     return "null";
 }
+
+// from
+// aoj0039
+int roman_figure(string s) {
+    int ans = 0, biggest = 1;
+    for (int i = s.size() - 1; i >= 0; i--) {
+        int now ;
+        if (s[i] == 'I') now = 1;
+        else if (s[i] == 'V') now = 5;
+        else if (s[i] == 'X') now = 10;
+        else if (s[i] == 'L') now = 50;
+        else if (s[i] == 'C') now = 100;
+        else if (s[i] == 'D') now = 500;
+        else if (s[i] == 'M') now = 1000;
+        if (now >= biggest) {
+            biggest = now;
+            ans += now;
+        } else {
+            ans -= now;
+        }
+    }
+    return ans;
+}
