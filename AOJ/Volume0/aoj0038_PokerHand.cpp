@@ -24,7 +24,7 @@
 // Output
 // データセットごとに、手札によってできる最も高い役をひとつ出力してください。役の表記については出力例に従ってください。
 
-// string, util
+// string, utils
 
 #include <bits/stdc++.h>
 using namespace std;
