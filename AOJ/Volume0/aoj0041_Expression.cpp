@@ -68,7 +68,7 @@ int main() {
         p[3] = 3;
         bool ok = 0;
         do {
-            if (solve(v[p[0]], v[p[1]], v[p[2]], v[p[3]], 10)) {
+            if (try_signs(v[p[0]], v[p[1]], v[p[2]], v[p[3]], 10)) {
                 ok = 1;
                 break;
             }

@@ -126,3 +126,27 @@ bool try_signs(int a, int b, int c, int d, int res) {
     }
     return 0;
 }
+
+// from
+// aoj0042
+int dp[1010][1010];
+pair<int,int> knapsack(int W, int N, vector<int> v, vector<int> w) {
+    for (int i = 0; i < 1010; i++) memset(dp[i],0,sizeof(dp[i]));
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j <= W; j++) {
+            dp[i+1][j] = max(dp[i+1][j], dp[i][j]);
+            if (j + w[i] <= W) {
+                dp[i+1][j+w[i]] = max(dp[i+1][j+w[i]], dp[i][j] + v[i]);
+            }
+        }
+    }
+    int miw = 1e9, mxv = 0;
+    for (int i = 0; i <= W; i++) {
+        if (dp[N][i] > mxv) {
+            mxv = dp[N][i];
+            miw = i;
+        }
+    }
+    if (mxv == 0) miw = 0;
+    return {mxv, miw};
+}
