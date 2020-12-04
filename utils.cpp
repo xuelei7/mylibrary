@@ -85,3 +85,44 @@ string affine_cipher(string ciphertext, vector<string> keywords, char skip=' ') 
     }
     return ciphertext;
 }
+
+// from
+// aoj0041
+// given 4 numbers, using +, -, *, (, ) to calculate res, and print out the answer if there is one
+int calc(int a, int b, int sign) {
+    if (sign == 0) return a + b;
+    if (sign == 1) return a - b;
+    if (sign == 2) return a * b;
+}
+bool try_signs(int a, int b, int c, int d, int res) {
+    string sign = "+-*";
+    for (int i = 0; i < 3*3*3; i++) {
+        int tmp = i;
+        int f[3];
+        for (int j = 0; j < 3; j++) {
+            f[j] = tmp % 3;
+            tmp /= 3;
+        }
+        if (calc(calc(calc(a,b,f[0]),c,f[1]),d,f[2]) == res) {
+            cout << "((" << a << sign[f[0]] << b << ")" << sign[f[1]] << c << ")" << sign[f[2]] << d << endl;
+            return 1;
+        }
+        if (calc(calc(a,b,f[0]), calc(c,d,f[2]), f[1]) == res) {
+            cout << "(" << a << sign[f[0]] << b << ")" << sign[f[1]] << "(" << c << sign[f[2]] << d << ")" << endl;
+            return 1;
+        }
+        if (calc(calc(a,calc(b,c,f[1]),f[0]),d,f[2]) == res) {
+            cout << "(" << a << sign[f[0]] << "(" << b << sign[f[1]] << c << "))" << sign[f[2]] << d << endl;
+            return 1;
+        }
+        if (calc(a,calc(calc(b,c,f[1]),d,f[2]),f[0]) == res) {
+            cout << a << sign[f[0]] << "((" << b << sign[f[1]] << c << ")" << sign[f[2]] << d << ")" << endl;
+            return 1;
+        }
+        if (calc(a,calc(b,calc(c,d,f[2]),f[1]),f[0]) == res) {
+            cout << a << sign[f[0]] << "(" << b << sign[f[1]] << "(" << c << sign[f[2]] << d << "))" << endl;
+            return 1;
+        }
+    }
+    return 0;
+}
