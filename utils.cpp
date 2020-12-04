@@ -64,3 +64,24 @@ int roman_figure(string s) {
     }
     return ans;
 }
+
+// from
+// aoj0040
+string affine_cipher(string ciphertext, vector<string> keywords, char skip=' ') {
+    bool ok = 0;
+    for (int a = 1; a < 26; a++) {
+        if (__gcd(a,26) != 1) continue;
+        for (int b = 0; b < 26; b++) {
+            string v = ciphertext;
+            for (int i = 0; i < v.size(); i++) {
+                if (v[i] == skip) continue;
+                v[i] = (char)(((v[i] - 'a') * a + b) % 26 + 'a');
+            }
+            for (int i = 0; i < keywords.size(); i++) {
+                if (v.find(keywords[i]) != -1) ok = 1;
+            }
+            if (ok) return v;
+        }
+    }
+    return ciphertext;
+}
