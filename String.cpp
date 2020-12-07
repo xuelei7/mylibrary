@@ -39,7 +39,7 @@ vector<double> split_string_to_double (string s, char c) {
 }
 
 // from
-// aoj0017
+// aoj0017, aoj0049
 // split the string by a character to substrings
 vector<string> split_string(string s, char c) {
     vector<string> v;
