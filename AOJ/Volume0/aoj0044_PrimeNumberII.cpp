@@ -10,6 +10,9 @@
 
 // Output
 // 各データセットに対して、n より小さい素数のうち最大のものと、n より大きい素数のうち最小のものを１つのスペースで区切って１行に出力して下さい。
+
+// from number
+
 #include <bits/stdc++.h>
 using namespace std;
 vector<int> getPrimeList() {

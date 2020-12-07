@@ -36,3 +36,9 @@ long long factorial(long long n) {
     for (long long i = 2LL; i <= n; i++) ans *= i;
     return ans;
 }
+
+// from aoj0045
+int rounding(double n) {
+    int intn = n * 2;
+    return (intn + 1) / 2;
+}
