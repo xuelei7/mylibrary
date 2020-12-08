@@ -150,3 +150,22 @@ pair<int,int> knapsack(int W, int N, vector<int> v, vector<int> w) {
     if (mxv == 0) miw = 0;
     return {mxv, miw};
 }
+
+// from
+// aoj0067
+// DFS
+char maze[12][12];
+bool used[12][12];
+int dh[4] = {0,0,1,-1};
+int dw[4] = {1,-1,0,0};
+void dfs(int h, int w) {
+    used[h][w] = 1;
+    for (int i = 0; i < 4; i++) {
+        int th = h + dh[i];
+        int tw = w + dw[i];
+        if (th < 0 || th >= 12 || tw < 0 || tw >= 12) continue;
+        if (maze[th][tw] == '0') continue;
+        if (used[th][tw]) continue;
+        dfs(th,tw);
+    }
+}
