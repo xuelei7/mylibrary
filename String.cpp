@@ -65,3 +65,9 @@ string toUpper(string s) {
     }
     return s;
 }
+
+// menu
+// vector<int> split_string_to_int(string s, char c)
+// vector<double> split_string_to_double (string s, char c)
+// vector<string> split_string(string s, char c)
+// string toUpper(string s)

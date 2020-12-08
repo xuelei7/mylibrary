@@ -157,3 +157,19 @@ bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3,
     double c3 = (x1 - x3) * (yp - y3) - (y1 - y3) * (xp - x3);
     return ((c1>0 && c2>0 && c3>0) || (c1<0 && c2<0 && c3<0));
 }
+
+// menu
+// bool isRightTriangle(int a, int b, int c)
+// pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, double y1, double x2, double y2, double x3, double y3)
+// class Point
+// -- dot (Point)
+// -- cross (Point)
+// -- contains (Point)
+// -- parallel (Point)
+// -- orthogonal (Point)
+// -- ccw (Point)
+// -- andrewScan (convex)
+// class Circle (need Point)
+// -- intersection (Circle)
+// bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3, double y3, double xp, double yp)
+

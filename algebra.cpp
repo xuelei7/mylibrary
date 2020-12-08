@@ -12,3 +12,6 @@ pair<double,double> solveLinearEquation(double a, double b, double c, double d, 
     if (c * d - a * f == 0) y = 0;
     return {x,y};
 }
+
+// menu
+// pair<double,double> solveLinearEquation(double a, double b, double c, double d, double e, double f)

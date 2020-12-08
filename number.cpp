@@ -81,3 +81,12 @@ long long combination(long long n, long long k) {
     if (n < k) return 0;
     return (kai[n] * inv[k]) % mod * inv[n - k] % mod;
 }
+
+// menu
+// long long GCD(long long a, long long b)
+// long long LCM(long long a, long long b)
+// vector<int> getPrimeList()
+// vector<bool> getPrimeList()
+// long long factorial(long long n) (階乗)
+// int rounding(double n) (四捨五入)
+// long long combination(long long n, long long k)

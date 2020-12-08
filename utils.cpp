@@ -201,3 +201,14 @@ void unite (int x, int y) {
     if (rk[x] == rk[y]) rk[x]++;
   }
 }
+
+// menu
+// int digitnum(int k)
+// int Zeller(int year, int month, int day) (calculate the date)
+// string poker_hand(vector<int> v)
+// int roman_figure(string s) (ローマ数字を十進表示にする)
+// string affine_cipher(string ciphertext, vector<string> keywords, char skip=' ')
+// bool try_signs(int a, int b, int c, int d, int res) (数字に符号とカッコを付けるやつ)
+// pair<int,int> knapsack(int W, int N, vector<int> v, vector<int> w)
+// void dfs(int h, int w) (典型の島数えるやつ)
+// union find
