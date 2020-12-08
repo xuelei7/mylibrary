@@ -169,3 +169,35 @@ void dfs(int h, int w) {
         dfs(th,tw);
     }
 }
+
+// from
+// aoj0072
+// union find
+const int MAXN = /* set here */;
+int par[MAXN];
+int rk[MAXN];
+void init (int n) {
+  for (int i = 0; i < n; i++) {
+    par[i] = i;
+    rk[i] = 0;
+  }
+}
+int fd(int x) {
+  if (par[x] == x) {
+    return x;
+  } else {
+    return par[x] = fd(par[x]);
+  }
+}
+void unite (int x, int y) {
+  x = fd(x);
+  y = fd(y);
+  if (x == y) return;
+
+  if (rk[x] < rk[y]) {
+    par[x] = y;
+  } else {
+    par[y] = x;
+    if (rk[x] == rk[y]) rk[x]++;
+  }
+}

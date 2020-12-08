@@ -1,6 +1,6 @@
 // from
 // aoj0011, aoj0016, aoj0026, aoj0032, aoj0034, aoj0038, aoj0042, aoj0045, aoj0061
-// aoj0065
+// aoj0065, aoj0072
 // split string s by character c and return all the integer elements
 vector<int> split_string_to_int(string s, char c) {
     vector<int> v;
