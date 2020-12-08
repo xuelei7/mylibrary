@@ -55,7 +55,9 @@ int rounding(double n) {
     return (intn + 1) / 2;
 }
 
-// from aoj0062
+// from
+// aoj0062
+// calculate combination
 const int MAXN = /*set here*/;
 long long kai[MAXN+1];
 long long inv[MAXN+1];
