@@ -13,6 +13,8 @@
 // Output
 // データセットごとに、n 個の整数の和が s になる組み合わせの個数を１行に出力します。
 
+// [new]: fill's usage
+
 #include <bits/stdc++.h>
 using namespace std;
 int dp[1100][1000][11];
