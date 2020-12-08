@@ -54,3 +54,28 @@ int rounding(double n) {
     int intn = n * 2;
     return (intn + 1) / 2;
 }
+
+// from aoj0062
+const int MAXN = /*set here*/;
+long long kai[MAXN+1];
+long long inv[MAXN+1];
+long long mod = 1e9+7;
+long long mp(long long a, long long b) {
+    long long res = 1;
+    for (; b; b >>= 1) {
+        if (b & 1) res = (res * a) % mod;
+        a = (a * a) % mod;
+    }
+    return res;
+}
+/* do this first */
+void init() {
+    kai[0] = 1;
+    for (long long i = 1; i <= MAXN; i++) kai[i] = kai[i - 1] * i % mod;
+    inv[MAXN] = mp(kai[MAXN], mod-2);
+    for (long long i = MAXN; i >= 1; i--) inv[i - 1] = inv[i] * i % mod;
+}
+long long combination(long long n, long long k) {
+    if (n < k) return 0;
+    return (kai[n] * inv[k]) % mod * inv[n - k] % mod;
+}
