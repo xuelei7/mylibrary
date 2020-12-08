@@ -14,7 +14,7 @@ long long LCM(long long a, long long b) {
 }
 
 // from
-// aoj0009, aoj0044, aoj0053
+// aoj0009, aoj0044, aoj0053, aoj0056
 // get all the primes in the vector that is less than MAXN
 vector<int> getPrimeList() {
     const int MAXN = 1000000;
@@ -27,6 +27,18 @@ vector<int> getPrimeList() {
     vector<int> v;
     for (int i = 2; i < MAXN; i++) if (isprime[i]) v.push_back(i);
     return v;
+}
+// from
+// aoj0056
+vector<bool> getPrimeList() {
+    const int MAXN = 1000000;
+    vector<bool> isprime(MAXN);
+    for (int i = 0; i < MAXN; i++) isprime[i] = 1;
+    for (int i = 2; i < MAXN; i++) {
+        if (!isprime[i]) continue;
+        for (int j = i + i; j < MAXN; j+=i) isprime[j] = 0;
+    }
+    return isprime;
 }
 
 // from aoj0019
