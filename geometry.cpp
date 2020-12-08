@@ -28,24 +28,24 @@ pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, doub
 }
 
 // from
-// aoj0012, aoj0035, aoj0059
+// aoj0012, aoj0035, aoj0059, aoj0068
 // returns if a polygon contains a point
 #define EPS (1e-10)
 class Point{
 public:
   double x,y;
   Point(double x = 0, double y = 0):x(x), y(y) {}
-  Point operator + (Point p){
-    return Point(x+p.x,y+p.y);
-  }
-  Point operator - (Point p){
-    return Point(x-p.x,y-p.y);
-  }
-  Point operator * (double k){
-    return Point(x*k,y*k);
-  }
-  Point operator / (double k){
-    return Point(x/k,y/k);
+  
+  Point operator + (Point p){return Point(x+p.x,y+p.y);}
+  Point operator - (Point p){return Point(x-p.x,y-p.y);}
+  Point operator * (double k){return Point(x*k,y*k);}
+  Point operator / (double k){return Point(x/k,y/k);}
+
+  double norm(){return x*x+y*y;}
+  double abs(){return sqrt(norm());}
+
+  bool operator <(const Point &p) const {
+      return x!=p.x ? x<p.x : y<p.y;
   }
   bool operator == (const Point &p) const{
     return fabs(x-p.x) < EPS && fabs(y-p.y) < EPS;
@@ -78,6 +78,49 @@ bool parallel(Vector a, Vector b) {
 // from aoj0058
 bool orthogonal(Vector a, Vector b) {
   return abs(dot(a,b)) <= EPS;
+}
+// from aoj0068
+// judge the relation between vector(p0, p1) and vector(p0, p2)
+static const int COUNTER_CLOCKWISE = 1;
+static const int CLOCKWISE = -1;
+static const int ONLINE_BACK = 2;
+static const int ONLINE_FRONT = -2;
+static const int ON_SEGMENT = 0;
+int ccw(Point p0,Point p1,Point p2){
+  Vector a = p1-p0;
+  Vector b = p2-p0;
+  if(cross(a,b) > EPS) return COUNTER_CLOCKWISE;
+  if(cross(a,b) < -EPS) return CLOCKWISE;
+  if(dot(a,b) < -EPS) return ONLINE_BACK;
+  if(a.norm()<b.norm()) return ONLINE_FRONT;
+  return ON_SEGMENT;
+}
+// return the number of points on the convex
+Polygon andrewScan(Polygon s){
+  Polygon u,l;
+  if(s.size()<3) return s.size();
+  sort(s.begin(),s.end());
+  u.push_back(s[0]);
+  u.push_back(s[1]);
+  l.push_back(s[s.size()-1]);
+  l.push_back(s[s.size()-2]);
+
+  for(int i=2;i<s.size();i++){
+    for(int n=u.size();n>=2&&ccw(u[n-2],u[n-1],s[i]) != CLOCKWISE;n--){
+      u.pop_back();
+    }
+    u.push_back(s[i]);
+  } 
+  for(int i=s.size()-3;i>=0;i--){
+    for(int n=l.size();n>=2&&ccw(l[n-2],l[n-1],s[i]) != CLOCKWISE;n--){
+      l.pop_back();
+    }
+    l.push_back(s[i]);
+  }
+
+  reverse(l.begin(),l.end());
+  for(int i=u.size()-2;i>=1;i--) l.push_back(u[i]);
+  return l;
 }
 
 // from
