@@ -202,6 +202,28 @@ void unite (int x, int y) {
   }
 }
 
+// from
+// aoj0083
+int count_days(int y, int m, int d) {
+    int ret = 0;
+    for (int i = 1; i < y; i++) {
+        if (i % 400 == 0) ret += 366;
+        else if (i % 100 == 0) ret += 365;
+        else if (i % 4 == 0) ret += 366;
+        else ret += 365;
+    }
+    int cnt[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    for (int i = 1; i < m; i++) {
+        ret += cnt[i-1];
+    }
+    if (m > 2) {
+        if (y % 400) ret++;
+        else if (y % 100 != 0 && y % 4 == 0) ret++;
+    }
+    return ret + d;
+}
+
+
 // menu
 // int digitnum(int k)
 // int Zeller(int year, int month, int day) (calculate the date)
@@ -212,3 +234,4 @@ void unite (int x, int y) {
 // pair<int,int> knapsack(int W, int N, vector<int> v, vector<int> w)
 // void dfs(int h, int w) (典型の島数えるやつ)
 // union find
+// int count_days(int y, int m, int d)
