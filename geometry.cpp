@@ -28,7 +28,7 @@ pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, doub
 }
 
 // from
-// aoj0012, aoj0035, aoj0059, aoj0068, aoj0076, aoj0079
+// aoj0012, aoj0035, aoj0059, aoj0068, aoj0076, aoj0079, aoj0081
 // returns if a polygon contains a point
 #define EPS (1e-10)
 class Point{
@@ -79,7 +79,7 @@ bool parallel(Vector a, Vector b) {
 bool orthogonal(Vector a, Vector b) {
   return abs(dot(a,b)) <= EPS;
 }
-// from aoj0068
+// from aoj0068, aoj0081
 // judge the relation between vector(p0, p1) and vector(p0, p2)
 static const int COUNTER_CLOCKWISE = 1;
 static const int CLOCKWISE = -1;
@@ -137,7 +137,20 @@ double area(Polygon p) {
     }
     return ret;
 }
-
+// from aoj0081
+Point symmetric_point(Point x1, Point x2, Point q) {
+    Vector a = x1 - q;
+    Vector b = x2 - q;
+    Vector c = x1 - x2;
+    double x = (a.norm() - b.norm() + c.norm()) / (2 * c.abs());
+    double dist = sqrt(a.norm() - x*x);
+    Vector dir = Point(-c.y,c.x);
+    dir = dir / dir.abs() * dist * 2;
+    Point p1 = q + dir;
+    Point p2 = q - dir;
+    if (ccw(x1,x2,q) != ccw(x1,x2,p1)) return p1;
+    else return p2;
+}
 // from
 // aoj0023
 class Circle {
