@@ -3,6 +3,7 @@
         "vector": "cpp",
         "cmath": "cpp",
         "complex": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "deque": "cpp"
     }
 }

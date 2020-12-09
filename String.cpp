@@ -26,7 +26,7 @@ vector<int> split_string_to_int(string s, char c) {
 }
 
 // from
-// aoj0035, aoj0068
+// aoj0035, aoj0068, aoj0079
 // split the string by a character to real numbers
 vector<double> split_string_to_double (string s, char c) {
     for (int i = 0; i < s.size(); i++) if (s[i] == c) s[i] = ' ';

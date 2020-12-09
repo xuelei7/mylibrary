@@ -28,7 +28,7 @@ pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, doub
 }
 
 // from
-// aoj0012, aoj0035, aoj0059, aoj0068, aoj0076
+// aoj0012, aoj0035, aoj0059, aoj0068, aoj0076, aoj0079
 // returns if a polygon contains a point
 #define EPS (1e-10)
 class Point{
@@ -124,6 +124,21 @@ Polygon andrewScan(Polygon s){
 }
 
 // from
+// aoj0079
+double triangle_area(Vector a, Vector b, Vector c) {
+    double la = a.abs(), lb = b.abs(), lc = c.abs();
+    double z = (la + lb + lc) / 2;
+    return sqrt(z * (z - la) * (z - lb) * (z - lc));
+}
+double area(Polygon p) {
+    double ret = 0;
+    for (int i = 1; i + 1 < p.size(); i++) {
+        ret += triangle_area(p[i] - p[0], p[i+1] - p[i], p[i+1] - p[0]);
+    }
+    return ret;
+}
+
+// from
 // aoj0023
 class Circle {
 public:
@@ -169,6 +184,8 @@ bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3,
 // -- orthogonal (Point)
 // -- ccw (Point)
 // -- andrewScan (convex)
+// -- triangle_area
+// -- area(Polygon)
 // class Circle (need Point)
 // -- intersection (Circle)
 // bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3, double y3, double xp, double yp)
