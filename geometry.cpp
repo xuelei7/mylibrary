@@ -28,7 +28,7 @@ pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, doub
 }
 
 // from
-// aoj0012, aoj0035, aoj0059, aoj0068, aoj0076, aoj0079, aoj0081
+// aoj0012, aoj0035, aoj0059, aoj0068, aoj0076, aoj0079, aoj0081, aoj0090
 // returns if a polygon contains a point
 #define EPS (1e-10)
 class Point{
@@ -123,8 +123,7 @@ Polygon andrewScan(Polygon s){
   return l;
 }
 
-// from
-// aoj0079
+// from aoj0079
 double triangle_area(Vector a, Vector b, Vector c) {
     double la = a.abs(), lb = b.abs(), lc = c.abs();
     double z = (la + lb + lc) / 2;
@@ -152,17 +151,18 @@ Point symmetric_point(Point x1, Point x2, Point q) {
     else return p2;
 }
 // from
-// aoj0023
+// aoj0023, aoj0090
 class Circle {
 public:
   Point o;
   double r;
   Circle(Point o, double r = 0):o(o), r(r) {}
-}
+  bool operator == (const Circle &p) const {return o == p.o && r == p.r;}
+};
 // return the relation ship between 2 circles
 // 1: intersect, 0: outside, 2: B in A, -2: A in B
 int intersection(Circle a, Circle b) {
-  double dist = sqrt((a.o.x-b.o.x)*(a.o.x-b.o.x)+(a.o.y-b.o.y)*(a.o.y-b.o.y));
+  double dist = (a.o-b.o).abs();
   // 交叉
   if (dist >= abs(a.r - b.r) && dist <= a.r + b.r) {
     return 1;
@@ -175,7 +175,21 @@ int intersection(Circle a, Circle b) {
   if (b.r < a.r) return 2;
   else return -2;
 }
-
+// from aoj0090
+vector<Point> intersect_points(Circle a, Circle b) {
+    if (a == b || intersection(a,b) != 1) return vector<Point>();
+    double r1 = a.r, r2 = b.r, dist = (a.o - b.o).abs();
+    double x = (r1 * r1 - r2 * r2 + dist * dist) / (2 * dist);
+    double h = sqrt(r1 * r1 - x * x);
+    Vector dx = b.o - a.o;
+    dx = dx / dist * x;
+    Vector dir = Vector(-dx.y, dx.x);
+    dir = dir / dir.abs() * h;
+    Point p1 = a.o + dx + dir;
+    Point p2 = a.o + dx - dir;
+    if ((p1-p2).abs() < EPS) return {p1};
+    else return {p1,p2};
+}
 // from
 // aoj0012
 // return if the triangle contains a point
@@ -201,5 +215,6 @@ bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3,
 // -- area(Polygon)
 // class Circle (need Point)
 // -- intersection (Circle)
+// -- intersect_points (Circle)
 // bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3, double y3, double xp, double yp)
 
