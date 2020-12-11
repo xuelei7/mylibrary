@@ -18,6 +18,8 @@
 // Output
 // 各データセットに対し、折り紙上で最も多くシールが重なっている場所でのシールの枚数（整数）を出力して下さい。
 
+// geometry
+
 #include <bits/stdc++.h>
 using namespace std;
 #define EPS (1e-10)
