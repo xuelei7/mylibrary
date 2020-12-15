@@ -14,5 +14,6 @@ and categorize them. **IN THE FUTURE**
 ※Please Notice: The aim for me to make this library is **ONLY** to tidy up knowledges and codes of my own.
 
 ## Contents
+- [Aize Online Judge](https://github.com/xuelei7/mylibrary/tree/master/AOJ)
 - [AtCoder Editorials](https://github.com/xuelei7/mylibrary/tree/master/AtCoder)
 - [Algorithms](https://github.com/xuelei7/mylibrary/tree/master/Algorithms)
