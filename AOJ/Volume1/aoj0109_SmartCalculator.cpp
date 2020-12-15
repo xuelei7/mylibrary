@@ -72,6 +72,6 @@ int Factor() {
 }
 int No(int old) {
     while (isdigit(s[i])) i++;
-    cout << old << " " << i << " " << stoi(s.substr(old,i-old)) << endl;
+    // cout << old << " " << i << " " << stoi(s.substr(old,i-old)) << endl;
     return stoi(s.substr(old,i-old));
 }
