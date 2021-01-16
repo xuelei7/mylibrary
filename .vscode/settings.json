@@ -4,6 +4,7 @@
         "cmath": "cpp",
         "complex": "cpp",
         "string": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "iostream": "cpp"
     }
 }

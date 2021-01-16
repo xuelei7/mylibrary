@@ -200,6 +200,62 @@ bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3,
     return ((c1>0 && c2>0 && c3>0) || (c1<0 && c2<0 && c3<0));
 }
 
+#define EPS (1e-10)
+class Point3D {
+public:
+  double x,y,z;
+  Point3D(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
+
+  Point3D operator + (Point3D p){return Point3D(x+p.x,y+p.y,z+p.z);}
+  Point3D operator - (Point3D p){return Point3D(x-p.x,y-p.y,z-p.z);}
+  Point3D operator * (double k){return Point3D(x*k,y*k,z*k);}
+  Point3D operator / (double k){return Point3D(x/k,y/k,z/k);}
+
+  double norm(){return x*x+y*y+z*z;}
+  double abs(){return sqrt(norm());}
+
+  bool operator <(const Point3D &p) const {
+      return x!=p.x ? x<p.x : (y!=p.y ? y<p.y : z<p.z);
+  }
+  bool operator == (const Point &p) const{
+    return fabs(x-p.x) < EPS && fabs(y-p.y) < EPS && fabs(z-p.z) < EPS;
+  }
+};
+
+double dot (Point3D a, Point3D b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+Point3D cross (Point3D a, Point3D b) {
+  return Point3D(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x);
+}
+
+bool intersect(Point3D from, Point3D to, Point3D p1, Point3D p2, Point3D p3, Point3D &res) {
+    // 平面の法線
+    Point3D n = cross(p2 - p1, p3 - p1);
+    // nにおける射影の長さ
+    double s = dot(to - from, n);
+    // バリアと平行
+    if (abs(s) < EPS) return 0;
+
+    // 起点からバリアの距離
+    double r = dot(p1 - from, n);
+    double t = r / s;
+    // 起点と終点がバリアの同じ側にある
+    if (t < -EPS || t > 1.0 + EPS) return 0;
+    
+    // 起点終点とバリアの交点
+    Point3D res = from * (1 - t) + to * t;
+    
+    // // 交点がバリア内にあるかを判断する
+    // Point3D d = cross(p2 - p1, res - p1);
+    // Point3D e = cross(p3 - p2, res - p2);
+    // Point3D f = cross(p1 - p3, res - p3);
+    // // 交点がない
+    // if (dot(d,e) < -EPS || dot(d,f) < -EPS) return 0;
+    
+    return 1;
+}
 // menu
 // bool isRightTriangle(int a, int b, int c)
 // pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, double y1, double x2, double y2, double x3, double y3)
@@ -217,4 +273,7 @@ bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3,
 // -- intersection (Circle)
 // -- intersect_points (Circle)
 // bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3, double y3, double xp, double yp)
-
+// class Point3D
+// -- dot (Point3D)
+// -- cross (Point3D)
+// -- intersect (Point3D)
