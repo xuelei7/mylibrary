@@ -18,6 +18,8 @@
 // Output
 // HIT または MISS と１行に出力してください。
 
+// to geometry
+
 #include <bits/stdc++.h>
 using namespace std;
 
