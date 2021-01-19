@@ -205,21 +205,13 @@ void unite (int x, int y) {
 // from
 // aoj0083, aoj0125
 int count_days(int y, int m, int d) {
+    int month[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
     int ret = 0;
-    for (int i = 1; i < y; i++) {
-        if (i % 400 == 0) ret += 366;
-        else if (i % 100 == 0) ret += 365;
-        else if (i % 4 == 0) ret += 366;
-        else ret += 365;
-    }
-    int cnt[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    ret += (y - 1) * 365 + (y - 1) / 400 - (y - 1) / 100 + (y - 1) / 4;
     for (int i = 1; i < m; i++) {
-        ret += cnt[i-1];
+        ret += month[i];
     }
-    if (m > 2) {
-        if (y % 400) ret++;
-        else if (y % 100 != 0 && y % 4 == 0) ret++;
-    }
+    if (m > 2 && (y % 400 == 0 || (y % 100 != 0 && y % 4 == 0))) ret++;
     return ret + d;
 }
 
