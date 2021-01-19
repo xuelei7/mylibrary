@@ -203,7 +203,7 @@ void unite (int x, int y) {
 }
 
 // from
-// aoj0083
+// aoj0083, aoj0125
 int count_days(int y, int m, int d) {
     int ret = 0;
     for (int i = 1; i < y; i++) {
@@ -234,6 +234,8 @@ void WarshallFloyd() {
         }
     }
 }
+
+
 // menu
 // int digitnum(int k)
 // int Zeller(int year, int month, int day) (calculate the date)
@@ -245,3 +247,4 @@ void WarshallFloyd() {
 // void dfs(int h, int w) (典型の島数えるやつ)
 // union find
 // int count_days(int y, int m, int d)
+// void WarshallFloyd
