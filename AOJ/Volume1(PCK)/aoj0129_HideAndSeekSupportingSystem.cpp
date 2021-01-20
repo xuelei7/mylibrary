@@ -35,10 +35,90 @@
 // Output
 // 各データセットについて、位置情報 i の判定結果 Danger または Safe を i 行目に出力してください。
 
+// geometry
+
 #include <bits/stdc++.h>
 using namespace std;
 
-int main() {
+#define EPS (1e-10)
+class Point{
+public:
+  double x,y;
+  Point(double x = 0, double y = 0):x(x), y(y) {}
+  
+  Point operator + (Point p){return Point(x+p.x,y+p.y);}
+  Point operator - (Point p){return Point(x-p.x,y-p.y);}
+  Point operator * (double k){return Point(x*k,y*k);}
+  Point operator / (double k){return Point(x/k,y/k);}
+
+  double norm(){return x*x+y*y;}
+  double abs(){return sqrt(norm());}
+
+  bool operator <(const Point &p) const {
+      return x!=p.x ? x<p.x : y<p.y;
+  }
+  bool operator == (const Point &p) const{
+    return fabs(x-p.x) < EPS && fabs(y-p.y) < EPS;
+  }
+};
+typedef Point Vector;
+typedef vector<Point> Polygon;
+double dot(Vector a,Vector b){
+  return a.x * b.x + a.y * b.y;
+}
+double cross(Vector a,Vector b){
+  return a.x * b.y - a.y * b.x;
+}
+
+class Circle {
+public:
+  Point o;
+  double r;
+  Circle(Point o = Point(0,0), double r = 0):o(o), r(r) {}
+  bool operator == (const Circle &p) const {return o == p.o && r == p.r;}
+};
+
+Point projection(Point x1, Point x2, Point q) {
+    double x = dot(q - x1, x1 - x2) / (x1 - x2).norm();
+    return x1 + (x1 - x2) * x;
+}
+
+int n,m;
+Circle p[110];
+
+bool intersect(Point a, Point b, Circle c) {
+    double dist1 = (c.o-a).abs();
+    double dist2 = (c.o-b).abs();
+    // both inside
+    if (dist1 < c.r + EPS && dist2 < c.r + EPS) return 0;
+    // in and out
+    if (dist1 < c.r - EPS && dist2 > c.r + EPS) return 1;
+    if (dist1 > c.r + EPS && dist2 < c.r - EPS) return 1;
     
+    Point h = projection(a,b,c.o);
+    if ((h-c.o).norm() - c.r * c.r > EPS) return 0;
+    return dot(a-h,b-h) < 0;
+}
+
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        for (int i = 0; i < n; i++) {
+            cin >> p[i].o.x >> p[i].o.y >> p[i].r;
+        }
+        cin >> m;
+        for (int i = 0; i < m; i++) {
+            bool danger = 1;
+            Point t,s;
+            cin >> t.x >> t.y >> s.x >> s.y;
+            for (int j = 0; j < n; j++) {
+                if (intersect(t,s,p[j])) {
+                    danger = 0;
+                    break;
+                }
+            }
+            cout << (danger? "Danger":"Safe") << endl;
+        }
+    }
     return 0;
 }

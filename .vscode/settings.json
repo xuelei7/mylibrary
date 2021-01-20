@@ -5,6 +5,7 @@
         "complex": "cpp",
         "string": "cpp",
         "deque": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "ostream": "cpp"
     }
 }

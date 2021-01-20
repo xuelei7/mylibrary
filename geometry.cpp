@@ -138,6 +138,7 @@ double area(Polygon p) {
 }
 // from aoj0081
 Point symmetric_point(Point x1, Point x2, Point q) {
+    // 直線に関して対称点を見つける
     Vector a = x1 - q;
     Vector b = x2 - q;
     Vector c = x1 - x2;
@@ -150,13 +151,18 @@ Point symmetric_point(Point x1, Point x2, Point q) {
     if (ccw(x1,x2,q) != ccw(x1,x2,p1)) return p1;
     else return p2;
 }
+// from aoj0129
+Point projection(Point x1, Point x2, Point q) {
+    double x = dot(q - x1, x1 - x2) / (x1 - x2).norm();
+    return x1 + (x1 - x2) * x;
+}
 // from
 // aoj0023, aoj0090
 class Circle {
 public:
   Point o;
   double r;
-  Circle(Point o, double r = 0):o(o), r(r) {}
+  Circle(Point o = Point(0,0), double r = 0):o(o), r(r) {}
   bool operator == (const Circle &p) const {return o == p.o && r == p.r;}
 };
 // return the relation ship between 2 circles
@@ -189,6 +195,20 @@ vector<Point> intersect_points(Circle a, Circle b) {
     Point p2 = a.o + dx - dir;
     if ((p1-p2).abs() < EPS) return {p1};
     else return {p1,p2};
+}
+// from aoj0129
+bool intersect(Point a, Point b, Circle c) {
+    double dist1 = (c.o-a).abs();
+    double dist2 = (c.o-b).abs();
+    // both inside
+    if (dist1 < c.r + EPS && dist2 < c.r + EPS) return 0;
+    // in and out
+    if (dist1 < c.r - EPS && dist2 > c.r + EPS) return 1;
+    if (dist1 > c.r + EPS && dist2 < c.r - EPS) return 1;
+    
+    Point h = projection(a,b,c.o);
+    if ((h-c.o).norm() - c.r * c.r > EPS) return 0;
+    return dot(a-h,b-h) < 0;
 }
 // from
 // aoj0012
@@ -269,6 +289,7 @@ bool intersect(Point3D from, Point3D to, Point3D p1, Point3D p2, Point3D p3, Poi
 // -- andrewScan (convex)
 // -- triangle_area
 // -- area(Polygon)
+// -- symmetric_point 対称点
 // class Circle (need Point)
 // -- intersection (Circle)
 // -- intersect_points (Circle)
