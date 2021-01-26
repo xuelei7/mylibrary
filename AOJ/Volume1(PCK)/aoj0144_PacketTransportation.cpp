@@ -29,6 +29,8 @@
 // Output
 // 各パケットごとに、経由するルータの個数または NA を１行に出力してください。
 
+// from utils
+
 #include <bits/stdc++.h>
 using namespace std;
 int n;
