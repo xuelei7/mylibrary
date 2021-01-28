@@ -158,7 +158,7 @@ Point projection(Point x1, Point x2, Point q) {
     return x1 + (x1 - x2) * x;
 }
 // from
-// aoj0023, aoj0090
+// aoj0023, aoj0090, aoj0153
 class Circle {
 public:
   Point o;
@@ -197,7 +197,7 @@ vector<Point> intersect_points(Circle a, Circle b) {
     if ((p1-p2).abs() < EPS) return {p1};
     else return {p1,p2};
 }
-// from aoj0129
+// from aoj0129, aoj0153
 bool intersect(Point a, Point b, Circle c) {
     double dist1 = (c.o-a).abs();
     double dist2 = (c.o-b).abs();
@@ -277,6 +277,7 @@ bool intersect(Point3D from, Point3D to, Point3D p1, Point3D p2, Point3D p3, Poi
     
     return 1;
 }
+
 // menu
 // bool isRightTriangle(int a, int b, int c)
 // pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, double y1, double x2, double y2, double x3, double y3)
@@ -291,9 +292,11 @@ bool intersect(Point3D from, Point3D to, Point3D p1, Point3D p2, Point3D p3, Poi
 // -- triangle_area
 // -- area(Polygon)
 // -- symmetric_point 対称点
+// -- projection 垂足
 // class Circle (need Point)
 // -- intersection (Circle)
 // -- intersect_points (Circle)
+// -- intersect (Line & Cirlce)
 // bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3, double y3, double xp, double yp)
 // class Point3D
 // -- dot (Point3D)
