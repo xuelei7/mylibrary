@@ -259,7 +259,17 @@ void dijkstra(int s, int *d, vector<edge> *G, int V) {
   }
 }
 
-
+// from
+// aoj0167
+void BubbleSort(int n, int* a) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (a[j] > a[j+1]) {
+                swap(a[j],a[j+1]);
+            }
+        }
+    }
+}
 // menu
 // int digitnum(int k)
 // int Zeller(int year, int month, int day) (calculate the date)
