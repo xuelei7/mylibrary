@@ -27,10 +27,10 @@ int main()
 
     // lvalue reference
     int& lvalue_ref_1 = x;              // OK
-    int& lvalue_ref_2 = 0;           // Error 右辺値を左辺値参照で束縛している
+    int& lvalue_ref_2 = 0;              // Error 右辺値を左辺値参照で束縛している
 
     // rvalue reference
-    int&& rvalue_ref_1 = x;          // Error 左辺値を右辺値参照で束縛している
+    int&& rvalue_ref_1 = x;             // Error 左辺値を右辺値参照で束縛している
     int&& rvalue_ref_2 = 0;             // OK
 
     // const lvalue reference
@@ -51,8 +51,6 @@ int main()
 
     // ムーブセマンティクス
     // ムーブセマンティクスが必要とされる場面として、コピーに高いコストがかかる場合をあげる。
-
-
 
     // ムーブコンストラクタ・ムーブ代入演算子
     class large_class {

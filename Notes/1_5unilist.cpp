@@ -1,4 +1,4 @@
-// 一様初期化
+// 一様初期化 uniform initialization
 #include <iostream>
 struct X {
     X(int) {}
