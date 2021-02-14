@@ -16,6 +16,7 @@ int main() {
         std::cout << e << " ";
     }
     std::cout << std::endl;
+    
     // const auto& e : eを変更できない
     // auto& e       : 実際のコンテナ内の値も変更できる
     // auto e        : eは変更できるが，コンテナ内の値が変更できない

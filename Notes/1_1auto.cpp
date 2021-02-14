@@ -1,4 +1,5 @@
 // auto: 型推論
+
 #include <iostream>
 #include <memory>
 #include <initializer_list>

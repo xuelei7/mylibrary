@@ -43,7 +43,6 @@ int main()
     std::string str = "Hello, world!";
     // 何も起こらない
     std::move(str);
-
     // 実際に y に x がムーブされる
     std::string y = std::move(str);
 

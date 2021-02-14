@@ -270,6 +270,31 @@ void BubbleSort(int n, int* a) {
         }
     }
 }
+
+// from
+// aoj1275
+int takeStones(int n, int m, int k) {
+    int a[n+1], b[n+1];
+    m--;
+    for (int i = 0; i < n; i++) {
+        a[i] = i;
+    }
+    int now = m;
+    for (int cnt = n; cnt > 1; cnt--) {
+        // cout << a[now%cnt]+1 << endl;
+        for (int i = 0; i < cnt - 1; i++) {
+            b[i] = a[(now+1+i)%cnt];
+            // cout << b[i]+1 << " ";
+        }
+        // cout << endl;
+        for (int i = 0; i < cnt - 1; i++) {
+            a[i] = b[i];
+        }
+        now = k-1;
+    }
+    return a[0]+1;
+}
+
 // menu
 // int digitnum(int k)
 // int Zeller(int year, int month, int day) (calculate the date)
@@ -283,3 +308,4 @@ void BubbleSort(int n, int* a) {
 // int count_days(int y, int m, int d)
 // void WarshallFloyd
 // void dijkstra
+// void takeStones(n個の石がある円，始点m，間隔kでとり，残った石の番号を返す)
