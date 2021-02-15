@@ -25,3 +25,50 @@
 // U     When both of the rules result Bob's answer.
 // I     When neither of the rules results Bob's answer.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+string s;
+ll n;
+
+void solve() {
+    vector<ll> num, sign;
+    for (int i = 0; i < s.size(); i++) {
+        if (i % 2 == 0) {
+            num.push_back(s[i]-'0');
+        } else {
+            sign.push_back(s[i]=='*');
+        }
+    }
+    ll ans1 = 0, ans2 = num[0];
+    for (int i = 0; i < sign.size(); i++) {
+        if (sign[i]) {
+            ans2 *= num[i+1];
+        } else {
+            ans2 += num[i+1];
+        }
+    }
+    for (int i = 0; i < sign.size(); i++) {
+        if (sign[i]) {
+            num[i+1] *= num[i];
+            num[i] = 0;
+        }
+    }
+    for (int i = 0; i < num.size(); i++) ans1 += num[i];
+    if (ans1 != n && ans2 != n) {
+        cout << "I" << endl;
+    } else if (ans1 == n && ans2 == n) {
+        cout << "U" << endl;
+    } else if (ans1 == n) {
+        cout << "M" << endl;
+    } else {
+        cout << "L" << endl;
+    }
+}
+
+int main() {
+    while (cin >> s >> n) {
+        solve();
+    }
+    return 0;
+}

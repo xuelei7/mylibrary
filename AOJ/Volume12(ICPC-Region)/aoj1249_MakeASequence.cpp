@@ -46,3 +46,81 @@
 
 // In case of a draw, the output line should be “Draw”.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,m,p;
+int a[10][10][10];
+int cnt[10][10];
+int dx[13] = {1,0,0,1,0,1, 1, 1, 0,1, 1, 1, 1};
+int dy[13] = {0,1,0,1,1,0, 0,-1, 1,1,-1,-1, 1};
+int dz[13] = {0,0,1,0,1,1,-1, 0,-1,1, 1,-1,-1};
+int check(int x, int y, int z) {
+    for (int i = 0; i < 13; i++) {
+        int lk = 1;
+        int tx = x, ty = y, tz = z;
+        while (1) {
+            tx += dx[i];
+            ty += dy[i];
+            tz += dz[i];
+            if (tx < 0 || tx >= n || ty < 0 || ty >= n || tz < 0 || tz >= n) break;
+            if (a[tx][ty][tz] == a[x][y][z]) {
+                lk++;
+            } else break;
+        }
+        tx = x, ty = y, tz = z;
+        while (1) {
+            tx -= dx[i];
+            ty -= dy[i];
+            tz -= dz[i];
+            if (tx < 0 || tx >= n || ty < 0 || ty >= n || tz < 0 || tz >= n) break;
+            if (a[tx][ty][tz] == a[x][y][z]) {
+                lk++;
+            } else break;
+        }
+        if (lk >= m) return a[x][y][z];
+    }
+    return 0;
+}
+int putpeg(int x, int y, int c) {
+    int z = cnt[x][y]++;
+    a[x][y][z] = c;
+    return z;
+}
+
+int px[1010],py[1010];
+void solve() {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            cnt[i][j] = 0;
+            for (int k = 0; k < 10; k++) {
+                a[i][j][k] = 0;
+            }
+        }
+    }
+    for (int i = 0; i < p; i++) {
+        cin >> px[i] >> py[i];
+        px[i]--;
+        py[i]--;
+    }
+    bool draw = 1;
+    for (int i = 0; i < p; i++) {
+        int z = putpeg(px[i],py[i],(i&1)+1);
+        int result = check(px[i],py[i],z);
+        if (result != 0) {
+            cout << (result == 1? "Black":"White") << " " << i+1 << endl;
+            draw = 0;
+            break;
+        }
+    }
+    if (draw) {
+        cout << "Draw" << endl;
+    }
+}
+
+int main() {
+    while (cin >> n >> m >> p) {
+        if (n == 0 && m == 0 && p == 0) break;
+        solve();
+    }
+    return 0;
+}
