@@ -18,3 +18,24 @@
 // Output
 // For each query, output "Yes" if S is in the language and "No" if S is not in the language.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll k;
+void solve() {
+    ll n,p;
+    char c;
+    cin >> p >> c >> n;
+    if (c == ')') k += n;
+    else k -= n;
+    cout << (k == 0? "Yes":"No") << endl;
+}
+
+int main() {
+    int q;
+    cin >> q;
+    while (q--) {
+        solve();
+    }
+    return 0;
+}

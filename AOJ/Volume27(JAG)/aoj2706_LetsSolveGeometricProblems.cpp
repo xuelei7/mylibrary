@@ -14,3 +14,35 @@
 // Output Format
 // 答えを一行に出力せよ。
 
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int p,q;
+    cin >> p >> q;
+    map<int,int> mp, mq;
+    for (int i = 2; i * i <= q; i++) {
+        if (p % i == 0) {
+            while (p % i == 0) {
+                p /= i;
+                mp[i]++;
+            }
+        }
+        if (q % i == 0) {
+            while (q % i == 0) {
+                q /= i;
+                mq[i]++;
+            }
+        }
+    }
+    if (p != 1) mp[p]++;
+    if (q != 1) mq[q]++;
+    long long ans = 1;
+    for (auto e: mq) {
+        if (e.second > mp[e.first]) {
+            ans *= e.first;
+        }
+    }
+    cout << ans << endl;
+    return 0;
+}

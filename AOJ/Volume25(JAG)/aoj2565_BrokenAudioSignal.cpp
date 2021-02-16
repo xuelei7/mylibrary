@@ -33,3 +33,67 @@
 // Output
 // For each dataset, output the value of the broken samples in one line if the original audio signal can be recovered uniquely. If there are multiple possible values, output ambiguous. If there are no possible values, output none.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n;
+int MAX = 1e9+7;
+int a[1010];
+void solve() {
+    for (int i = 0; i < n; i++) {
+        string s;
+        cin >> s;
+        if (s == "x") {
+            a[i] = MAX;
+        } else {
+            a[i] = stoi(s);
+        }
+    }
+    for (int i = 0; i < n - 1; i++) {
+        if (a[i] == a[i+1] && a[i] == MAX) {
+            cout << "none" << endl;
+            return;
+        }
+    }
+    for (int i = 0; i < n - 1; i++) {
+        if (a[i] != MAX && a[i+1] != MAX) {
+            if (i&1) {
+                if (a[i] <= a[i+1]) {
+                    cout << "none" << endl;
+                    return;
+                }
+            } else {
+                if (a[i] >= a[i+1]) {
+                    cout << "none" << endl;
+                    return;
+                }
+            }
+        }
+    }
+    int l = -MAX, r = MAX;
+    for (int i = 0; i < n; i++) {
+        if (a[i] == MAX) {
+            if (i&1) {
+                if (i - 1 >= 0) l = max(l, a[i-1]);
+                if (i + 1 < n) l = max(l, a[i+1]);
+            } else {
+                if (i - 1 >= 0) r = min(r, a[i-1]);
+                if (i + 1 < n) r = min(r, a[i+1]);
+            }
+        }
+    }
+    if (r - l <= 1) {
+        cout << "none" << endl;
+    } else if (r - l > 2) {
+        cout << "ambiguous" << endl;
+    } else {
+        cout << l + 1 << endl;
+    }
+}
+
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        solve();
+    }
+    return 0;
+}

@@ -13,3 +13,26 @@
 // Output
 // Output the sequence after processing all the requests. Its elements are to be output, one per line, in the order in the sequence.
 
+#include <bits/stdc++.h>
+using namespace std;
+bool used[200010];
+int a[100010];
+int main() {
+    int n,m;
+    cin >> n >> m;
+    for (int i = 0; i < m; i++) {
+        cin >> a[i];
+    }
+    for (int i = m - 1; i >= 0; i--) {
+        if (!used[a[i]]) {
+            cout << a[i] << endl;
+            used[a[i]] = 1;
+        }
+    }
+    for (int i = 1; i <= n; i++) {
+        if (!used[i]) {
+            cout << i << endl;
+        }
+    }
+    return 0;
+}
