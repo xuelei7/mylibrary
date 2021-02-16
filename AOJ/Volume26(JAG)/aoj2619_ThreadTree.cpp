@@ -39,3 +39,32 @@
 // Output
 // Print the given n messages as specified in the problem statement.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> G[1010];
+string str[1010];
+
+void dfs(int id, int lv) {
+    for (int i = 0; i < lv; i++) {
+        cout << ".";
+    }
+    cout << str[id] << endl;
+    for (int i = 0; i < G[id].size(); i++) {
+        dfs(G[id][i],lv+1);
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        int id;
+        cin >> id >> str[i];
+        id--;
+        if (id < 0) continue;
+        G[id].push_back(i);
+    }
+    dfs(0,0);
+    return 0;
+}

@@ -23,3 +23,20 @@
 // Output
 // Output the number of possible distinct patterns.
 
+#include <bits/stdc++.h>
+using namespace std;
+long long dp[120];
+int main() {
+    int l,k;
+    cin >> l >> k;
+    dp[0] = 1;
+    for (int i = 0; i < l; i++) {
+        dp[i+2] += dp[i];
+        dp[i+k+1] += dp[i];
+    }
+    long long ans = 0;
+    for (int i = 2; i <= l+1; i++) {
+        ans += dp[i];
+    }
+    cout << ans << endl;
+}

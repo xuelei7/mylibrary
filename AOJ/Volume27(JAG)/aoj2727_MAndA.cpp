@@ -17,3 +17,31 @@
 // Output
 // Print "Yes" in a line if it is possible to make original company name by combining S and T. Otherwise, print "No" in a line.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+bool fd(string s, string t) {
+    int p = 0;
+    for (int i = 0; i < t.size(); i++) {
+        while (p < s.size() && s[p] != t[i]) {
+            p++;
+        }
+        if (p == s.size()) return 0;
+        p++;
+    }
+    return 1;
+}
+
+int main() {
+    string s,t;
+    cin >> s >> t;
+    int p1 = 0, p2 = 0;
+    string a = "", b = "";
+    for (int i = 0; i < s.size(); i++) {
+        if (i&1) b += s[i];
+        else a += s[i];
+    }
+    bool oksa = fd(s,a), oksb = fd(s,b), okta = fd(t,a), oktb = fd(t,b);
+    if ((oksa && oktb) || (oksb && okta)) cout << "Yes" << endl;
+    else cout << "No" << endl;
+}

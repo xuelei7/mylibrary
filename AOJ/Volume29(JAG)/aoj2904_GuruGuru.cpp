@@ -20,3 +20,36 @@
 // Output
 // Print the number of times Gururin obtained magical power throughout the game in one line.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+
+bool ok(int f, int t) {
+    bool d[4] = {};
+    int a = 0;
+    for (int i = f; i < t; i++) {
+        if (s[i] == 'R') a++;
+        else a--;
+        a = (a + 4) % 4;
+        if (s[i] == 'R')
+            d[a%4] = 1;
+    }
+    return d[0] && d[1] && d[2] && d[3];
+}
+
+int main() {
+    cin >> s;
+    int a = 0, bf = 0;
+    int ans = 0;
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == 'R') a++;
+        else a--;
+        a = (a + 4) % 4;
+        if (a == 0) {
+            ans += ok(bf,i+1);
+            bf = i+1;
+        }
+    }
+    cout << ans << endl;
+}
