@@ -40,3 +40,33 @@
 
 // You can assume that, for each dataset, there is at least one way to install the artwork.
 
+#include <bits/stdc++.h>
+using namespace std;
+int w,d;
+int hw[11],hd[11];
+bool used[11];
+int main() {
+    while (cin >> w >> d) {
+        if (w == 0 || d == 0) break;
+        for (int i = 0; i < w; i++) cin >> hw[i];
+        for (int i = 0; i < d; i++) cin >> hd[i];
+        sort(hw,hw+w);
+        sort(hd,hd+d);
+        int ans = 0;
+        for (int i = 0; i < w; i++) ans += hw[i];
+        memset(used,0,sizeof(used));
+        for (int i = 0; i < d; i++) {
+            bool ok = 0;
+            for (int j = 0; j < w; j++) {
+                if (hw[j] == hd[i] && !used[j]) {
+                    used[j] = 1;
+                    ok = 1;
+                    break;
+                }
+            }
+            if (!ok) ans += hd[i];
+        }
+        cout << ans << endl;
+    }
+
+}

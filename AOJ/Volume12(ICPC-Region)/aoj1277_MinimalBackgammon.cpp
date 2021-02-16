@@ -34,3 +34,51 @@
 // Output
 // For each dataset, you should answer the probability with which the game succeeds within the given number of turns. The output should not contain an error greater than 0.00001.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,t,l,b;
+double A[210],B[210];
+bool lose[110], back[110];
+int main() {
+    while (cin >> n >> t >> l >> b) {
+        if (n+t+l+b == 0) break;
+        memset(lose,0,sizeof(lose));
+        memset(back,0,sizeof(back));
+        memset(A,0,sizeof(A));
+        for (int i = 0; i < l; i++) {
+            int x;
+            cin >> x;
+            lose[x] = 1;
+        }
+        for (int i = 0; i < b; i++) {
+            int x;
+            cin >> x;
+            back[x] = 1;
+        }
+        A[0] = 1;
+        for (int tt = 0; tt < t; tt++) {
+            memset(B,0,sizeof(B));
+            // normal
+            for (int i = 0; i < n; i++) {
+                for (int j = 1; j <= 6; j++) {
+                    int to = i + j;
+                    if (to > n) {
+                        to = n - (to - n);
+                    }
+                    if (back[to]) B[0] += A[i] / 6.0;
+                    else B[to + (lose[to] ? n : 0)] += A[i] / 6.0;
+                }
+            }
+            B[n] += A[n];
+            // lose come back
+            for (int i = 1; i < n; i++) {
+                if (lose[i]) {
+                    B[i] = A[i+n];
+                }
+            }
+            for (int i = 0; i < 210; i++) A[i] = B[i];
+        }
+        cout << fixed << setprecision(6) << A[n] << endl;
+        // printf("%.6f\n",A[n]);
+    }
+}
