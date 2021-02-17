@@ -27,3 +27,47 @@
 // 1≤wi≤105
 // 同一座標に親機は複数存在しない
 
+#include <bits/stdc++.h>
+using namespace std;
+
+int n,H[2];
+
+struct S {
+    int x,w;
+    S(int x=0, int w=0):x(x),w(w) {}
+    bool operator < (const S s) const {
+        if (x-w != s.x-s.w) return x-w < s.x-s.w;
+        return w < s.w;
+    }
+} s[2][100010];
+
+int main() {
+    cin >> n >> H[0] >> H[1];
+    for (int i = 0; i < n; i++) {
+        cin >> s[0][i].x >> s[1][i].x >> s[0][i].w;
+        s[1][i].w = s[0][i].w;
+    }
+    sort(s[0],s[0]+n);
+    sort(s[1],s[1]+n);
+    for (int ss = 0; ss < 2; ss++) {
+        int l = 0;
+        bool ok = 1;
+        for (int i = 0; i < n; i++) {
+            int x = s[ss][i].x;
+            int w = s[ss][i].w;
+            if (x - w > l) {
+                ok = 0;
+                break;
+            } else {
+                l = max(l, w + x);
+            }
+        }
+        if (l < H[ss]) continue;
+        if (ok) {
+            cout << "Yes" << endl;
+            return 0;
+        }
+    }
+    cout << "No" << endl;
+    return 0;
+}

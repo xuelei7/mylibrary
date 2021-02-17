@@ -17,3 +17,119 @@
 // Output
 // うさぎがこのゲームに参加すべきであるなら”YES”を, そうでないなら”NO”を一行に出力せよ.
 
+#include <bits/stdc++.h>
+using namespace std;
+int h,w,n;
+char maze[33][33];
+char m[33][33];
+bool e[33][33];
+bool debug = 0;
+void printe() {
+    cout << "e:" << endl;
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            cout << e[i][j];
+        }
+        cout << endl;
+    }
+}
+void print() {
+    cout << "m:" << endl;
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            cout << m[i][j];
+        }
+        cout << endl;
+    }
+}
+bool check(int a, int b, int c, int d) {
+    if (debug) cout << a << " " << b << " " << c << " " << d << endl;
+    for (int i = 0; i <= h; i++) {
+        for (int j = 0; j <= w; j++) {
+            m[i][j] = maze[i][j];
+            if (i == h || j == w) m[i][j] = '.';
+        }
+    }
+    swap(m[a][b],m[c][d]);
+
+    while (1) {
+        // fall
+        for (int j = 0; j < w; j++) {
+            int bs = h - 1, p = h;
+            while (p-- > 0) if (m[p][j] != '.') swap(m[bs--][j],m[p][j]);
+        }
+        // find erase
+        for (int i = 0; i < h; i++) memset(e[i],0,sizeof(e[i]));
+        int l;
+        char bf;
+        for (int i = 0; i < h; i++) {
+            bf = '.';
+            l = 0;
+            for (int j = 0; j <= w; j++) {
+                if (m[i][j] == bf) l++;
+                else {
+                    if (bf != '.' && l >= n) {
+                        for (int k = 0; k < l; k++) {
+                            e[i][j-k-1] = 1;
+                        }
+                        // if (debug) printe();
+                    }
+                    l = 1;
+                    bf = m[i][j];
+                }
+            }
+        }
+        for (int j = 0; j < w; j++) {
+            l = 0;
+            bf = '.';
+            for (int i = 0; i <= h; i++) {
+                if (m[i][j] == bf) l++;
+                else {
+                    if (bf != '.' && l >= n) {
+                        for (int k = 0; k < l; k++) {
+                            e[i-k-1][j] = 1;
+                        }
+                    }
+                    l = 1;
+                    bf = m[i][j];
+                }
+            }
+        }
+        if (debug) print();
+        if (debug) printe();
+        // erase
+        bool ee = 0;
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (m[i][j] != '.' && e[i][j]) {
+                    m[i][j] = '.';
+                    ee = 1;
+                }
+            }
+        }
+        if (!ee) break;
+        if (debug) print();
+    }
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            if (m[i][j] != '.') return 0;
+        }
+    }
+    return 1;
+}
+
+int main(int arg, char* argv[]) {
+    // if (arg > 1) debug = 1;
+    cin >> h >> w >> n;
+    for (int i = 0; i < h; i++) cin >> maze[i];
+    bool ok = 0;
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            if (j+1 < w) {
+                ok |= check(i,j,i,j+1);
+            }
+        }
+    }
+    cout << (ok?"YES":"NO") << endl;
+    return 0;
+}

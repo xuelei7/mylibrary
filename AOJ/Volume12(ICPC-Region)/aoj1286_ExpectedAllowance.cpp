@@ -21,3 +21,26 @@
 // Output
 // The output should be comprised of lines each of which contains a single decimal fraction. It is the expected number of bills and may have an error less than 10-7 . No other characters should occur in the output.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,m,k,mm;
+double ans;
+void go(int a, int b) {
+    if (a == n) {
+        ans += max(1,b-k);
+        return;
+    }
+    for (int i = 1; i <= m; i++) {
+        go(a+1,b+i);
+    }
+}
+int main() {
+    while (cin >> n >> m >> k) {
+        if (n == 0 && m == 0 && k == 0) break;
+        mm = 1;
+        for (int i = 0; i < n; i++) mm *= m;
+        ans = 0;
+        go(0,0);
+        cout << fixed << setprecision(7) << ans / mm << endl;
+    }
+}
