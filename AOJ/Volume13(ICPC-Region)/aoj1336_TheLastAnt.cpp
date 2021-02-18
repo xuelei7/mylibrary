@@ -24,3 +24,57 @@
 // Output
 // For each dataset, output how many seconds it will take before all the ants leave the tunnel, and which of the ants will be the last. The last ant is identified by its number. If two ants will leave at the same time, output the number indicating the ant that will leave through the left end of the tunnel.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,l;
+int maze[110][22];
+int p[22], d[22];
+int main() {
+    while (cin >> n >> l) {
+        if (n == 0 && l == 0) break;
+        for (int i = 0; i < 110; i++) {
+            for (int j = 0; j < 22; j++) {
+                maze[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            int pp;
+            char dd;
+            cin >> dd >> pp;
+            p[i] = pp;
+            d[i] = (dd=='L'?-1:1);
+        }
+        int last = 0;
+        bool out = 0;
+        int left = n;
+        int t = 0;
+        while (left > 0) {
+            t++;
+            out = 0;
+            for (int i = 0; i < n; i++) {
+                if (p[i] > 0 && p[i] < l) {
+                    p[i] += d[i];
+                    if (p[i] == l) {
+                        if (!out) last = i;
+                        left--;
+                    } else if (p[i] == 0) {
+                        last = i;
+                        left--;
+                        out = 1;
+                    }
+                }
+            }
+            for (int i = 0; i < n; i++) {
+                for (int j = i + 1; j < n; j++) {
+                    if (p[i] > 0 && p[i] < l && p[j] > 0 && p[j] < l) {
+                        if (p[i] == p[j]) {
+                            d[i] = -d[i];
+                            d[j] = -d[j];
+                        }
+                    }
+                }
+            }
+        }
+        cout << t << " " << last + 1 << endl;
+    }
+}

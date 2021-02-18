@@ -28,3 +28,58 @@
 // Output
 // For each dataset, print the winner and their score of the deal in a line, with a single space between them as a separator. The winner should be either “NS” (the north-south team) or “EW” (the east-west team). No extra character or whitespace should appear in the output.
 
+
+#include <bits/stdc++.h>
+using namespace std;
+string m[4][13];
+
+string ss = "23456789TJQKA";
+char trump;
+
+int check(int k, int& host) {
+    int num[4], c[4];
+    bool trp = 0;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 13; j++) {
+            if (m[i][k][0] == ss[j]) num[i] = j;
+        }
+        c[i] = m[i][k][1];
+        if (c[i] == trump) trp = 1;
+    }
+    int mx = -1, winner = -1;
+    for (int i = 0; i < 4; i++) {
+        if (trp) {
+            if (c[i] == trump && num[i] > mx) {
+                mx = num[i];
+                winner = i;
+            }
+        } else {
+            if (c[i] == c[host] && num[i] > mx) {
+                mx = num[i];
+                winner = i;
+            }
+        }
+    }
+    host = winner;
+    return winner % 2;
+}
+
+int main() {
+    while (cin >> trump) {
+        if (trump == '#') break;
+        int host = 0;
+        int cnt[3] = {};
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 13; j++) {
+                cin >> m[i][j];
+            }
+        }
+        for (int i = 0; i < 13; i++) {
+            int w = check(i,host);
+            cnt[w]++;
+        }
+        int winner = (cnt[0] > cnt[1]? 0:1);
+        cout << (winner == 0?"NS":"EW") << " " << cnt[winner] - 6 << endl;
+    }
+    return 0;
+}

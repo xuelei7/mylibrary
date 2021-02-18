@@ -23,3 +23,44 @@
 // Output
 // For each dataset, output a character 'P' in a line if the Ginkgo number is a prime. Output a character 'C' in a line otherwise.
 
+#include <bits/stdc++.h>
+using namespace std;
+int dp[150][150];
+void init() {
+    for (int m = 0; m < 150; m++) {
+        for (int n = m; n < 150; n++) {
+            int db = m*m+n*n;
+            if (db<=1) continue;
+            for (int p = 0; p < 150; p++) {
+                for (int q = p; q < 150; q++) {
+                    int ddb = p*p+q*q;
+                    if (ddb<=1) continue;
+                    if (ddb % db != 0) continue;
+                    if (m == p && n == q) continue;
+                    int a = m*p+n*q;
+                    int b = m*q-n*p;
+                    int c = n*p+m*q;
+                    int d = n*q-m*p;
+                    if (a % db == 0 && b % db == 0) {
+                        dp[p][q]++;
+                    } else if (c % db == 0 && d % db == 0) {
+                        dp[p][q]++;
+                    }
+                }
+            }
+        }
+    }
+}
+int main() {
+    init();
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        int a,b;
+        cin >> a >> b;
+        a = abs(a);
+        b = abs(b);
+        if (a > b) swap(a,b);
+        cout << (dp[a][b]==0?"P":"C") << endl;
+    }
+}

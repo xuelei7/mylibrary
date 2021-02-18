@@ -44,3 +44,55 @@
 
 // No extra characters including spaces are allowed at the beginning of each line, nor at the end of each line.
 
+#include <bits/stdc++.h>
+using namespace std;
+int ok[1000000];
+int mx = -1;
+vector<int> v;
+vector<int> ans;
+int a,b;
+void dfs(string s, int sum) {
+    if (s.size() == 0) {
+        // cout << "ok " << sum << endl;
+        if (sum <= a) {
+            ok[sum]++;
+            if (sum > mx) {
+                mx = sum;
+                ans = v;
+            }
+        }
+        // cout << "v: ";
+        // for (int i = 0; i < v.size(); i++) cout << v[i] << " ";
+        // cout << endl;
+        return;
+    }
+    // cout << s << " " << sum << endl;
+    for (int i = 1; i <= s.size(); i++) {
+        int pre = stoi(s.substr(0,i));
+        // if (i>=2 && s[0] == '0') continue;
+        v.push_back(pre);
+        dfs(s.substr(i,s.size()-i), sum + pre);
+        v.pop_back();
+    }
+}
+int main() {
+    while (cin >> a >> b) {
+        if (a == 0 && b == 0) break;
+        memset(ok,0,sizeof(ok));
+        mx = -1;
+        v.clear();
+        string s = to_string(b);
+        dfs(s,0);
+        if (ok[mx] == 1) {
+            cout << mx << " ";
+            for (int i = 0; i < ans.size(); i++) {
+                cout << ans[i] << " \n"[i == ans.size() - 1];
+            }
+        } else if (mx == -1) {
+            cout << "error" << endl;
+        } else {
+            cout << "rejected" << endl;
+        }
+    }
+    return 0;
+}

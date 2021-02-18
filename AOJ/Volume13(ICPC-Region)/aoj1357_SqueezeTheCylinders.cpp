@@ -14,3 +14,38 @@
 // Output
 // Print the distance between the two walls when they fully squeeze up the cylinders. The number should not contain an error greater than 0.0001.
 
+#include <bits/stdc++.h>
+using namespace std;
+double r[510];
+double d[510][510];
+double p[510];
+int main() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> r[i];
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            d[i][j] = sqrt((r[i]+r[j])*(r[i]+r[j])-(r[i]-r[j])*(r[i]-r[j]));
+        }
+    }
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            p[i] = max(p[i],p[j]+d[i][j]);
+        }
+    }
+    double ans = p[n-1];
+    double mx = r[0];
+    for (int i = 0; i < n; i++) {
+        mx = max(mx, -p[i]+r[i]);
+    }
+    ans += mx;
+    mx = r[n-1];
+    for (int i = 0; i < n; i++) {
+        mx = max(mx, p[i] + r[i] - p[n-1]);
+    }
+    ans += mx;
+    cout << fixed << setprecision(20) << ans << endl;
+    return 0;
+}

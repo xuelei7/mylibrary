@@ -42,3 +42,48 @@
 // Output
 // For each dataset, output the magic spell. If there is more than one longest string of the same length, the first one in the dictionary order must be the spell. The spell is known to be at least two letters long. When no spell is found, output 0 (zero).
 
+#include <bits/stdc++.h>
+using namespace std;
+int h,w;
+char m[11][22];
+int dh[8] = {0,0,1,-1,1,1,-1,-1};
+int dw[8] = {1,-1,0,0,1,-1,1,-1};
+set<string> st;
+string ans;
+bool newans(string s) {
+    string ad = s;
+    if (st.find(ad) == st.end()) {
+        st.insert(ad);
+        return 1;
+    } else {
+        if (s.size() > ans.size()) ans = s;
+        else if (s.size() == ans.size()) ans = min(ans,s);
+        return 0;
+    }
+}
+int main() {
+    while (cin >> h >> w) {
+        if (h == 0 && w == 0) break;
+        for (int i = 0; i < h; i++) cin >> m[i];
+        st.clear();
+        ans = "";
+        for (int i = 0; i < 8; i++) {
+            for (int hh = 0; hh < h; hh++) {
+                for (int ww = 0; ww < w; ww++) {
+                    int th = hh, tw = ww;
+                    string ret = "";
+                    while (1) {
+                        ret += m[th][tw];
+                        th = (dh[i] + th + h) % h;
+                        tw = (dw[i] + tw + w) % w;
+                        if (ret.size() >= 2) newans(ret);
+                        if (hh == th && ww == tw) break;
+                    }
+                }
+            }
+        }
+        if (ans.size() < 2) cout << 0 << endl;
+        else cout << ans << endl;
+    }
+    return 0;
+}

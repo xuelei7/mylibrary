@@ -17,3 +17,13 @@
 // Output
 // 問題の解を1行に出力せよ。
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int main() {
+    int n;
+    cin >> n;
+    if (n == 0 || n == 2) cout << 1 << endl;
+    else if (n == 1) cout << 2 << endl;
+    else cout << 0 << endl;
+}

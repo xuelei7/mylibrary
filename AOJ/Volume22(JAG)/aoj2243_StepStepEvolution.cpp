@@ -35,3 +35,38 @@
 // Output
 // For each dataset, output how many times you have to violate “Natural footstep style” when you play optimally in one line.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+int a[100010];
+int d[100010];
+int main() {
+    string s;
+    while (cin >> s) {
+        if (s == "#") break;
+        int n = s.size() - 1;
+        for (int i = 0; i < n+1; i++) {
+            if (s[i] == '1' || s[i] == '4' || s[i] == '7') a[i] = 0;
+            else if (s[i] == '8' || s[i] == '2') a[i] = 1;
+            else if (s[i] == '9' || s[i] == '6' || s[i] == '3') a[i] = 2;
+        }
+        for (int i = 0; i < n; i++) {
+            if (a[i+1] > a[i]) d[i] = 2;
+            else if (a[i+1] == a[i]) d[i] = 1;
+            else if (a[i+1] < a[i]) d[i] = 0;
+        }
+        int k = 0;
+        int cnt = 0;
+        while (k < n && d[k] == 1) k++;
+        int foot = d[k];
+        while (++k < n) {
+            if (foot == d[k]) cnt++;
+            else {
+                if (foot == 0) foot = 2;
+                else foot = 0;
+            }
+        }
+        cout << cnt << endl;
+    }
+    return 0;
+}

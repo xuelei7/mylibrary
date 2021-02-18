@@ -11,3 +11,23 @@
 // Output
 // Output the minimum cost in a line.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll m[110][110];
+int main() {
+    int n;
+    cin >> n;
+    ll ans = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> m[i][j];
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            ans += min(m[i][j],m[j][i]);
+        }
+    }
+    cout << ans << endl;
+}

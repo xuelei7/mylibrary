@@ -8,3 +8,25 @@
 // Output
 // 答えを一行に出力せよ．絶対誤差または相対誤差が 10−9 以下のとき正答と判定される．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    double d;
+    cin >> d;
+    double eps = 1e-12;
+    double ans = d;
+    for (int i = 0; i * i < d * d + eps; i++) {
+        double j = sqrt(d * d - i * i);
+        if (j < 1) {
+            ans = max(ans,i+1.0);
+            continue;
+        }
+        ans = max(ans, i+j);
+    }
+    double j = d / sqrt(2);
+    j *= 2;
+    ans = max(ans, j);
+    cout << fixed << setprecision(20) << ans << endl;
+    return 0;
+}
