@@ -29,3 +29,88 @@
 // Output
 // 各データセットについて，双子が扉を開くことができるなら Yes，できなければ No をそれぞれ 1 行に出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+int h,w;
+char maze[2][55][55];
+bool d[55][55][55][55];
+int sh[2], sw[2], gh[2], gw[2];
+void init() {
+    for (int i = 0; i < 55; i++) {
+        for (int j = 0; j < 55; j++) {
+            for (int k = 0; k < 55; k++) {
+                for (int l = 0; l < 55; l++) {
+                    d[i][j][k][l] = 0;
+                }
+            }
+        }
+    }
+    for (int k = 0; k < 2; k++) {
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (maze[k][i][j] == 'L' || maze[k][i][j] == 'R') {
+                    sh[k] = i;
+                    sw[k] = j;
+                }
+                if (maze[k][i][j] == '%') {
+                    gh[k] = i;
+                    gw[k] = j;
+                }
+            }
+        }
+    }
+}
+struct P {
+    int hh, ww;
+    P(int hh, int ww): hh(hh), ww(ww) {;}
+    bool operator == (const P &p) const {
+        return hh == p.hh && ww == p.ww;
+    }
+    bool operator != (const P &p) const {
+        return hh != p.hh || ww != p.ww;
+    }
+};
+struct PP {
+    P a, b;
+    PP(P a, P b): a(a), b(b) {}
+};
+int dh[4] = {0,0,1,-1};
+int dw[4] = {1,-1,0,0};
+P mv(P p, int dir, int k) {
+    int th = p.hh + dh[dir];
+    int tw = p.ww + dw[dir] * (k?1:-1);
+    if (th < 0 || th >= h || tw < 0 || tw >= w) return p;
+    if (maze[k][th][tw] == '#') return p;
+    return P(th,tw);
+}
+int main() {
+    while (cin >> w >> h) {
+        if (w == 0 && h == 0) break;
+        for (int i = 0; i < h; i++) cin >> maze[0][i] >> maze[1][i];
+        init();
+        queue<PP> pq;
+        pq.push(PP(P(sh[0],sw[0]),P(sh[1],sw[1])));
+        bool ok = 0;
+        while (!pq.empty()) {
+            auto tp = pq.front();
+            pq.pop();
+            P a = tp.a;
+            P b = tp.b;
+            for (int i = 0; i < 4; i++) {
+                P ta = mv(a,i,0);
+                P tb = mv(b,i,1);
+                if (ta == a && tb == b) continue;
+                if (d[ta.hh][ta.ww][tb.hh][tb.ww]) continue;
+                if (ta == P(gh[0],gw[0]) && tb == P(gh[1],gw[1])) {
+                    ok = 1;
+                    break;
+                }
+                if (ta == P(gh[0],gw[0]) || tb == P(gh[1],gw[1])) continue;
+                d[ta.hh][ta.ww][tb.hh][tb.ww] = 1;
+                pq.push(PP(ta,tb));
+            }
+            if (ok) break;
+        }
+        cout << (ok?"Yes":"No") << endl;
+    }
+}

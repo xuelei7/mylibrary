@@ -30,3 +30,45 @@
 
 // Note that if no corridors are necessary, that is, if all the cells are connected without corridors, the shortest total length of the corridors is 0.000.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n;
+double d[110][110];
+double x[110], y[110], z[110], r[110];
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        for (int i = 0; i < n; i++) cin >> x[i] >> y[i] >> z[i] >> r[i];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                double dd = 0;
+                dd += (x[i]-x[j])*(x[i]-x[j]);
+                dd += (y[i]-y[j])*(y[i]-y[j]);
+                dd += (z[i]-z[j])*(z[i]-z[j]);
+                dd = sqrt(dd) - r[i] - r[j];
+                d[i][j] = max(0.0,dd);
+            }
+        }
+        set<int> st;
+        priority_queue<pair<double,int>,vector<pair<double,int>>,greater<pair<double,int>>> pq;
+        for (int i = 1; i < n; i++) {
+            pq.push({d[0][i],i});
+        }
+        st.insert(0);
+        double ans = 0;
+        while (!pq.empty()) {
+            auto tp = pq.top();
+            pq.pop();
+            double dd = tp.first;
+            int id = tp.second;
+            if (st.find(id) != st.end()) continue;
+            ans += dd;
+            st.insert(id);
+            for (int i = 0; i < n; i++) {
+                if (!st.count(i)) pq.push({d[id][i],i});
+            }
+        }
+        printf("%.3f\n",ans);
+    }
+    return 0;
+}
