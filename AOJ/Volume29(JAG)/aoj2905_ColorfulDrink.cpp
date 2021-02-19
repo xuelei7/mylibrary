@@ -23,3 +23,42 @@
 // Output
 // If the requested colorful drink can be served by using some of the prepared colored liquids, print 'Yes'. Otherwise, print 'No'.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,m;
+map<string,vector<int>> mp;
+map<string,int> pos;
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        string c;
+        int d;
+        cin >> c >> d;
+        mp[c].push_back(d);
+    }
+    for (auto &e: mp) {
+        sort(e.second.begin(),e.second.end());
+    }
+    cin >> m;
+    int mi = -1;
+    for (int i = 0; i < m; i++) {
+        string c;
+        cin >> c;
+        int mmi = 1e9;
+        vector<int> v = mp[c];
+        for (int j = pos[c]; j < v.size(); j++) {
+            if (v[j] < mmi && v[j] > mi) {
+                mmi = v[j];
+                pos[c]++;
+                break;
+            }
+        }
+        if (mmi == 1e9) {
+            cout << "No" << endl;
+            return 0;
+        }
+        mi = mmi;
+    }
+    cout << "Yes" << endl;
+    return 0;
+}

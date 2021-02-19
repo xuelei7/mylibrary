@@ -27,3 +27,36 @@
 // Output
 // Print the estimated result in a line. The output consists of two integers sorted in the ascending order which indicate two prefectures touching the boundary.
 
+#include <bits/stdc++.h>
+using namespace std;
+int w,h;
+char maze[110][10010];
+int west[10010], east[10010], sumw, sume;
+int main() {
+    cin >> w >> h;
+    for (int i = 0; i < h; i++) cin >> maze[i];
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            if (maze[i][j] == 'W') {
+                west[j]++;
+                sumw++;
+            } else {
+                east[j]++;
+                sume++;
+            }
+        }
+    }
+    for (int i = 1; i < w; i++) east[i] += east[i-1];
+    for (int i = w - 1; i >= 0; i--) west[i] += west[i+1];
+    int mi = sumw, p = 0;
+    for (int i = 1; i <= w; i++) {
+        int le = east[i-1];
+        int rw = west[i];
+        if (le+rw < mi) {
+            mi = le + rw;
+            p = i;
+        }
+    }
+    cout << p << " " << p+1 << endl;
+    return 0;
+}

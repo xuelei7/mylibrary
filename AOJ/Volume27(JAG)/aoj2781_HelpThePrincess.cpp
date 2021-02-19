@@ -26,3 +26,74 @@
 // Output
 // Output a line containing a word "Yes", if the princess can escape from the palace. Otherwise, output "No".
 
+#include <bits/stdc++.h>
+using namespace std;
+
+bool soldier[2][210][210];
+bool princess[2][210][210];
+bool wall[210][210];
+char maze[210][210];
+int h,w;
+int dh[5] = {0,0,1,-1,0};
+int dw[5] = {1,-1,0,0,0};
+int gh,gw;
+int main() {
+    cin >> h >> w;
+    for (int i = 0; i < h; i++) cin >> maze[i];
+    
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            if (maze[i][j] == '%') {
+                gh = i;
+                gw = j;
+            } else if (maze[i][j] == '#') {
+                wall[i][j] = 1;
+            } else if (maze[i][j] == '@') {
+                princess[0][i][j] = 1;
+            } else if (maze[i][j] == '$') {
+                soldier[0][i][j] = 1;
+            }
+        }
+    }
+    for (int t = 1; t < h * w; t++) {
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                for (int k = 0; k < 5; k++) {
+                    int th = i + dh[k];
+                    int tw = j + dw[k];
+                    if (th < 0 || th >= h || tw < 0 || tw >= w) continue;
+                    if (wall[th][tw]) continue;
+                    if (soldier[0][i][j]) soldier[1][th][tw] = 1;
+                }
+                for (int k = 0; k < 5; k++) {
+                    int th = i + dh[k];
+                    int tw = j + dw[k];
+                    if (th < 0 || th >= h || tw < 0 || tw >= w) continue;
+                    if (wall[th][tw]) continue;
+                    if (princess[0][i][j]) princess[1][th][tw] = 1;
+                }
+            }
+        }
+        for (int i = 0; i < h; i++) {
+            memset(princess[0][i],0,sizeof(princess[0][i]));
+            memset(soldier[0][i],0,sizeof(soldier[0][i]));
+            for (int j = 0; j < w; j++) {
+                princess[0][i][j] = (princess[1][i][j] && !soldier[1][i][j]);
+                soldier[0][i][j] = soldier[1][i][j];
+            }
+        }
+        cout << "-----" << endl;
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (wall[i][j]) cout << '#';
+                else if (soldier[0][i][j]) cout << '$';
+                else if (princess[0][i][j]) cout << '@';
+                else cout << '.';
+            }
+            cout << endl;
+        }
+        if (soldier[0][gh][gw] || princess[0][gh][gw]) break;
+    }
+    cout << (princess[0][gh][gw]?"Yes":"No") << endl;
+    return 0;
+}

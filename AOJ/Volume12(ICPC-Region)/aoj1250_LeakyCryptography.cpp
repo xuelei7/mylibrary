@@ -48,3 +48,62 @@
 // Output
 // For each dataset you should output the key used for encoding. Each key shall appear alone on its line, and be written in hexadecimal notation, using digits ‘0’ to ‘9’ and lowercase letters ‘a’ to ‘f’, and with no leading zeros.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+ll toll(string s){
+    ll num = 0;
+    for (int i = 0; i < s.size(); i++) {
+        int k;
+        if (s[i] >= '0' && s[i] <= '9') {
+            k = s[i] - '0';
+        } else {
+            k = s[i] - 'a' + 10;
+        }
+        num = num * 16 + k;
+    }
+    // cout << "toll " << s << " " << bitset<32>(num) << endl;
+    return num;
+}
+string tos(ll k) {
+    if (k == 0) return "0";
+    string s = "";
+    // cout << "tos " << k;
+    while (k > 0) {
+        int kk = k % 16;
+        k /= 16;
+        if (kk < 10) s = (char)(kk+'0') + s;
+        else s = (char)(kk-10+'a') + s;
+    }
+    // cout << " " << s << endl;
+    return s;
+}
+int n;
+string s[10];
+ll num[10];
+void solve() {
+    ll key = 0;
+    for (int i = 0; i < 9; i++) {
+        cin >> s[i];
+        num[i] = toll(s[i]);
+    }
+    for (ll i = 0; i < 32; i++) {
+        ll sum = 0;
+        for (int j = 0; j < 8; j++) {
+            sum += num[j]^key;
+        }
+        // cout << sum << endl;
+        bool cover = ((sum>>i) & 1) != ((num[8]>>i) & 1);
+        // cout << i << " " << cover << endl;
+        if (cover) key += (1LL<<i);
+    }
+    // cout << "key " << key << endl;
+    cout << tos(key) << endl;
+}
+int main() {
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        solve();
+    }
+}

@@ -17,3 +17,34 @@
 // Output
 // If Chokudai's slimming plan ends on the d-th day, print d in one line. If it never ends, print −1.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll s,t,d;
+ll dw[100010];
+ll min_d;
+int main() {
+    cin >> s >> t >> d;
+    for (int i = 0; i < d; i++) {
+        cin >> dw[i];
+        if (i != 0) dw[i] += dw[i-1];
+        min_d = min(min_d,dw[i]);
+    }
+    if (s + min_d > t && dw[d-1] >= 0) {
+        cout << -1 << endl;
+        return 0;
+    }
+    ll ans = 0;
+    while (1) {
+        if (s + min_d <= t) break;
+        s += dw[d-1];
+        ans += d;
+    }
+    for (int i = 0; i < d; i++) {
+        if (s + dw[i] <= t) {
+            cout << ans + i + 1 << endl;
+            return 0;
+        }
+    }
+    return 0;
+}

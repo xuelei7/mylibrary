@@ -14,3 +14,45 @@
 // Output
 // Print the new password in a line.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll a,MAX,dif;
+string s,ans;
+void dfs(string num) {
+    if (num.size() == s.size()) {
+        ll tmp = 0;
+        for (int i = 0; i < num.size(); i++) {
+            tmp *= 10;
+            tmp += num[i]-'0';
+        }
+        ll diff = abs(tmp-a);
+        diff = min(diff,MAX-diff);
+        // cout << num << " " << diff << endl;
+        if (diff > dif) {
+            dif = diff;
+            ans = num;
+        }
+        return;
+    }
+    bool notok[10] = {};
+    for (int i = 0; i < num.size(); i++) {
+        notok[num[i]-'0'] = 1;
+    }
+    for (int i = 0; i <= 9; i++) {
+        if (!notok[i]) {
+            dfs(num + (char)('0'+i));
+        }
+    }
+}
+int main() {
+    cin >> s;
+    MAX = 1;
+    dif = -1;
+    for (int i = 0; i < s.size(); i++) MAX *= 10;
+    stringstream ss(s);
+    ss >> a;
+    dfs("");
+    cout << ans << endl;
+    return 0;
+}

@@ -25,3 +25,41 @@
 // Output
 // For each dataset, output in a line the maximum amount of satisfaction she can get.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int n;
+int status[110];
+ll l[110];
+ll dp[(1<<16)];
+ll mx;
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        memset(dp,-1,sizeof(dp));
+        mx = 0;
+        dp[0] = 0;
+        for (int i = 0; i < n; i++) {
+            ll m;
+            cin >> m >> l[i];
+            status[i] = 0;
+            for (int j = 0; j < m; j++) {
+                int s,t;
+                cin >> s >> t;
+                for (int k = s; k < t; k++) {
+                    status[i] |= (1<<(k-6));
+                }
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < (1<<16); i++) {
+                if (dp[i] == -1) continue;
+                mx = max(mx,dp[i]);
+                if (i & status[j]) continue;
+                dp[i|status[j]] = max(dp[i|status[j]], dp[i]+l[j]);
+            }
+        }
+        cout << mx << endl;
+    }
+    return 0;
+}

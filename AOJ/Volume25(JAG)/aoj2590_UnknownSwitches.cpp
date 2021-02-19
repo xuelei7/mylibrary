@@ -32,3 +32,72 @@
 // Output
 // For each dataset, output the correspondence between the switches and the light bulbs consisting of M numbers written in base-36. In the base-36 system for this problem, the values 0-9 and 10-35 are represented by the characters '0'-'9' and 'A'-'Z' respectively. The i-th character of the correspondence means the number of the switch controlling the i-th light bulb. If you cannot determine which switch controls the i-th light bulb, output '?' as the i-th character instead of the number of a switch.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,m,q;
+
+string s[1010], b[1010];
+
+void solve() {
+    if (n == 1) {
+        for (int i = 0; i < m; i++) cout << 0;
+        cout << endl;
+        return;
+    }
+    if (q == 0) {
+        for (int i = 0; i < m; i++) cout << '?';
+        cout << endl;
+        return;
+    }
+    for (int i = 0; i < q; i++) cin >> s[i] >> b[i];
+    for (int i = 1; i < q; i++) {
+        for (int j = 0; j < n; j++) {
+            if (s[i][j] == '1') {
+                s[i][j] = (s[i-1][j]=='1'?'0':'1');
+            } else {
+                s[i][j] = (s[i-1][j]=='1'?'1':'0');
+            }
+        }
+    }
+    bool possible[1010][40] = {{}};
+    int sz[1010] = {};
+    for (int i = 0; i < m; i++) {
+        // flag if switch is not for this bulb
+        bool check[40] = {};
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k < q; k++) {
+                if (s[k][j] != b[k][i]) check[j] = 1;
+            }
+        }
+        for (int k = 0; k < n; k++) {
+            if (!check[k]) {
+                possible[i][k] = 1;
+                sz[i]++;
+            }
+        }
+    }
+    int ans[1010] = {};
+    for (int bulb = 0; bulb < m; bulb++) {
+        int swt = 0;
+        for (int i = 0; i < n; i++) {
+            if (possible[bulb][i]) swt = i;
+        }
+        if (sz[bulb] == 1)
+        ans[bulb] = swt+1;
+    }
+    for (int i = 0; i < m; i++) {
+        if (ans[i] == 0) cout << '?';
+        else if (ans[i] <= 10) cout << ans[i]-1;
+        else cout << (char)(ans[i]-11+'A');
+    }
+    cout << endl;
+}
+
+
+
+int main() {
+    while (cin >> n >> m >> q) {
+        if (n == 0 && m == 0 && q == 0) break;
+        solve();
+    }
+}
