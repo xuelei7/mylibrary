@@ -25,3 +25,54 @@
 // The total mass of weights (ax + by) is the smallest among those pairs of nonnegative integers satisfying the previous two conditions.
 // No extra characters (e.g. extra spaces) should appear in the output.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int main() {
+    ll a,b,d;
+    while (cin >> a >> b >> d) {
+        if (a == 0 && b == 0 && d == 0) break;
+        ll x = 1e9, y = 1e9;
+        for (ll i = 0; i <= 50000; i++) {
+            ll j = (a * i + d) / b;
+            if (i * a + d == b * j) {
+                if (i + j < x + y) {
+                    x = i;
+                    y = j;
+                } else if (i + j == x + y) {
+                    if (i * a + b * j < x * a + b * y) {
+                        x = i;
+                        y = j;
+                    }
+                }
+            }
+            j = max(0LL,(a * i - d) / b);
+            if (i * a == b * j + d) {
+                if (i + j < x + y) {
+                    x = i;
+                    y = j;
+                } else if (i + j == x + y) {
+                    if (i * a + b * j < x * a + b * y) {
+                        x = i;
+                        y = j;
+                    }
+                }
+            }
+            j = max(0LL,(d - a * i) / b);
+            if (i * a + b * j == d) {
+                if (i + j < x + y) {
+                    x = i;
+                    y = j;
+                } else if (i + j == x + y) {
+                    if (i * a + b * j < x * a + b * y) {
+                        x = i;
+                        y = j;
+                    }
+                }
+            }
+            
+        }
+        cout << x << " " << y << endl;
+    }
+    return 0;
+}
