@@ -37,3 +37,20 @@
 // Output
 // Output the minimum required walking length for her to move from the entrance to the exit. You should omit the length of her walk in the insides of shops.
 
+#include <bits/stdc++.h>
+using namespace std;
+bool ok[1010];
+int main() {
+    int n,m;
+    cin >> n >> m;
+    for (int i = 0; i < m; i++) {
+        int c,d;
+        cin >> c >> d;
+        for (int j = c; j < d; j++) ok[j] = 1;
+    }
+    int ans = n + 1;
+    for (int i = 0; i < n+1; i++) {
+        ans += ok[i]*2;
+    }
+    cout << ans << endl;
+}

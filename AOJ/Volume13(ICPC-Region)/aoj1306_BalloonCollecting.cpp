@@ -29,3 +29,61 @@
 // If the player can capture all the balloons, output "OK" and an integer that represents the minimum moving distance of the vehicle to capture and store all the balloons.
 // If it is impossible for the player to capture all the balloons, output "NG" and an integer k such that the k-th balloon in the dataset is the first balloon that the player cannot capture.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n;
+int p[50],t[50];
+int dp[50][5];
+int inf = 1e9;
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        for (int i = 1; i <= n; i++) cin >> p[i] >> t[i];
+        for (int i = 0; i < 50; i++) {
+            for (int j = 0; j < 5; j++) {
+                dp[i][j] = inf;
+            }
+        }
+        dp[0][0] = 0;
+        bool ok;
+        for (int i = 1; i <= n; i++) {
+            ok = 0;
+            for (int j = 0; j <= 3; j++) {
+                if (dp[i-1][j] == inf) continue;
+                // no back
+                int dt = t[i] - t[i-1];
+                int dd = abs(p[i] - p[i-1]);
+                int time_need = dd * (j + 1);
+                if (j+1 <= 3 && time_need <= dt) {
+                    dp[i][j+1] = min(dp[i][j+1], dp[i-1][j] + dd);
+                }
+                // cout << i << " " << j << " " << dt << " " << time_need << " ";
+                // back
+                dd = p[i] + p[i-1];
+                time_need = p[i-1] * (j + 1) + p[i];
+                // cout << time_need << endl;
+                if (time_need <= dt) {
+                    dp[i][1] = min(dp[i][1], dp[i-1][j] + dd);
+                }
+                if (dp[i][j+1] != inf || dp[i][1] != inf) ok = 1;
+            }
+            if (!ok) {
+                cout << "NG " << i << endl;
+                break;
+            }
+        }
+        // for (int i = 0; i <= n; i++) {
+        //     for (int j = 0; j < 4; j++) {
+        //         cout << dp[i][j] << " ";
+        //     }
+        //     cout << endl;
+        // }
+        int ans = inf;
+        for (int i = 0; i < 4; i++) {
+            ans = min(ans, dp[n][i]);
+        }
+        if (ok)
+            cout << "OK " << ans + p[n] << endl;
+    }
+    return 0;
+}

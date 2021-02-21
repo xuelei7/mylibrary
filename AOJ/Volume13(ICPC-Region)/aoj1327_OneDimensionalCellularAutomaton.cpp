@@ -29,3 +29,86 @@
 
 // Each state must be represented as an integer and the integers must be separated by a space.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef vector<ll> vec;
+typedef vector<vec> mat;
+int mod,n;
+mat A(55,vec(55));
+mat mul(mat a, mat b) {
+    mat c(55,vec(55));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k < n; k++) {
+                c[i][j] += a[i][k] * b[k][j];
+                c[i][j] %= mod;
+            }
+        }
+    }
+    return c;
+}
+mat mul(mat m, int t) {
+    if (t == 0) {
+        mat ret(55, vec(55));
+        for (int i = 0; i < n; i++) ret[i][i] = 1;
+        return ret;
+    }
+    mat ret = mul(m,t/2);
+    ret = mul(ret,ret);
+    // cout << "mul " << t/2*2 << endl;
+    // for (int i = 0; i < n; i++) {
+    //     for (int j = 0; j < n; j++) {
+    //         cout << ret[i][j] << " \n"[j == n - 1];
+    //     }
+    // }
+    if (t&1) ret = mul(ret,m);
+    // cout << "mul " << t << endl;
+    // for (int i = 0; i < n; i++) {
+    //     for (int j = 0; j < n; j++) {
+    //         cout << ret[i][j] << " \n"[j == n - 1];
+    //     }
+    // }
+    return ret;
+}
+vec mul(mat m, vec v) {
+    vec ret(55);
+    for (int i = 0; i < n; i++) {
+        for (int k = 0; k < n; k++) {
+            ret[i] += m[i][k] * v[k];
+            ret[i] %= mod;
+        }
+    }
+    return ret;
+}
+int main() {
+    ll m,a,b,c,t;
+    vec v(55);
+    while (cin >> n >> m >> a >> b >> c >> t) {
+        if (n == 0) break;
+        mod = m;
+        for (int i = 0; i < n; i++) cin >> v[i];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                A[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (i-1>=0) A[i][i-1] = a;
+            A[i][i] = b;
+            if (i+1<n) A[i][i+1] = c;
+        }
+        A = mul(A,t);
+        // for (int i = 0; i < n; i++) {
+        //     for (int j = 0; j < n; j++) {
+        //         cout << A[i][j] << " ";
+        //     }
+        //     cout << endl;
+        // }
+        v = mul(A,v);
+        for (int i = 0; i < n; i++) {
+            cout << v[i] << " \n"[i == n - 1];
+        }
+    }
+    return 0;
+}

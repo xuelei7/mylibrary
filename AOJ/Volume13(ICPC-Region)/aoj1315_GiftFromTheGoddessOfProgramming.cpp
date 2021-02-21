@@ -28,3 +28,56 @@
 // Output
 // For each dataset, output the total sum of the blessed time of the endowed programmer. The blessed time of a programmer is the length of his/her stay at the altar during the presence of the goddess. The endowed programmer is the one whose total blessed time is the longest among all the programmers. The output should be represented in minutes. Note that the goddess of programming is not a programmer.
 
+#include <bits/stdc++.h>
+using namespace std;
+string d[1010],t[1010],e[1010],id[1010];
+int pre[1010], cnt[1010];
+int n;
+bool god = 0;
+int time(string t) {
+    int h = (t[0]-'0')*10 + (t[1]-'0');
+    int m = (t[3]-'0')*10 + (t[4]-'0');
+    return h*60+m;
+}
+void in(int i) {
+    string str = id[i];
+    int num = stoi(str);
+    pre[num] = time(t[i]);
+}
+void out(int i) {
+    string str = id[i];
+    int num = stoi(str);
+    int tt = time(t[i]);
+
+    if (num != 0 && pre[0] != 0) {
+        cnt[num] += tt - max(pre[0],pre[num]);
+    }
+    if (num == 0) {
+        for (int k = 1; k <= 999; k++) {
+            if (pre[k] != 0) {
+                cnt[k] += tt - max(pre[k], pre[0]);
+            }
+        }
+    }
+
+    pre[num] = 0;
+}
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        memset(cnt,0,sizeof(cnt));
+        for (int i = 0; i < n; i++) cin >> d[i] >> t[i] >> e[i] >> id[i];
+        int p;
+        for (int i = 0; i < n; i++) {
+            if (e[i] == "I") {
+                in(i);
+            } else {
+                out(i);
+            }
+        }
+        int mx = 0;
+        for (int i = 1; i <= 999; i++) mx = max(mx, cnt[i]);
+        cout << mx << endl;
+    }
+    return 0;
+}

@@ -29,3 +29,32 @@
 // Output
 // 最適に投資した場合の最終日の所持金を1行に出力せよ。
 
+#include <bits/stdc++.h>
+using namespace std;
+int p[11][11];
+int dp[200010];
+
+int main() {
+    int n,d,x;
+    cin >> n >> d >> x;
+    for (int i = 0; i < d; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> p[i][j];
+        }
+    }
+    int mx = x;
+    for (int i = 0; i < d - 1; i++) {
+        for (int j = 0; j < 200010; j++) dp[j] = -1e8;
+        dp[0] = 0;
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k <= mx; k++) {
+                dp[k+p[i][j]] = max(dp[k+p[i][j]], dp[k]+p[i+1][j]);
+            }
+        }
+        int tmx = mx;
+        for (int k = 0; k <= mx; k++) tmx = max(tmx,dp[k]+(mx-k));
+        mx = tmx;
+    }
+    cout << mx << endl;
+    return 0;
+}

@@ -31,3 +31,65 @@
 // Cm
 // それぞれの領域に含まれるお宝の数を各行に出力せよ
 
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 5010;
+int W, H, N;
+int X[MAX_N], Y[MAX_N];
+int cnt[MAX_N][MAX_N];
+
+vector<int> compress(int *x1, int w) {
+    vector<int> xs;
+
+    for (int i = 0; i < w; i++) {
+        int tx1 = x1[i];
+        xs.push_back(tx1);
+    }
+
+    sort(xs.begin(), xs.end());
+    xs.erase(unique(xs.begin(), xs.end()), xs.end());
+
+    return xs;
+}
+
+int main() {
+    int n,m;
+    cin >> n >> m;
+    X[0] = Y[0] = -1e9-7;
+    X[n+1] = Y[n+1] = 1e9+7;
+    for (int i = 1; i <= n; i++) cin >> X[i] >> Y[i];
+    vector<int> sx = compress(X,n+2);
+    vector<int> sy = compress(Y,n+2);
+    // for (auto p:sx) cout << p << " ";
+    // cout << endl;
+    // for (auto p:sy) cout << p << " ";
+    // cout << endl;
+    for (int i = 1; i <= n; i++) {
+        int tx = lower_bound(sx.begin(),sx.end(),X[i]) - sx.begin();
+        int ty = lower_bound(sy.begin(),sy.end(),Y[i]) - sy.begin();
+        cnt[tx][ty]++;
+        // cout << X[i] << " " << Y[i] << " " << tx << " " << ty << endl;
+    }
+    H = sx.size();
+    W = sy.size();
+    for (int i = 1; i < H; i++) {
+        for (int j = 1; j < W; j++) {
+            cnt[i][j] += cnt[i-1][j] + cnt[i][j-1] - cnt[i-1][j-1];
+            // cout << cnt[i][j] << " ";
+        }
+        // cout << endl;
+    }
+
+    for (int i = 0; i < m; i++) {
+        int x1,y1,x2,y2;
+        cin >> x1 >> y1 >> x2 >> y2;
+        int tx2 = upper_bound(sx.begin(),sx.end(),x2) - 1 - sx.begin();
+        int ty2 = upper_bound(sy.begin(),sy.end(),y2)  - 1- sy.begin();
+        int tx1 = upper_bound(sx.begin(),sx.end(),x1-1) - 1 - sx.begin();
+        int ty1 = upper_bound(sy.begin(),sy.end(),y1-1) - 1 - sy.begin();
+        // cout << tx1 << " " << ty1 << " " << tx2 << " " << ty2 << endl;
+        cout << cnt[tx2][ty2] - cnt[tx2][ty1] - cnt[tx1][ty2] + cnt[tx1][ty1] << endl;
+    }
+    return 0;
+}

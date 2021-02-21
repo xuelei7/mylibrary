@@ -26,3 +26,43 @@
 // Output
 // For each dataset, output the minimum number of substitutions to obtain δ from γ. If δ cannot be produced from γ with the given set of substitutions, output -1.
 
+#include <bits/stdc++.h>
+using namespace std;
+map<string,int> d;
+int n;
+string s,g;
+string f[11],t[11];
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        d.clear();
+        for (int i = 0; i < n; i++) cin >> f[i] >> t[i];
+        cin >> s >> g;
+        d[s] = 0;
+        queue<string> pq;
+        pq.push(s);
+        while (!pq.empty()) {
+            string str = pq.front();
+            pq.pop();
+            
+            for (int j = 0; j < n; j++) {
+                string ss = "";
+                for (int i = 0; i < str.size(); i++) {
+                    if (i + f[j].size() - 1 < str.size() && str.substr(i,f[j].size()) == f[j]) {
+                        ss = ss + t[j];
+                        i += f[j].size() - 1;
+                    } else {
+                        ss += str[i];
+                    }
+                }
+                if (ss.size() > g.size()) continue;
+                if (!d.count(ss)) {
+                    d[ss] = d[str] + 1;
+                    pq.push(ss);
+                }
+            }
+        }
+        if (!d.count(g)) cout << -1 << endl;
+        else cout << d[g] << endl;
+    }
+}
