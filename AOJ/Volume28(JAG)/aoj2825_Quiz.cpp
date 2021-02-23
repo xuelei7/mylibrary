@@ -33,3 +33,53 @@
 // Output
 // 各データセットについて条件を満たすような最後の問題の点数 SM+1 の最小値を 1 行に出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,m;
+int s[1010];
+int mi[10010];
+int mx[10010];
+vector<int> g[1010];
+
+int main() {
+    while (cin >> n >> m) {
+        if (n == 0 && m == 0) break;
+        memset(mi,0,sizeof(mi));
+        memset(mx,0,sizeof(mx));
+        for (int i = 0; i < m; i++) {
+            int k;
+            cin >> s[i] >> k;
+            g[i].clear();
+            for (int j = 0; j < k; j++) {
+                int c;
+                cin >> c;
+                mx[c] += s[i];
+                g[i].push_back(c);
+            }
+        }
+        int mmx = -1;
+        int mmi = 1'000'000;
+        int id = -1;
+        for (int i = 1; i <= n; i++) {
+            if (mx[i] > mmx) {
+                mmx = mx[i];
+                id = i;
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            bool ok = 0;
+            for (int j = 0; j < g[i].size(); j++) {
+                if (g[i][j] == id) ok = 1;
+            }
+            if (ok) continue;
+            if (g[i].size() == 1)
+                mi[g[i][0]] += s[i];
+        }
+        for (int i = 1; i <= n; i++) {
+            if (i == id) continue;
+            mmi = min(mmi, mi[i]);
+        }
+        // cout << mmx << " " << mmi << endl;
+        cout << mmx - mmi + 1 << endl;
+    }
+}

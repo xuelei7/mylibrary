@@ -24,3 +24,44 @@
 // Output
 // For each dataset, print the minimum number of times Peter needs to take anhydrous caffeine.
 
+#include <bits/stdc++.h>
+using namespace std;
+int T,N;
+int t[35],m[110];
+int dp[210];
+
+int main() {
+    while (cin >> T) {
+        if (T == 0) break;
+        for (int i = 0; i < T; i++) {
+            cin >> t[i];
+        }
+        cin >> N;
+        memset(m,0,sizeof(m));
+        for (int i = 0; i <= 200; i++) dp[i] = 200;
+        dp[0] = 0;
+        for (int i = 0; i < N; i++) {
+            int d,mm;
+            cin >> d >> mm;
+            if (m[d] == 0) m[d] = mm;
+            else m[d] = min(m[d],mm);
+        }
+        for (int i = 0; i < 100; i++) {
+            for (int j = 1; j <= 100; j++) {
+                if (m[i+j] == 0 || t[(j-1)%T] <= m[i+j]) {
+                    dp[i+j] = min(dp[i+j], dp[i] + 1);
+                } else {
+                    break;
+                }
+            }
+        }
+        // for (int i = 0; i < 10; i++) {
+        //     for (int j = 0; j < 10; j++) {
+        //         cout << dp[i*10+j] << " ";
+        //     }
+        //     cout << endl;
+        // }
+        // cout << endl;
+        cout << dp[100] - 1 << endl;
+    }
+}

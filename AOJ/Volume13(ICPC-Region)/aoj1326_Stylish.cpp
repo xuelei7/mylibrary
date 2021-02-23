@@ -30,3 +30,60 @@
 // Output
 // Apply the indentation style of P to Q and output the appropriate amount of indentation for each line of Q. The amounts must be output in a line in the order of corresponding lines of Q and they must be separated by a single space. The last one should not be followed by trailing spaces. If the appropriate amount of indentation of a line of Q cannot be determined uniquely through analysis of P, then output -1 for that line.
 
+#include <bits/stdc++.h>
+using namespace std;
+int p,q;
+int main() {
+    string s;
+    while (getline(cin,s)) {
+        stringstream ss(s);
+        ss >> p >> q;
+        if (p == 0 && q == 0) break;
+        int cnt[11][3][2] = {};
+        int indent[11] = {};
+        for (int i = 0; i < p; i++) {
+            getline(cin,s);
+            for (auto c:s) {
+                if (c == '(') cnt[i][0][0]++;
+                else if (c == ')') cnt[i][0][1]++;
+                else if (c == '{') cnt[i][1][0]++;
+                else if (c == '}') cnt[i][1][1]++;
+                else if (c == '[') cnt[i][2][0]++;
+                else if (c == ']') cnt[i][2][1]++;
+            }
+            for (auto c:s) {
+                if (c == '.') indent[i]++;
+                else break;
+            }
+        }
+        int cnt = 0;
+        vector<int> R, C, S;
+        for (int r = 1; r <= 20; r++) {
+            for (int c = 1; c <= 20; c++) {
+                for (int s = 1; s <= 20; s++) {
+                    bool ok = 1;
+                    for (int i = 1; i <= p; i++) {
+                        if (r * (cnt[i][0][0] - cnt[i][0][1])
+                            + c * (cnt[i][1][0] - cnt[i][1][1])
+                            + s * (cnt[i][2][0] - cnt[i][2][1])
+                            != indent[i]) ok = 0;
+                    }
+                    if (ok) {
+                        cnt++;
+                        R.push_back(r);
+                        C.push_back(c);
+                        S.push_back(s);
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < q; i++) {
+            getline(cin,s);
+            
+        }
+        for (int i = 0; i < cnt; i++) {
+
+        }
+    }
+}

@@ -17,3 +17,32 @@
 // N k
 // Output Format
 // 答えを一行に出力せよ。
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll n,k;
+ll f (ll num) {
+    ll ret = 0;
+    // cout << num << " ";
+    for (ll i = 1; i < n; i++) {
+        ll minus = num / k + 1;
+        ret += minus;
+        num -= minus;
+        if (num < 0) break;
+    }
+    // cout << ret << " " << endl;
+    return ret;
+}
+int main () {
+    cin >> n >> k;
+    ll l = 0, r = 2e18;
+    while (l < r) {
+        ll mid = l + r >> 1;
+        ll num = f(mid);
+        if (num == mid + 1) l = mid + 1;
+        else r = mid;
+    }
+    cout << l << endl;
+    return 0;
+}
