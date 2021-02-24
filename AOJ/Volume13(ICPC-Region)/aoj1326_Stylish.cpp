@@ -55,35 +55,79 @@ int main() {
                 if (c == '.') indent[i]++;
                 else break;
             }
+            // cerr << "indent " << indent[i] << endl;
+            // for (int j = 0; j < 3; j++) {
+            //     for (int k = 0; k < 2; k++) {
+            //         cerr << cnt[i][j][k] << " ";
+            //     }
+            // }
+            // cerr << endl;
         }
-        int cnt = 0;
+
+        // all the possible r,c,s
+        int ct = 0;
         vector<int> R, C, S;
         for (int r = 1; r <= 20; r++) {
             for (int c = 1; c <= 20; c++) {
                 for (int s = 1; s <= 20; s++) {
                     bool ok = 1;
-                    for (int i = 1; i <= p; i++) {
-                        if (r * (cnt[i][0][0] - cnt[i][0][1])
-                            + c * (cnt[i][1][0] - cnt[i][1][1])
-                            + s * (cnt[i][2][0] - cnt[i][2][1])
-                            != indent[i]) ok = 0;
+                    int ind = 0;
+                    for (int i = 1; i < p; i++) {
+                        ind += r * (cnt[i-1][0][0] - cnt[i-1][0][1]) + c * (cnt[i-1][1][0] - cnt[i-1][1][1]) + s * (cnt[i-1][2][0] - cnt[i-1][2][1]);
+                        // cout << ind << " ";
+                        if (ind != indent[i]) ok = 0;
                     }
+                    // cout << endl;
                     if (ok) {
-                        cnt++;
+                        ct++;
                         R.push_back(r);
                         C.push_back(c);
                         S.push_back(s);
+                        // cerr << "ok " << r << " " << c << " " << s << endl;
                     }
                 }
             }
         }
-
+    
+        // count brackets
+        int cnt1[11][3][2] = {};
         for (int i = 0; i < q; i++) {
             getline(cin,s);
-            
+            for (auto c:s) {
+                if (c == '(') cnt1[i][0][0]++;
+                else if (c == ')') cnt1[i][0][1]++;
+                else if (c == '{') cnt1[i][1][0]++;
+                else if (c == '}') cnt1[i][1][1]++;
+                else if (c == '[') cnt1[i][2][0]++;
+                else if (c == ']') cnt1[i][2][1]++;
+            }
         }
-        for (int i = 0; i < cnt; i++) {
+        
+        // try every combination of r,c,s
+        vector<vector<int>> v(ct,vector<int>(q));
+        for (int i = 0; i < ct; i++) {
+            int ind = 0;
+            for (int j = 1; j < q; j++) {
+                ind += R[i] * (cnt1[j-1][0][0] - cnt1[j-1][0][1])
+                        + C[i] * (cnt1[j-1][1][0] - cnt1[j-1][1][1])
+                        + S[i] * (cnt1[j-1][2][0] - cnt1[j-1][2][1]);
+                v[i][j] = ind;
+            }
+        }
 
+        // check if they are the same
+        cout << 0;
+        for (int i = 1; i < q; i++) {
+            bool ok = 1;
+            for (int j = 1; j < ct; j++) {
+                if (v[j][i] != v[0][i]) ok = 0;
+            }
+            if (ok) {
+                cout << " " << v[0][i];
+            } else {
+                cout << " -1";
+            }
         }
+        cout << endl;
     }
 }
