@@ -221,6 +221,8 @@ bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3,
     return ((c1>0 && c2>0 && c3>0) || (c1<0 && c2<0 && c3<0));
 }
 
+// from
+// aoj2641
 #define EPS (1e-10)
 class Point3D {
 public:
@@ -238,9 +240,20 @@ public:
   bool operator <(const Point3D &p) const {
       return x!=p.x ? x<p.x : (y!=p.y ? y<p.y : z<p.z);
   }
-  bool operator == (const Point &p) const{
+  bool operator == (const Point3D &p) const{
     return fabs(x-p.x) < EPS && fabs(y-p.y) < EPS && fabs(z-p.z) < EPS;
   }
+  void out() {
+    cout << x << " " << y << " " << z << endl;
+  }
+};
+
+class Circle3D {
+public:
+  Point3D o;
+  double r;
+  Circle3D(Point3D o = Point3D(0,0,0), double r = 0):o(o), r(r) {}
+  bool operator == (const Circle3D &p) const {return o == p.o && r == p.r;}
 };
 
 double dot (Point3D a, Point3D b) {
@@ -277,7 +290,23 @@ bool intersect(Point3D from, Point3D to, Point3D p1, Point3D p2, Point3D p3, Poi
     
     return 1;
 }
+// from
+// aoj2641
+bool intersect(Circle3D c, Point3D a, Point3D b) {
+    if ((a-c.o).abs() < c.r + EPS || (b-c.o).abs() < c.r + EPS) return 1;
+    b = b - a;
+    Point3D o = c.o - a;
+    Point3D h = b * dot(o,b) / b.norm();
+    // b.out();o.out();h.out();
+    // cout << (h-o).abs() << endl;
+    if ((h-o).abs() > c.r + EPS) return 0;
 
+    Point3D eb = b / b.abs();
+    Point3D eh = h / h.abs();
+    if ((eb - eh).abs() > EPS) return 0;
+
+    return b.abs() + EPS > h.abs();
+}
 // menu
 // bool isRightTriangle(int a, int b, int c)
 // pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, double y1, double x2, double y2, double x3, double y3)
@@ -299,6 +328,8 @@ bool intersect(Point3D from, Point3D to, Point3D p1, Point3D p2, Point3D p3, Poi
 // -- intersect (Line & Cirlce)
 // bool trangleContainsPoint(double x1, double y1, double x2, double y2, double x3, double y3, double xp, double yp)
 // class Point3D
+// class Cirlce3D
 // -- dot (Point3D)
 // -- cross (Point3D)
 // -- intersect (Point3D)
+// -- intersect (Circle3D, Point3D from, Point3D to)
