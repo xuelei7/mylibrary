@@ -21,3 +21,22 @@
 // Output
 // Output n lines each containing a single integer. The i-th line should contain the checkup item number of the item which the student i is being checked up or is waiting for, at (t+0.5) minutes after the checkup starts. You may assume that all the students are yet to finish some of the checkup items at that moment.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll n,t;
+int main() {
+    cin >> n >> t;
+    ll mx = 0;
+    ll sum = 0;
+    for (int i = 0; i < n; i++) {
+        ll h;
+        cin >> h;
+        mx = max(h,mx);
+        sum += h;
+
+        cout << max(0LL,t - sum + mx) / mx + 1 << endl;
+
+    }
+    return 0;
+}

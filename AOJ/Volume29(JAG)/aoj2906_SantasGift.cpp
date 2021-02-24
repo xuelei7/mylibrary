@@ -17,3 +17,31 @@
 // Output
 // The output should consist of M lines. In the k-th line, print the maximum total price of gifts for a family with k children.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int c,n,m;
+ll dp[10010];
+ll s[10010], p[10010];
+int main() {
+    cin >> c >> n >> m;
+    for (int i = 0; i < n; i++) {
+        cin >> s[i] >> p[i];
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = c; j >= 0; j--) {
+            if (s[i] + j <= c) {
+                dp[s[i]+j] = max(dp[s[i]+j], dp[j] + p[i]);
+            }
+        }
+    }
+    // for (int i = 0; i <= c; i++) {
+    //     cout << dp[i] << " ";
+    // }
+    // cout << endl;
+    for (int i = 1; i <= m; i++) {
+        cout << i * dp[c / i] << endl;
+    }
+    return 0;
+}

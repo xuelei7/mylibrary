@@ -12,3 +12,34 @@
 // Output
 // Print the number of rectangular regions whose summation is S in one line.
 
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int main() {
+    ll s;
+    cin >> s;
+    s *= 4;
+    int ans = 0;
+    vector<ll> v;
+    for (int i = 1; i <= s; i++) {
+        if (s % i == 0) v.push_back(i);
+    }
+    for (int i = 0; i < v.size(); i++) {
+        for (int j = 0; j < v.size(); j++) {
+            ll d1 = v[i], d2 = v[j];
+            if (s % (d1 * d2) != 0) continue;
+            ll lft = s / d1 / d2;
+            for (ll d3 = d1 + 1; d3 <= lft; d3++) {
+                if (lft % d3 != 0) continue;
+                if ((d3 - d1 + 1) % 2 != 0) continue;
+                ll d4 = lft / d3;
+                if (d4 < d2 + 1) continue;
+                if ((d4 - d2 + 1) % 2 != 0) continue;
+                ans++;
+            }
+        }
+    }
+    cout << ans << endl;
+    return 0;
+}

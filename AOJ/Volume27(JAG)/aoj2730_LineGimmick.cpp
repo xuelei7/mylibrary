@@ -20,3 +20,55 @@
 // Output
 // Output the maximum number of removed panels after you get out of the gimmick.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    string s;
+    cin >> n >> s;
+    vector<int> l,r;
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == '<') l.push_back(i);
+        else r.push_back(i);
+    }
+    int ans = 0;
+    for (int i = 0; i < s.size(); i++) {
+        int ll = lower_bound(l.begin(),l.end(),i) - l.begin();
+        int lr = lower_bound(r.begin(),r.end(),i) - r.begin();
+        int rl = l.size() - ll;
+        int rr = r.size() - lr;
+        if (s[i] == '<') rl--;
+        else rr--;
+
+        if (s[i] == '<') {
+            // leave left
+            if (lr <= rl) {
+                int pos = l[ll + lr];
+                ans = max(ans, pos + 1);
+                // cout << ll + lr << " " << pos << endl;
+            } 
+            // leave right
+            else {
+                int pos = r[lr - rl - 1];
+                ans = max(ans, n - pos);
+                // cout << pos << " " << n - pos << endl;
+            }
+        } else {
+            // leave left
+            if (rl > lr) {
+                int pos = l[ll + lr];
+                ans = max(ans, pos + 1);
+                // cout << ll + lr << " " << pos << endl;
+            }
+            // leave right
+            else {
+                int pos = r[lr - rl];
+                ans = max(ans, n - pos);
+                // cout << lr - rl << " " << pos << endl;
+            }
+        }
+    }
+    cout << ans << endl;
+    return 0;
+}

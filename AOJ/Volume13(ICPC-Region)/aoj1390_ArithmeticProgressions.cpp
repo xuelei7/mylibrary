@@ -13,3 +13,31 @@
 // Output
 // Output the length of the longest arithmetic progressions which can be formed selecting some numbers from the given set of numbers.
 
+#include <bits/stdc++.h>
+using namespace std;
+int a[5010];
+set<int> st;
+int main() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        st.insert(a[i]);
+    }
+    sort(a,a+n);
+    int ans = 2;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            int d = a[j] - a[i];
+            int l = 2;
+            int k = a[j];
+            while (st.count(k+d)) {
+                l++;
+                k += d;
+            }
+            ans = max(ans, l);
+        }
+    }
+    cout << ans << endl;
+    return 0;
+}
