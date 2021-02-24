@@ -27,3 +27,52 @@
 
 // If the value becomes an integer, print a fraction with the denominator of one (e.g. 5 / 1 to represent 5). This implies zero should be printed as 0 / 1 (without quotes).
 
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    map<pair<int,int>,int> mp;
+    for (int i = 0; i < n; i++) {
+        int a,b,c;
+        cin >> a >> b >> c;
+        mp[{a,b}] += c;
+    }
+    int ans = 0;
+    for (auto e: mp) {
+        int x = e.first.first;
+        int y = e.first.second;
+        int c = e.second;
+        // upper right
+        int tmp = c;
+        if (mp.count({x,y+1})) tmp += mp[{x,y+1}];
+        if (mp.count({x+1,y})) tmp += mp[{x+1,y}];
+        if (mp.count({x+1,y+1})) tmp += mp[{x+1,y+1}];
+        ans = max(ans, tmp);
+
+        // upper left
+        tmp = c;
+        if (mp.count({x,y+1})) tmp += mp[{x,y+1}];
+        if (mp.count({x-1,y})) tmp += mp[{x-1,y}];
+        if (mp.count({x-1,y+1})) tmp += mp[{x-1,y+1}];
+        ans = max(ans, tmp);
+
+        // lower right
+        tmp = c;
+        if (mp.count({x,y-1})) tmp += mp[{x,y-1}];
+        if (mp.count({x+1,y})) tmp += mp[{x+1,y}];
+        if (mp.count({x+1,y-1})) tmp += mp[{x+1,y-1}];
+        ans = max(ans, tmp);
+
+        // upper right
+        tmp = c;
+        if (mp.count({x,y-1})) tmp += mp[{x,y-1}];
+        if (mp.count({x-1,y})) tmp += mp[{x-1,y}];
+        if (mp.count({x-1,y-1})) tmp += mp[{x-1,y-1}];
+        ans = max(ans, tmp);
+
+        ans = max(ans, c);
+    }
+    cout << ans << " / 1" << endl;
+}

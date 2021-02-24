@@ -36,3 +36,80 @@
 // Output
 // それぞれ1 組の赤いオブジェとそれに対応する青いオブジェの位置の仮定において，空間中に障害物と赤いオブジェと青いオブジェ1 対とのみがあるものとして，弾にこめるべき魔力の量を1 行に出力せよ．弾は赤いオブジェの位置から青いオブジェの位置まで一直線に飛ぶものとし，弾の大きさは非常に小さいので点として扱う．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define EPS (1e-10)
+class Point3D {
+public:
+  double x,y,z;
+  Point3D(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
+
+  Point3D operator + (Point3D p){return Point3D(x+p.x,y+p.y,z+p.z);}
+  Point3D operator - (Point3D p){return Point3D(x-p.x,y-p.y,z-p.z);}
+  Point3D operator * (double k){return Point3D(x*k,y*k,z*k);}
+  Point3D operator / (double k){return Point3D(x/k,y/k,z/k);}
+
+  double norm(){return x*x+y*y+z*z;}
+  double abs(){return sqrt(norm());}
+
+  bool operator <(const Point3D &p) const {
+      return x!=p.x ? x<p.x : (y!=p.y ? y<p.y : z<p.z);
+  }
+  bool operator == (const Point3D &p) const{
+    return fabs(x-p.x) < EPS && fabs(y-p.y) < EPS && fabs(z-p.z) < EPS;
+  }
+  void out() {
+    cout << x << " " << y << " " << z << endl;
+  }
+};
+
+class Circle3D {
+public:
+  Point3D o;
+  double r;
+  Circle3D(Point3D o = Point3D(0,0,0), double r = 0):o(o), r(r) {}
+  bool operator == (const Circle3D &p) const {return o == p.o && r == p.r;}
+};
+
+double dot (Point3D a, Point3D b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+Point3D cross (Point3D a, Point3D b) {
+  return Point3D(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x);
+}
+
+bool intersect(Circle3D c, Point3D a, Point3D b) {
+    if ((a-c.o).abs() < c.r + EPS || (b-c.o).abs() < c.r + EPS) return 1;
+    b = b - a;
+    Point3D o = c.o - a;
+    Point3D h = b * dot(o,b) / b.norm();
+    // b.out();o.out();h.out();
+    // cout << (h-o).abs() << endl;
+    if ((h-o).abs() > c.r + EPS) return 0;
+
+    Point3D eb = b / b.abs();
+    Point3D eh = h / h.abs();
+    if ((eb - eh).abs() > EPS) return 0;
+
+    return b.abs() + EPS > h.abs();
+}
+
+int n,q;
+Circle3D p[55];
+long long l[55];
+Point3D s,t;
+
+int main() {
+    cin >> n >> q;
+    for (int i = 0; i < n; i++) cin >> p[i].o.x >> p[i].o.y >> p[i].o.z >> p[i].r >> l[i];
+    for (int i = 0; i < q; i++) {
+        cin >> s.x >> s.y >> s.z >> t.x >> t.y >> t.z;
+        long long ans = 0;
+        for (int j = 0; j < n; j++) {
+            if (intersect(p[j],s,t)) ans += l[j];
+        }
+        cout << ans << endl;
+    }
+}

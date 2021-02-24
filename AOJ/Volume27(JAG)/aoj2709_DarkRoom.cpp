@@ -34,3 +34,46 @@
 // Output Format
 // 答えを一行に出力せよ。
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,m,k;
+int d[20];
+int v[110][110];
+int dp[(1<<17)];
+int inf = 1e9 + 7;
+map<int,int> mp;
+int main() {
+    cin >> n >> m >> k;
+    for (int i = 0; i < m; i++) {
+        cin >> d[i];
+        d[i]--;
+        mp[d[i]] = i;
+    }
+    for (int i = 0; i < n; i++) for (int j = 0; j < k; j++) {
+        cin >> v[i][j];
+        v[i][j]--;
+    }
+    for (int i = 0; i < (1<<16); i++) dp[i] = inf;
+    queue<int> q;
+    dp[(1<<m)-1] = 0;
+    q.push((1<<m)-1);
+    while (!q.empty()) {
+        int s = q.front();
+        q.pop();
+        for (int i = 0; i < k; i++) {
+            int ss = 0;
+            for (int j = 0; j < m; j++) {
+                int to = v[d[j]][i];
+                if ((s>>j)&1 && mp.count(to)) {
+                    ss |= (1<<mp[to]);
+                }
+            }
+            if (dp[ss] > dp[s] + 1) {
+                dp[ss] = dp[s] + 1;
+                q.push(ss);
+            }
+        }
+    }
+
+    cout << dp[0] << endl;
+}

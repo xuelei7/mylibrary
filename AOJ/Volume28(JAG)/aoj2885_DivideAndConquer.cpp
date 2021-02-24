@@ -22,3 +22,58 @@
 // Output
 // 各データセットについて，太郎さんが統治する街の総数として考えられる数が K 通りあるとき，まず 1 行目に K を出力し，その後，あり得る総数を 1 行に 1 つずつ昇順で出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,m;
+
+vector<int> G[1010];
+set<int> st[2];
+bool ok;
+void dfs(int k,bool g) {
+    st[g].insert(k);
+    for (int i = 0; i < G[k].size(); i++) {
+        if (st[!g].count(G[k][i])) continue;
+        if (st[g].count(G[k][i])) {
+            ok = 0;
+            return;
+        }
+        dfs(G[k][i],!g);
+        if (!ok) return;
+    }
+}
+
+int main() {
+    while (cin >> n >> m) {
+        if (n == 0 && m == 0) break;
+        ok = 1;
+        for (int i = 0; i <= n; i++) G[i].clear();
+        st[0].clear();
+        st[1].clear();
+        for (int i = 0; i < m; i++) {
+            int a,b;
+            cin >> a >> b;
+            a--;
+            b--;
+            G[a].push_back(b);
+            G[b].push_back(a);
+        }
+        dfs(0,0);
+        if (!ok) {
+            cout << 0 << endl;
+            continue;
+        }
+        int sz1 = st[0].size(), sz2 = st[1].size();
+        if (sz1 > sz2) swap(sz1,sz2);
+        set<int> ret;
+        if (sz1 % 2 == 0) {
+            ret.insert(sz1/2);
+        }
+        if (sz2 % 2 == 0) {
+            ret.insert(sz2/2);
+        }
+        cout << ret.size() << endl;
+        for (auto p: ret) {
+            cout << p << endl;
+        }
+    }
+}
