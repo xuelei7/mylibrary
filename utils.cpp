@@ -295,6 +295,99 @@ int takeStones(int n, int m, int k) {
     return a[0]+1;
 }
 
+class Dice{
+private:
+  int ue, st, me, usr, hdr, mg;
+public:
+  Dice (int a, int b, int c, int d, int e, int f) {
+    ue = a;
+    me = b;
+    mg = c;
+    hdr = d;
+    usr = e;
+    st = f;
+  }
+  void Roll (char c);
+  bool operator==(const Dice& b) const {
+    return (ue == b.ue && st == b.st && me == b.me && usr == b.usr && hdr == b.hdr && mg == b.mg);
+  }
+};
+
+  void Dice::Roll (char c) {
+    int t1 = ue;
+    int t2 = me;
+    int t3 = mg;
+    int t4 = hdr;
+    int t5 = usr;
+    int t6 = st;
+    if (c == 'S') {
+      ue = t5;
+      st = t2;
+      me = t1;
+      usr = t6;
+      hdr = t4;
+      mg = t3;
+    } else if (c == 'N') {
+      ue = t2;
+      st = t5;
+      me = t6;
+      usr = t1;
+      hdr = t4;
+      mg = t3;
+    } else if (c == 'W') {
+      ue = t3;
+      st = t4;
+      me = t2;
+      usr = t5;
+      hdr = t1;
+      mg = t6;
+    } else if (c == 'E') {
+      ue = t4;
+      st = t3;
+      me = t2;
+      usr = t5;
+      hdr = t6;
+      mg = t1;
+    } else {
+      ue = t1;
+      st = t6;
+      me = t3;
+      usr = t4;
+      hdr = t2;
+      mg = t5;
+    }
+  }
+
+bool IsSame(Dice d1, Dice d2) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      if (d1 == d2) {
+        return 1;
+      }
+      d2.Roll('R');
+    }
+    d2.Roll('W');
+  }
+  d2.Roll('N');
+    for (int j = 0; j < 4; j++) {
+      if (d1 == d2) {
+        return 1;
+      }
+      d2.Roll('R');
+    }
+  d2.Roll('N');
+  d2.Roll('N');
+    for (int j = 0; j < 4; j++) {
+      if (d1 == d2) {
+        return 1;
+      }
+      d2.Roll('R');
+    }
+  return 0;
+}
+
+
+
 // menu
 // int digitnum(int k)
 // int Zeller(int year, int month, int day) (calculate the date)
@@ -309,3 +402,4 @@ int takeStones(int n, int m, int k) {
 // void WarshallFloyd
 // void dijkstra
 // void takeStones(n個の石がある円，始点m，間隔kでとり，残った石の番号を返す)
+// class Dice (サイコロを扱うクラス)
