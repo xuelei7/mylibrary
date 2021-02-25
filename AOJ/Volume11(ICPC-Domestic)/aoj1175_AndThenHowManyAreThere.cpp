@@ -28,3 +28,74 @@
 // Output
 // 各データセットについて，取り除ける円盤の最大枚数をそれぞれ1行に出力しなさい．
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll n;
+ll x[30],y[30],r[30],c[30];
+set<ll> dp;
+bool on[30][30];
+int mx;
+// 1: the plate is gone
+void go(ll s, int cnt) {
+    // cout << "s " << bitset<8>(s) << " " << cnt << endl;
+    mx = max(mx,cnt);
+    if (dp.count(s)) return;
+    dp.insert(s);
+    for (int i = 0; i < n; i++) {
+        if ((s>>i)&1) continue;
+        for (int j = i + 1; j < n; j++) {
+            if ((s>>j)&1) continue;
+            // insure that they are the same color
+            if (c[i] != c[j]) continue;
+            // now, both plates are there
+
+            // insure that there is none plate above i and j
+            bool ok = 1;
+            if (on[i][j]) continue;
+            for (int k = 0; k < n; k++) {
+                if ((s>>k)&1) continue;
+                if (k < i && on[k][i]) {
+                    ok = 0;
+                    break;
+                }
+                if (k < j && on[k][j]) {
+                    ok = 0; 
+                    break;
+                }
+            }
+            if (!ok) continue;
+            
+            go(s|(1LL<<i)|(1LL<<j),cnt+2);
+        }
+    }
+    return;
+}
+
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        for (int i = 0; i < n; i++) cin >> x[i] >> y[i] >> r[i] >> c[i];
+        dp.clear();
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                ll dx = abs(x[i] - x[j]);
+                ll dy = abs(y[i] - y[j]);
+                ll dd = dx * dx + dy * dy;
+                ll dr = (r[i] + r[j]) * (r[i] + r[j]);
+                on[i][j] = (dd < dr);
+            }
+        }
+        // for (int i = 0; i < n; i++) {
+        //     for (int j = 0; j < n; j++) {
+        //         cout << on[i][j] << " ";
+        //     }
+        //     cout << endl;
+        // }
+        mx = 0;
+        go(0,0);
+        cout << mx << endl;
+    }
+
+    return 0;
+}

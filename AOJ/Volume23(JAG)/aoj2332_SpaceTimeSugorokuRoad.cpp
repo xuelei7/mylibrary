@@ -26,3 +26,73 @@
 // Output
 // ゴールするまでにサイコロを振る回数の最小値を出力せよ。
 
+#include <bits/stdc++.h>
+using namespace std;
+int q[100110],p[100110];
+int dp[100110];
+bool used[100110];
+int go(int k) {
+    if (used[k]) return p[k];
+    used[k] = 1;
+    if (q[k] == 0) {
+        return p[k] = k;
+    }
+    return p[k] = go(k+q[k]);
+}
+typedef pair<int,int> P;
+struct edge{int to, cost;};
+const int INF = 1e9;
+int V;
+const int MAX_V = 1e5;
+vector<edge> G[MAX_V];
+int d[MAX_V];
+
+void dijkstra(int s, int *d, vector<edge> *G, int V) {
+  priority_queue<P, vector<P>, greater<P>> que;
+  fill(d, d + V, INF);
+  d[s] = 0;
+  que.push(P(0, s));
+
+  while (!que.empty()) {
+    P p = que.top();
+    que.pop();
+    int v = p.second;
+    if (d[v] < p.first) continue;
+    for (int i = 0; i < G[v].size(); i++) {
+      edge e = G[v][i];
+      if (d[e.to] > d[v] + e.cost) {
+        d[e.to] = d[v] + e.cost;
+        que.push(P(d[e.to], e.to));
+      }
+    }
+  }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) cin >> q[i];
+    for (int i = 0; i < n; i++) p[i] = -2;
+    for (int i = 0; i < n; i++) go(i);
+    // for (int i = 0; i < n; i++) cout << setw(5) << q[i] << " ";
+    // cout << endl; 
+    // for (int i = 0; i < n; i++) cout << setw(5) << p[i] << " ";
+    // cout << endl; 
+
+    for (int i = 0; i < n; i++) {
+        if (p[i] == -2) continue;
+        for (int j = 1; j <= 6; j++) {
+            if (p[i+j]==-2) continue;
+            G[i].push_back({p[i+j],1});
+        }
+    }
+
+    dijkstra(0,dp,G,n);
+
+    // for (int i = 0; i < n; i++) {
+    //     cout << setw(5) << dp[i] << " ";
+    // }
+    // cout << endl;
+    cout << dp[n-1] << endl;
+    return 0;
+}

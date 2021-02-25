@@ -19,3 +19,46 @@
 // Output
 // 最短所要時間 (秒) を 1 行に出力せよ．10-6 以下の絶対誤差が許容される．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n,k,t,l;
+    double u,v;
+    double time = 0;
+    set<int> st;
+    cin >> n >> k >> t >> u >> v >> l;
+    for (int i = 0; i < n; i++) {
+        int p;
+        cin >> p;
+        st.insert(p);
+    }
+    // from i-1 to i
+    int carrot = 0;
+    int leftdist = 0;
+    double speed = u;
+    for (int i = 1; i <= l; i++) {
+        time += 1.0 / speed;
+        leftdist--;
+        leftdist = max(leftdist,0);
+        if (leftdist == 0) {
+            if (carrot != 0) {
+                carrot--;
+                leftdist = t * v;
+                speed = v;
+            } else speed = u;
+        }
+        if (st.count(i)) {
+            carrot++;
+            if (carrot > k || leftdist == 0) {
+                carrot--;
+                leftdist = t * v;
+                speed = v;
+            }
+        }
+        // cout << i << " " << carrot << " " << leftdist << " " << time << endl;
+    }
+
+    cout << fixed << setprecision(20) << time << endl;
+    return 0;
+}

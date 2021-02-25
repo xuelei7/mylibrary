@@ -29,3 +29,55 @@
 // Output
 // 入力の論理式の値を 2 とするような (P,Q,R) の三つ組の個数を十進数で出力せよ． 出力は論理式ひとつごとに 1 行とし， 各行は個数を表す十進数以外の文字を含んではならない．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+string s;
+string ss;
+int p;
+int f() {
+    if (ss[p] == '0' || ss[p] == '1' || ss[p] == '2') {
+        return ss[p++] - '0';
+    }
+    if (ss[p] == '-') {
+        p++;
+        return 2 - f();
+    }
+    // (a?b)
+    p++;
+    int a = f();
+    bool flg = (ss[p] == '*');
+    p++;
+    int b = f();
+    p++;
+    return (flg?min(a,b):max(a,b));
+}
+
+bool ok(int pp, int q, int r) {
+    ss = s;
+    for (auto& c: ss) {
+        if (c == 'P') c = (char)(pp + '0');
+        else if (c == 'Q') c = (char)(q + '0');
+        else if (c == 'R') c = (char)(r + '0');
+    }
+    p = 0;
+    bool ret = (f()==2);
+    // if (ret) cout << pp << " " << q << " " << r << " " << ss << endl;
+    return ret;
+}
+
+int main() {
+    while (cin >> s) {
+        if (s == ".") break;
+        int ans = 0;
+        for (int p = 0; p <= 2; p++) {
+            for (int q= 0; q <= 2; q++) {
+                for (int r = 0; r <= 2; r++) {
+                    if (ok(p,q,r)) ans++;
+                }
+            }
+        }
+        cout << ans << endl;
+    }
+    return 0;
+}

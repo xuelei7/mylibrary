@@ -19,3 +19,45 @@
 // Output
 // それぞれのデータセットに対して，導水管を敷設するコストの最小値を 1 行に出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int n,m,s,g1,g2;
+ll dp[110][110];
+void WarshallFloyd() {
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);
+            }
+        }
+    }
+}
+int main() {
+    while (cin >> n >> m >> s >> g1 >> g2) {
+        if (n == 0) break;
+        s--;
+        g1--;
+        g2--;
+        int inf = 1e9;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) dp[i][j] = 0;
+                else dp[i][j] = inf;
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            ll f,t,c;
+            cin >> f >> t >> c;
+            f--; t--;
+            dp[f][t] = c;
+        }
+        WarshallFloyd();
+        ll mi = 1e18;
+        for (int k = 0; k < n; k++) {
+            mi = min(mi, dp[s][k] + dp[k][g1] + dp[k][g2]);
+        }
+        cout << mi << endl;
+    }
+    return 0;
+}

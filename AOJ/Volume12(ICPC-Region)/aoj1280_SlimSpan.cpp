@@ -33,3 +33,57 @@
 // Output
 // For each dataset, if the graph has spanning trees, the smallest slimness among them should be printed. Otherwise, -1 should be printed. An output should not contain extra characters.
 
+#include <bits/stdc++.h>
+using namespace std;
+int d[110][110];
+bool used[110];
+int n,m;
+void dfs(int k, int f, int t) {
+    used[k] = 1;
+    for (int i = 1; i <= n; i++) {
+        if (used[i]) continue;
+        if (d[k][i] < f || d[k][i] > t) continue;
+        dfs(i,f,t);
+    }
+}
+
+bool ok(int f, int t) {
+    memset(used,0,sizeof(used));
+    dfs(1,f,t);
+    for (int i = 1; i <= n; i++) if (!used[i]) return 0;
+    // cout << "ok " << f << " " << t << endl;
+    return 1;
+}
+
+bool ok(int k) {
+    for (int i = 1; i <= 10000; i++) {
+        if (ok(i,i+k)) return 1;
+    }
+    return 0;
+}
+
+int main() {
+    while (cin >> n >> m) {
+        if (n == 0 && m == 0) break;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                d[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            int a,b,c;
+            cin >> a >> b >> c;
+            d[a][b] = c;
+            d[b][a] = c;
+        }
+        int l = 0, r = 100000;
+        while (l < r) {
+            int mid = (l + r) / 2;
+            if (ok(mid)) r = mid;
+            else l = mid + 1;
+        }
+        if (r == 100000) cout << -1 << endl;
+        else cout << r << endl;
+    }
+    return 0;
+}

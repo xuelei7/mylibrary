@@ -21,3 +21,40 @@
 // Output
 // Output PP in one line. The output should not contain an error greater than 10−5.
 
+#include <bits/stdc++.h>
+using namespace std;
+double eps = 1e-10;
+int k;
+double r,l,p,e,t;
+double dfs(double a, double b, int kk) {
+    if (kk == k) {
+        double h = (a + b) / 2.0;
+        // cout << "k " << a << " " << b << " " << h << " " << (abs(h - t) <= e) << endl;
+        return abs(h - t) <= e;
+    }
+    if (a > t - e - eps && b < t + e + eps) {
+        // cout << "a " << a << " " << b << " " << 1 << endl;
+        return 1.0;
+    }
+    if (b < t - e - eps || a > t + e + eps) {
+        // cout << "b " << a << " " << b << " " << 0 << endl;
+        return 0;
+    }
+    double h = (a + b) / 2.0;
+    // cout << a << " " << b << " " << h << endl;
+    if (h >= t) {
+        double ret = (1.0 - p) * dfs(a,h,kk+1) + p * dfs(h,b,kk+1);
+        // cout << "c " << a << " " << b << " " << ret << endl;
+        return ret;
+    } else {
+        double ret = (1.0 - p) * dfs(h,b,kk+1) + p * dfs(a,h,kk+1);
+        // cout << "d " << a << " " << b << " " << ret << endl;
+        return ret;
+    }
+}
+
+int main() {
+    cin >> k >> l >> r >> p >> e >> t;
+    cout << fixed << setprecision(20) << dfs(l,r,0) << endl;
+    return 0;
+}

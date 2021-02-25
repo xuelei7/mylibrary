@@ -46,3 +46,78 @@
 // Output
 // 各データセットについて，左上角のパネルの5回の色変更により，目標色となる左上角のパネルの最大の大きさが何単位にあたるかを1行に出力せよ．それ以外の余計な文字を含んではいけない．
 
+#include <bits/stdc++.h>
+using namespace std;
+int maze[10][10];
+int tmp[10][10];
+bool used[10][10];
+vector<int> v;
+int ans;
+int dh[4] = {0,0,1,-1};
+int dw[4] = {1,-1,0,0};
+int h,w,c;
+int countarea(int th, int tw) {
+    used[th][tw] = 1;
+    int ans = 0;
+    if (tmp[th][tw] == c) ans = 1;
+    else return 0;
+    for (int i = 0; i < 4; i++ ) {
+        int tth = th + dh[i];
+        int ttw = tw + dw[i];
+        if (tth < 0 || tth >= h || ttw < 0 || ttw >= w) continue;
+        if (used[tth][ttw] || tmp[tth][ttw] != c) continue;
+        ans += countarea(tth,ttw);
+    }
+    return ans;
+}
+void change(int f, int t, int th, int tw) {
+    if (f == t) return;
+    tmp[th][tw] = t;
+    for (int i = 0; i < 4; i++) {
+        int tth = th + dh[i];
+        int ttw = tw + dw[i];
+        if (tth < 0 || tth >= h || ttw < 0 || ttw >= w) continue;
+        if (tmp[tth][ttw] != f) continue;
+        change(f,t,tth,ttw);
+    }
+}
+void getarea() {
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            tmp[i][j] = maze[i][j];
+        }
+    }
+    for (int i = 0; i < 5; i++) {
+        change(tmp[0][0], v[i], 0, 0);
+    }
+    for (int i = 0; i < h; i++) memset(used[i],0,sizeof(used[i]));
+    ans = max(ans, countarea(0,0));
+}
+
+void getarray(int k) {
+    if (k == 5) {
+        getarea();
+        return;
+    }
+    for (int i = 1; i <= 6; i++) {
+        v.push_back(i);
+        getarray(k+1);
+        v.pop_back();
+    }
+}
+
+int main() {
+    while (cin >> h >> w >> c) {
+        if (h == 0 && w == 0 && c == 0) break;
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                cin >> maze[i][j];
+            }
+        }
+        ans = 0;
+        v.clear();
+        getarray(0);        
+        cout << ans << endl;
+    }
+    return 0;
+}

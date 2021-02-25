@@ -31,3 +31,104 @@
 // Output
 // それぞれのデータセットに対して，最低限設けなければならない出入口の個数を 1 行に出力しなさい．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define EPS (1e-10)
+class Point{
+public:
+  double x,y;
+  Point(double x = 0, double y = 0):x(x), y(y) {}
+  
+  Point operator + (Point p){return Point(x+p.x,y+p.y);}
+  Point operator - (Point p){return Point(x-p.x,y-p.y);}
+  Point operator * (double k){return Point(x*k,y*k);}
+  Point operator / (double k){return Point(x/k,y/k);}
+
+  double norm(){return x*x+y*y;}
+  double abs(){return sqrt(norm());}
+
+  bool operator <(const Point &p) const {
+      return x!=p.x ? x<p.x : y<p.y;
+  }
+  bool operator == (const Point &p) const{
+    return fabs(x-p.x) < EPS && fabs(y-p.y) < EPS;
+  }
+};
+typedef Point Vector;
+typedef vector<Point> Polygon;
+double dot(Vector a,Vector b){
+  return a.x * b.x + a.y * b.y;
+}
+double cross(Vector a,Vector b){
+  return a.x * b.y - a.y * b.x;
+}
+// judge the relation between vector(p0, p1) and vector(p0, p2)
+static const int COUNTER_CLOCKWISE = 1;
+static const int CLOCKWISE = -1;
+static const int ONLINE_BACK = 2;
+static const int ONLINE_FRONT = -2;
+static const int ON_SEGMENT = 0;
+int ccw(Point p0,Point p1,Point p2){
+  Vector a = p1-p0;
+  Vector b = p2-p0;
+  if(cross(a,b) > EPS) return COUNTER_CLOCKWISE;
+  if(cross(a,b) < -EPS) return CLOCKWISE;
+  if(dot(a,b) < -EPS) return ONLINE_BACK;
+  if(a.norm()<b.norm()) return ONLINE_FRONT;
+  return ON_SEGMENT;
+}
+bool intersect(Point p1,Point p2,Point p3,Point p4){
+  return (ccw(p1,p2,p3) * ccw(p1,p2,p4) <= 0 &&
+	  ccw(p3,p4,p1) * ccw(p3,p4,p2) <= 0 );
+}
+Point getCrossPoint(Point a, Point b, Point c, Point d) {
+  Vector base = d - c;
+  double d1 = abs(cross(base,a-c));
+  double d2 = abs(cross(base,b-c));
+  double t = d1 / (d1+d2);
+  return a + (b-a) * t;
+}
+
+Point s,t;
+Point p[2][110];
+bool o[110],l[110];
+void solve() {
+    cin >> s.x >> s.y >> t.x >> t.y;
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) cin >> p[0][i].x >> p[0][i].y >> p[1][i].x >> p[1][i].y >> o[i] >> l[i];
+    vector<pair<double,bool>> v;
+    for (int i = 0; i < n; i++) {
+        bool f = intersect(s,t,p[0][i], p[1][i]);
+        if (!f) continue;
+        Point e = getCrossPoint(s,t,p[0][i], p[1][i]);
+        bool status;
+        if (o[i] == 1) status = l[i];
+        else status = !l[i];
+        v.push_back({(e-s).abs()/(t-s).abs(),status});
+    }
+    sort(v.begin(),v.end());
+    if (v.size() == 0) {
+      cout << 0 << endl;
+      return;
+    }
+    int ans = 0;
+    bool status = v[0].second;
+    for (int i = 1; i < v.size(); i++) {
+      if (v[i].second != status) {
+        ans++;
+        status = !status;
+      }
+    }
+    cout << ans << endl;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}

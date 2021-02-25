@@ -45,3 +45,91 @@
 // Output
 // 各データセットごとに，6個の整数を1個の空白文字で区切って出力せよ．それぞれの整数は1〜6それぞれの目が上方向から何個見えるかを表す．出力にはこれら以外の文字があってはならない．
 
+#include <bits/stdc++.h>
+using namespace std;
+int cnt[7];
+int height[500][500];
+int maze[500][500];
+// t, f
+int d1[7][7] = {
+    {0,0,0,0,0,0,0},
+    {0,0,2,1,3,0,0},
+    {0,2,0,3,1,0,0},
+    {0,2,1,0,0,3,0},
+    {0,2,3,0,0,1,0},
+    {0,2,0,1,3,0,0},
+    {0,0,2,3,1,0,0},
+};
+int d2[7][7] = {
+    {0,0,0,0,0,0,0},
+    {0,0,3,2,0,1,0},
+    {0,1,0,2,0,0,3},
+    {0,3,2,0,0,0,1},
+    {0,1,2,0,0,0,3},
+    {0,3,0,2,0,0,1},
+    {0,0,1,2,0,3,0}
+};
+int nxt[2][7] = {
+    {0,5,6,6,6,6,5},
+    {0,4,4,5,5,4,4},
+};
+int dh[4] = {1,0,-1,0};
+int dw[4] = {0,1,0,-1};
+void change(int& t, int& f, int d, int mode) {
+    if (d == 0) {
+        swap(t,f);
+        t = 7 - t;
+    } else if (d == 1) {
+        t = 7 - nxt[mode][t];
+    } else if (d == 2) {
+        swap(t,f);
+        f = 7 - f;
+    } else if (d == 3) {
+        t = 7 - nxt[mode][t];
+    }
+}
+
+void putdice(int h, int w, int t) {
+    cnt[maze[h][w]]--;
+    cnt[t]++;
+    maze[h][w] = t;
+    height[h][w]++;
+}
+void go (int t, int f, int h, int w) {
+    int direction1 = d1[t][f];
+    int direction2 = d2[t][f];
+ 
+    if (height[h][w] - height[h + dh[direction1]][w + dw[direction1]] >= 1) {
+        change(t,f,direction1,0);
+        go(t,f,h+dh[direction1],w+dw[direction1]);
+    } else if (height[h][w] - height[h + dh[direction2]][w + dw[direction2]] >= 1) {
+        change(t,f,direction2,1);
+        go(t,f,h+dh[direction2],w+dw[direction2]);
+    } else {
+        putdice(h,w,t);
+    }
+}
+
+int main() {
+    int n;
+    while (cin >> n) {
+        if (n == 0) break;
+        for (int i = 0; i < 7; i++) cnt[i] = 0;
+        for (int i = 0; i < 500; i++) {
+            for (int j = 0; j < 500; j++) {
+                height[i][j] = 0;
+                maze[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            int t,f;
+            cin >> t >> f;
+            go(t,f,250,250);
+        }
+        for (int i = 1; i <= 6; i++) {
+            cout << cnt[i] << " \n"[i==6];
+        }
+    }
+
+    return 0;
+}
