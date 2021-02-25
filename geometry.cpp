@@ -157,6 +157,18 @@ Point projection(Point x1, Point x2, Point q) {
     double x = dot(q - x1, x1 - x2) / (x1 - x2).norm();
     return x1 + (x1 - x2) * x;
 }
+bool intersect(Point p1,Point p2,Point p3,Point p4){
+  return (ccw(p1,p2,p3) * ccw(p1,p2,p4) <= 0 &&
+	  ccw(p3,p4,p1) * ccw(p3,p4,p2) <= 0 );
+}
+Point getCrossPoint(Point a, Point b, Point c, Point d) {
+  Vector base = d - c;
+  double d1 = abs(cross(base,a-c));
+  double d2 = abs(cross(base,b-c));
+  double t = d1 / (d1+d2);
+  return a + (b-a) * t;
+}
+
 // from
 // aoj0023, aoj0090, aoj0153
 class Circle {
@@ -322,6 +334,8 @@ bool intersect(Circle3D c, Point3D a, Point3D b) {
 // -- area(Polygon)
 // -- symmetric_point 対称点
 // -- projection 垂足
+// -- intersect (Line & Line)
+// -- getCrossPoint (Line & Line)
 // class Circle (need Point)
 // -- intersection (Circle)
 // -- intersect_points (Circle)
