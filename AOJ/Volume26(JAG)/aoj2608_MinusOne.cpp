@@ -24,3 +24,62 @@
 // Output
 // 与えられたグラフをGとしたとき、組(G,s,t)の「うつくしさ」を1行で出力せよ。
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<ll,ll> P;
+struct edge{ll to, cost;};
+const ll INF = 1e18;
+ll V;
+const ll MAX_V = 1e5+10;
+
+void dijkstra(ll s, ll *d, vector<edge> *G, ll V, ll *cnt) {
+  priority_queue<P, vector<P>, greater<P>> que;
+  fill(d, d + V, INF);
+  d[s] = 0;
+  que.push(P(0, s));
+  while (!que.empty()) {
+    P p = que.top();
+    que.pop();
+    ll v = p.second;
+    if (d[v] < p.first) continue;
+    for (int i = 0; i < G[v].size(); i++) {
+      edge e = G[v][i];
+      if (d[e.to] > d[v] + e.cost) {
+        d[e.to] = d[v] + e.cost;
+        que.push(P(d[e.to], e.to));
+      }
+    }
+  }
+  for (int i = 0; i < V; i++) {
+      if (d[i] != INF)
+          cnt[d[i]]++;
+  }
+}
+
+vector<edge> G[MAX_V];
+ll n,m,s,t;
+ll d[2][MAX_V];
+ll cnt[2][MAX_V];
+
+int main() {
+    cin >> n >> m >> s >> t;
+    s--;t--;
+    for (int i = 0; i < m; i++) {
+        ll a,b;
+        cin >> a >> b;
+        a--;b--;
+        G[a].push_back({b,1});
+        G[b].push_back({a,1});
+    }
+    dijkstra(s,d[0],G,n,cnt[0]);
+    dijkstra(t,d[1],G,n,cnt[1]);
+    ll shortest = d[0][t] - 2;
+    ll ans = 0;
+    for (int i = 0; i <= shortest; i++) {
+        ll j = shortest - i;
+        ans += cnt[0][i] * cnt[1][j];
+    }
+    cout << ans << endl;
+    return 0;
+}

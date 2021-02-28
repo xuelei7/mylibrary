@@ -16,3 +16,98 @@
 // Output
 // うさぎが勝つ場合には”USAGI”を, ねこが勝つ場合には”NEKO”を, 引き分けならば”DRAW”, それぞれ 一行に出力せよ.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+int n,v,u,m;
+int maze[2][550][550];
+bool used[2][550][550];
+int cntl[2][100010];
+int cnt[2][100010];
+int a[100010];
+pair<int,int> pos[2][1000010];
+void in(int k) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> maze[k][i][j];
+            pos[k][maze[k][i][j]] = {i,j};
+        }
+    }
+}
+int dh[4] = {0,1,1,1};
+int dw[4] = {1,0,1,-1};
+void count(int k, int i) {
+    if (i > 0) cntl[k][i] = max(cntl[k][i], cntl[k][i-1]);
+    auto p = pos[k][a[i]];
+    int h = p.first;
+    int w = p.second;
+    // cout << i << " " << a[i] << " " << h << " " << w << endl;
+    if (h == -1 && w == -1) return;
+    if (n == 1) {
+        cnt[k][i]++;
+        return;
+    }
+    if (used[k][h][w]) return;
+    used[k][h][w] = 1;
+    int base = 0;
+    if (i > 0) base = cntl[k][i-1];
+    int increase = 0;
+    for (int j = 0; j < 4; j++) {
+        int th = h + dh[j];
+        int tw = w + dw[j];
+        int lft = 0;
+        while (th >= 0 && th < n && tw >= 0 && tw < n && used[k][th][tw]) {
+            lft++;
+            th += dh[j];
+            tw += dw[j];
+        }
+        th = h - dh[j];
+        tw = w - dw[j];
+        int rt = 0;
+        while (th >= 0 && th < n && tw >= 0 && tw < n && used[k][th][tw]) {
+            rt++;
+            th -= dh[j];
+            tw -= dw[j];
+        }
+        if (lft + rt + 1 >= n)
+            increase += lft + rt + 1 - n + 1 - (lft >= n? lft - n + 1: 0) - (rt >= n? rt - n + 1: 0);
+        // cout << increase << endl;
+    }
+    // cout << k << " " << i << " " << h << " " << w << " " << cntl[k][i] << endl;
+    cntl[k][i] = max(cntl[k][i], base + increase);
+}
+int main() {
+    cin >> n >> u >> v >> m;
+    for (int i = 0; i <= 1000000; i++) {
+        for (int k = 0; k < 2; k++) {
+            pos[k][i] = {-1,-1};
+        }
+    }
+    in(0); in(1);
+    int ans = -1;
+    for (int i = 0; i < m; i++) cin >> a[i];
+    for (int i = 0; i < m; i++) {
+        count(0,i); count(1,i);
+        bool wina = cntl[0][i] >= u;
+        bool winb = cntl[1][i] >= v;
+        if (n == 1) {
+            wina = cnt[0][i] >= u;
+            winb = cnt[1][i] >= v;
+        }
+        // cout << cntl[0][i] << " " << cntl[1][i] << endl;
+        if (wina && !winb) {
+            cout << "USAGI" << endl;
+            return 0;
+        }
+        if (!wina && winb) {
+            cout << "NEKO" << endl;
+            return 0;
+        }
+        if (wina && winb) {
+            cout << "DRAW" << endl;
+            return 0;
+        }
+    }
+    cout << "DRAW" << endl;
+    return 0;
+}

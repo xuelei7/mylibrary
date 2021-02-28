@@ -41,3 +41,103 @@
 // 得点の最大値を 1 行に出力せよ．
 
 
+#include <bits/stdc++.h>
+using namespace std;
+char maze[510][510];
+int hh[2][26], ww[2][26];
+int dh[4] = {0,0,-1,1};
+int dw[4] = {1,-1,0,0};
+int h,w;
+int ans;
+bool ok (int H, int W, int i) {
+    if (maze[H][W] != '.') return 0;
+    int cnt = 0;
+    for (int k = 0; k < 4; k++) {
+        int th = H + dh[k];
+        int tw = W + dw[k];
+        while (th >= 0 && th < h && tw >= 0 && tw < w && maze[th][tw] == '.') {
+            th += dh[k];
+            tw += dw[k];
+        }
+        if (th >= 0 && th < h && tw >= 0 && tw < w && maze[th][tw] - 'A' == i) cnt++;
+    }
+    return cnt == 2;
+}
+void erase(int i) {
+    maze[hh[0][i]][ww[0][i]] = maze[hh[1][i]][ww[1][i]] = '.';
+    hh[0][i] = hh[1][i] = ww[0][i] = ww[1][i] = -1;
+    ans += 2;
+}
+int main() {
+    cin >> h >> w;
+    for (int i = 0; i < h; i++) cin >> maze[i];
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 26; j++) {
+            hh[i][j] = ww[i][j] = -1;
+        }
+    }
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            if (maze[i][j] != '.') {
+                for (int k = 0; k < 2; k++) {
+                    if (hh[k][maze[i][j] - 'A'] != -1) continue;
+                    hh[k][maze[i][j] - 'A'] = i;
+                    ww[k][maze[i][j] - 'A'] = j;
+                    break;
+                }
+            }
+        }
+    }
+    for (int count = 0; count < 26; count++) {
+        for (int i = 0; i < 26; i++) {
+            if (hh[0][i] == -1) continue;
+
+            // same col
+            if (ww[0][i] == ww[1][i]) {
+                bool flg = 1;
+                int f = hh[0][i];
+                int t = hh[1][i];
+                if (f > t) swap(f,t);
+                if (t - f <= 1) flg = 0;
+                for (int j = f + 1; j < t; j++) {
+                    if (maze[j][ww[0][i]] != '.')
+                        flg = 0;
+                }
+                if (flg) erase(i);
+                continue;
+            }
+            
+            // same row
+            if (hh[0][i] == hh[1][i]) {
+                bool flg = 1;
+                int f = ww[0][i];
+                int t = ww[1][i];
+                if (f > t) swap(f,t);
+                if (t - f <= 1) flg = 0;
+                for (int j = f + 1; j < t; j++) {
+                    if (maze[hh[0][i]][j] != '.')
+                        flg = 0;
+                }
+                if (flg) erase(i);
+                continue;
+            }
+
+            // different col and row
+            int h1 = hh[0][i];
+            int h2 = hh[1][i];
+            int w1 = ww[0][i];
+            int w2 = ww[1][i];
+            swap(h1,h2);
+            if (ok(h1,w1,i)) {
+                erase(i);
+                continue;
+            }
+            if (ok(h2,w2,i)) {
+                erase(i);
+                continue;
+            }
+        }
+    }
+    cout << ans << endl;
+    return 0;
+}

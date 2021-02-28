@@ -27,3 +27,59 @@
 // Output
 // For each dataset, Print in a line the minimum amount of magic power consumed to defeat all the monsters in the input.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int n,m;
+ll inf = 1e14;
+ll hp[110];
+vector<pair<ll,ll>> v[2];
+ll dp[2][100010];
+int main() {
+    while (cin >> n) {
+        if (n == 0) break;
+        for (int i = 0; i < n; i++) cin >> hp[i];
+        cin >> m;
+        v[0].clear();
+        v[1].clear();
+        for (int i = 0; i < m; i++) {
+            string a,b;
+            ll c,d;
+            cin >> a >> c >> b >> d;
+            bool mode = (b == "All");
+            v[mode].push_back({c,d});
+        }
+
+        for (int i = 0; i < 100010; i++) {
+            for (int j = 0; j < 2; j++) {
+                dp[j][i] = inf;
+            }
+        }
+
+        dp[0][0] = 0;
+        dp[1][0] = 0;
+        
+        for (int mode = 0; mode < 2; mode++) {
+            for (int i = 0; i < 100010; i++) {
+                for (int j = 0; j < v[mode].size(); j++) {
+                    dp[mode][min((ll)i+v[mode][j].second,100000LL)] = min(dp[mode][min((ll)i+v[mode][j].second,100000LL)], dp[mode][i] + v[mode][j].first);
+                    dp[mode][min((ll)i+v[mode][j].second,100000LL)] = min(dp[mode][min((ll)i+v[mode][j].second,100000LL)], dp[mode][i] + v[mode][j].first);
+                }
+            }
+            for (int i = 100000; i >= 0; i--) {
+                dp[mode][i] = min(dp[mode][i], dp[mode][i+1]);
+            }
+        }
+
+        ll ans = inf;
+        for (int i = 0; i <= 100000; i++) {
+            ll mp = dp[1][i];
+            for (int j = 0; j < n; j++) {
+                mp += dp[0][max(0LL,hp[j]-i)];
+            }
+            ans = min(ans, mp);
+        }
+        cout << ans << endl;
+    }
+    return 0;
+}

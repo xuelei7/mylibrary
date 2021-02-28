@@ -229,7 +229,7 @@ void WarshallFloyd() {
 
 //------------------------------
 // from
-// aoj0156, aoj2332
+// aoj0156, aoj2332, aoj2608
 typedef pair<int,int> P;
 struct edge{int to, cost;};
 const int INF = 1e9;

@@ -13,3 +13,23 @@
 // Output
 // Calculate how many ways to play all the stages at once there are. Print the answer modulo 1,000,000,007 in a line.
 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+ll mod = 1e9+7;
+int main() {
+    ll n,t;
+    cin >> n >> t;
+    vector<int> v;
+    v.resize(n);
+    for (int i = 0; i < n; i++) cin >> v[i];
+    sort(v.begin(),v.end());
+    ll ans = 1;
+    for (int i = 0; i < n; i++) {
+        ll at = lower_bound(v.begin(),v.end(),v[i]-t) - v.begin();
+        ans *= i-at+1;
+        ans %= mod;
+    }
+    cout << ans << endl;
+    return 0;
+}

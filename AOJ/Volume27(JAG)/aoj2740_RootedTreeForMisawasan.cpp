@@ -32,3 +32,64 @@
 // Output
 // 2 つの根付きの二分木を合成してできあがる新しい根付きの二分木の情報を 1 行で出力せよ．特に，行末の改行を除く余計な空白文字等を含まないよう注意せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+struct Node{
+    int idl, idr, mid;
+    Node(int idl=-1, int mid=0, int idr=-1):idl(idl),mid(mid),idr(idr){}
+} node[2][1010];
+
+int tree(string& s, const int f, int& p) {
+    int left, mid = 0, right, id;
+    p++;
+    if (s[p] == ')') {
+        left = -1;
+    } else {
+        left = tree(s,f,p);
+    }
+    p+=2;
+    id = p;
+    while (s[p] >= '0' && s[p] <= '9') {
+        mid *= 10;
+        mid += s[p] - '0';
+        p++;
+    }
+    p+=2;
+    if (s[p] == ')') {
+        right = -1;
+    } else {
+        right = tree(s,f,p);
+    }
+    p++;
+    node[f][id].idl = left;
+    node[f][id].idr = right;
+    node[f][id].mid = mid;
+    return id;
+}
+
+string go(int rs, int rt) {
+    string ret = "(";
+    if (node[0][rs].idl != -1 && node[1][rt].idl != -1) {
+        ret += go(node[0][rs].idl, node[1][rt].idl);
+    }
+    ret += ")[";
+    ret += to_string(node[0][rs].mid + node[1][rt].mid);
+    ret += "](";
+    if (node[0][rs].idr != -1 && node[1][rt].idr != -1) {
+        ret += go(node[0][rs].idr, node[1][rt].idr);
+    }
+    ret += ")";
+    return ret;
+}
+
+int main() {
+    string s,t;
+    int p;
+    cin >> s >> t;
+    p = 0;
+    int rs = tree(s,0,p);
+    p = 0;
+    int rt = tree(t,1,p);
+    cout << go(rs,rt) << endl;
+    return 0;
+}

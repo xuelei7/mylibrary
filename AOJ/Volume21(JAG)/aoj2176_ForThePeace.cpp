@@ -33,3 +33,46 @@
 
 // Note that the judge is performed in a case-sensitive manner. No extra space or character is allowed.
 
+#include <bits/stdc++.h>
+using namespace std;
+int n,d;
+int m[110];
+int c[110][10010];
+int p[110];
+int now[110];
+
+int main() {
+    while (cin >> n >> d) {
+        if (n == 0 || d == 0) break;
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            cin >> m[i];
+            sum += m[i];
+            for (int j = 1; j <= m[i]; j++) {
+                cin >> c[i][j];
+                c[i][j] += c[i][j-1];
+            }
+            p[i] = 0;
+            now[i] = 0;
+        }
+        int mi = 0, mx = 0;
+        bool ok = 1;
+        while (1) {
+            bool update = 0;
+            for (int i = 0; i < n; i++) {
+                if (p[i] < m[i]) {
+                    now[i] = c[i][p[i]+1];
+                    if (*max_element(now,now+n) - *min_element(now,now+n) <= d) {
+                        update = 1;
+                        p[i]++;
+                    } else {
+                        now[i] = c[i][p[i]];
+                    }
+                }
+            }
+            if (!update) break;
+        }
+        for (int i = 0; i < n; i++) if (p[i] != m[i]) ok = 0;
+        cout << (ok? "Yes":"No") << endl;
+    }
+}

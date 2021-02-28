@@ -30,3 +30,75 @@
 
 // No extra spaces or characters are allowed.
 
+#include <bits/stdc++.h>
+using namespace std;
+int h,w;
+long long l;
+char maze[110][110];
+int d[110][110][4];
+int dh[4] = {-1,0,1,0};
+int dw[4] = {0,1,0,-1};
+string dir = "NESW";
+int sh, sw, sd;
+
+void go(int& th, int& tw, int& td, int step) {
+    // cout << "go " << th << " " << tw << " " << dir[td] << " " << step << endl;
+    d[th][tw][td] = step;
+    int tth = th + dh[td];
+    int ttw = tw + dw[td];
+    while (tth < 0 || tth >= h || ttw < 0 || ttw >= w || maze[tth][ttw] == '#') {
+        td++;
+        td %= 4;
+        tth = th + dh[td];
+        ttw = tw + dw[td];
+    }
+    th = tth;
+    tw = ttw;
+    // cout << "to " << th << " " << tw << " " << dir[td] << " " << step << endl;
+}
+
+int main() {
+    while (cin >> h >> w >> l) {
+        if (h == 0 && w == 0 && l == 0) break;
+        for (int i = 0; i < h; i++) cin >> maze[i];
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                for (int k = 0; k < 4; k++) {
+                    d[i][j][k] = -1;
+                    if (maze[i][j] == dir[k]) {
+                        sh = i;
+                        sw = j;
+                        sd = k;
+                        d[i][j][k] = 0;
+                    }
+                }
+            }
+        }
+        int step = 0;
+        int th = sh, tw = sw, td = sd;
+        // cout << th << " " << tw << " " << td << endl;
+        do {
+            go(th,tw,td,step++);
+        } while (d[th][tw][td] == -1);
+        // cout << th << " " << tw << " " << td << endl;
+        step -= d[th][tw][td];
+        if (l > d[th][tw][td]) l = (l - d[th][tw][td]) % step + d[th][tw][td];
+        bool ok = 0;
+        // cout << l << endl;
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                for (int k = 0; k < 4; k++) {
+                    if (d[i][j][k] == l) {
+                        cout << i + 1 << " " << j + 1 << " " << dir[k] << endl;
+                        ok = 1;
+                        break;
+                    }
+                }
+                if (ok) break;
+            }
+            if (ok) break;
+        }
+
+    }
+    return 0;
+}
