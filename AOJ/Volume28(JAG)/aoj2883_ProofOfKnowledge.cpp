@@ -47,8 +47,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define rep(i, a, b) for (int (i) = (int)(a); (i) < (int)(b); (i)++)
-#define rrep(i, a, b) for (int (i) = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
 #define all(v) v.begin(), v.end()
 
 typedef long long ll;
@@ -56,7 +56,7 @@ template <class T> using V = vector<T>;
 template <class T> using VV = vector<V<T>>;
 
 /* 提出時これをコメントアウトする */
-#define LOCAL true
+// #define LOCAL true
 
 #ifdef LOCAL
 #define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
@@ -67,8 +67,62 @@ template <class T> using VV = vector<V<T>>;
 const int MAXN = 0;
 const int MAXM = 0;
 
-auto solve() -> int {
+string generate_enc(int k) {
+    string ret = "";
+    for (int i = 0; i < 4; i++) {
+        ret = (char)(k % 10 + '0') + ret;
+        k /= 10;
+    }
+    return ret;
+}
 
+auto solve(string s, string p) -> int {
+    
+    // put decoded number into passwd
+    // return the end position
+    auto decode = [&](auto self, string enc, int pos, int& passwd) -> int {
+        dbg(pos);
+        // if only character
+        assert(pos<s.size());
+        if (s[pos] >= 'a' && s[pos] <= 'd') {
+            passwd = enc[s[pos] - 'a'] - '0';
+            return pos + 1;
+        }
+
+        // "["
+        pos++;
+
+        // op
+        assert(pos < s.size());
+        char op = s[pos];
+        pos++;
+
+        // numbers
+        int left, right;
+        pos = self(self,enc,pos,left);
+        pos = self(self,enc,pos,right);
+
+        // "]"
+        pos++;
+
+        // calc passwd
+        if (op == '+') passwd = left | right;
+        if (op == '*') passwd = left & right;
+        if (op == '^') passwd = left ^ right;        
+
+        return pos;
+    };
+    
+    // try every number & count good combinations
+    int ret = 0;
+    int correct; decode(decode,p,0,correct);
+    rep(i,0,10000) {
+        int tmp; decode(decode,generate_enc(i),0,tmp);
+        if (tmp == correct) ret++;
+    }
+    
+    cout << correct << " " << ret << endl;
+    return ret;
 }
 
 int main() {
@@ -77,12 +131,14 @@ int main() {
     constexpr char endl = '\n';
     
     // input
-
-
-    // solve
-    auto ans = solve();
-
-    // output
+    string s, p;
+    while (cin >> s) {
+        if (s == ".") break;
+        cin >> p;
+        
+        // solve
+        auto ans = solve(s,p);
+    }
 
     return 0;
 }
