@@ -22,3 +22,64 @@
 // Output
 // Output $n$ integers separated by a space in one line. The $i$-th integer is the number of the manufacturing lines from which the storage room connected to the conveyor lane $i$ can accept goods.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve(int n, int m, V<pair<int,int>> &x) -> V<int> {
+    // Step 1: x座標についてソート
+    sort(all(x));
+
+    // Step 2: 左からみる，両方の可能区間をマージする(y-1,y)
+    // 初期化
+    V<pair<int,int>> area(n);
+    rep(i,0,n) area[i].first = area[i].second = i;
+
+    rep(i,0,m) {
+        assert(x[i].second - 1 >= 0);
+        auto& area_down = area[x[i].second];
+        auto& area_up   = area[x[i].second - 1];
+        area_up = area_down = make_pair(min(area_up.first,area_down.first), max(area_up.second, area_down.second));
+    }
+
+    // Step 3: 可能区間の個数を答えとして返す
+    V<int> ans(n);
+    rep(i,0,n) ans[i] = area[i].second - area[i].first + 1;
+
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int n,m;
+    cin >> n >> m;
+    V<pair<int,int>> x(m);
+    rep(i,0,m) cin >> x[i].first >> x[i].second;
+
+    // solve
+    auto ans = solve(n,m,x);
+
+    // output
+    rep(i,0,ans.size()) cout << ans[i] << " \n"[i == ans.size() - 1];
+    return 0;
+}

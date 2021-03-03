@@ -27,3 +27,116 @@
 // Output
 // Output the maximum possible number of parallel line pairs stated above, in one line.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+#define EPS (1e-10)
+class Point{
+public:
+  double x,y;
+  Point(double x = 0, double y = 0):x(x), y(y) {}
+  
+  Point operator + (Point p){return Point(x+p.x,y+p.y);}
+  Point operator - (Point p){return Point(x-p.x,y-p.y);}
+  Point operator * (double k){return Point(x*k,y*k);}
+  Point operator / (double k){return Point(x/k,y/k);}
+
+  double norm(){return x*x+y*y;}
+  double abs(){return sqrt(norm());}
+
+  bool operator <(const Point &p) const {
+      return x!=p.x ? x<p.x : y<p.y;
+  }
+  bool operator == (const Point &p) const{
+    return fabs(x-p.x) < EPS && fabs(y-p.y) < EPS;
+  }
+};
+typedef Point Vector;
+typedef vector<Point> Polygon;
+double dot(Vector a,Vector b){
+  return a.x * b.x + a.y * b.y;
+}
+double cross(Vector a,Vector b){
+  return a.x * b.y - a.y * b.x;
+}
+bool parallel(Vector a, Vector b) {
+  return abs(cross(a,b)) < EPS;
+}
+
+int count_pair(V<Vector> v) {
+    int ret = 0;
+    rep(i,0,v.size()) {
+        rep(j,i+1,v.size()) {
+            if (parallel(v[i],v[j])) ret++;
+        }
+    }
+    return ret;
+}
+
+auto solve (int n, V<Point>& p) -> int {
+    bitset<16> bs(0);
+    V<Vector> v;
+    
+    int ans = 0;
+    auto dfs = [&](auto self, int cnt) -> void {
+        if (cnt == n) {
+            ans = max(ans, count_pair(v));
+            return;
+        }
+        rep(i,0,n) { // 1個目の点
+            if (bs[i]) continue;
+            bs.set(i);
+            rep(j,i,n) { // 2個目の点
+                if (bs[j]) continue;
+                bs.set(j);
+                v.push_back(p[i]-p[j]); // ベクトルをvに入れる
+                self(self, cnt + 2);
+                v.pop_back();
+                bs.reset(j);
+            }
+            bs.reset(i);
+            break;
+        }
+    };
+
+    dfs(dfs,0);
+
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int n;
+    cin >> n;
+    V<Point> p(n);
+    rep(i,0,n) cin >> p[i].x >> p[i].y;
+
+    // solve
+    auto ans = solve(n,p);
+
+    // output
+    cout << ans << endl;
+    
+    return 0;
+}

@@ -29,3 +29,78 @@
 // 1≤W≤105
 // |ai| ≤104
 // 入力値はすべて整数である．
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int w, V<int>& a) -> int {
+    // 時間制限を計算する
+    V<int> limit(w,0);
+    int inf = 1e9;
+    int lim = 0;
+
+    rep(i,0,w) {
+        if (a[i] == 0) {
+            lim = inf;
+        } else if (a[i] < 0) {
+            lim = min(lim, -a[i]);
+        }
+        limit[i] = max(lim, limit[i]);
+        lim = max(0, lim - 1);
+    }
+
+    lim = 0;
+    rrep(i,0,w) {
+        if (a[i] == 0) {
+            lim = inf;
+        } else if (a[i] < 0) {
+            lim = min(lim, -a[i]);
+        }
+        limit[i] = max(lim, limit[i]);
+        lim = max(0, lim - 1);
+    }
+
+    // 制限よりはやくいれば出られる
+    int ret = 0;
+    rep(i,0,w) {
+        if (a[i] > 0) ret += min(a[i],limit[i]);
+    }
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int w;
+    cin >> w;
+    V<int> a(w);
+    rep(i,0,w) cin >> a[i];
+
+    // solve
+    auto ans = solve(w,a);
+
+    // output
+    cout << ans << endl;
+    
+    return 0;
+}

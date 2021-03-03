@@ -31,3 +31,121 @@
 // Output
 // 一度も右手を離さずにA さんの家に辿り着くことが出来る場合には，A さんの家にたどり着くまでに通った異なるマスの数の最小値を出力せよ．A さんの家に辿り着くことが出来ない場合には，-1 を出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int h, int w, VV<char>& maze) -> int {
+
+    // 初期位置を決める
+    int sh, sw, sd, gh, gw;
+    rep(i,0,h) rep(j,0,w) {
+        if (maze[i][j] == 'G') {
+            gh = i;
+            gw = j;
+        } else if (maze[i][j] != '.' && maze[i][j] != '#') {
+            sh = i;
+            sw = j;
+            string dir = "^>v<";
+            rep(k,0,4) if (maze[i][j] == dir[k]) sd = k;
+        }
+    }
+
+
+    auto wall = [&](int hh, int ww) -> bool {
+        if (hh < 0 || hh >= h || ww < 0 || ww >= w) return true;
+        if (maze[hh][ww] == '#') return true;
+        return false;
+    };
+
+    struct status {
+        int h, w, d;
+        status(int h, int w, int d) : h(h), w(w), d(d) {}
+        bool operator <(const status& s) const {
+            if (d != s.d) return d < s.d;
+            if (h != s.h) return h < s.h;
+            return w < s.w;
+        }
+    };
+
+    auto go = [&](status s) -> status {
+        int dh[4] = {-1,0,1,0};
+        int dw[4] = {0,1,0,-1};
+        s.h = s.h + dh[s.d];
+        s.w = s.w + dw[s.d];
+        return s;
+    };
+
+    auto change_dir = [&](status s, int d) -> status {
+        s.d = (s.d + d) % 4;
+        return s;
+    };
+
+    set<status> used_s;
+    set<pair<int,int>> used;
+    status now(sh,sw,sd);
+    while (1) {
+        // ループになっている場合
+        if (used_s.find(now) != used_s.end()) return -1;
+        used_s.insert(now);
+        used.insert(make_pair(now.h, now.w));
+        if (now.h == gh && now.w == gw) return used.size();
+
+        auto f = go(now); // 前
+        auto fr = go(change_dir(go(now),1)); // 右前
+
+        // 前に壁がある場合, 左に曲がる
+        if (wall(f.h, f.w)) {
+            now = change_dir(now, 3);
+            continue;
+        }
+
+        // 右前に壁がある場合, 前進
+        // そうでない場合，右前にいく，前のマスに印をつける
+        if (wall(fr.h, fr.w)) {
+            now = f;
+        } else {
+            now = fr;
+            used.insert(make_pair(f.h,f.w));
+            if (f.h == gh && f.w == gw) return used.size();
+            used_s.insert(f);
+            used_s.insert(change_dir(f,1));
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int h,w;
+    cin >> h >> w;
+    VV<char> maze(h,V<char>(w));
+    rep(i,0,h) rep(j,0,w) cin >> maze[i][j];
+
+    // solve
+    auto ans = solve(h,w,maze);
+
+    // output
+    cout << ans << endl;
+    
+    return 0;
+}

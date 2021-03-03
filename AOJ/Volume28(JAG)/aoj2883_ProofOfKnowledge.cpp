@@ -69,7 +69,7 @@ const int MAXM = 0;
 
 string generate_enc(int k) {
     string ret = "";
-    for (int i = 0; i < 4; i++) {
+    rep(i,0,5) {
         ret = (char)(k % 10 + '0') + ret;
         k /= 10;
     }
