@@ -17,3 +17,75 @@
 // Output
 // Print an integer that is the minimum possible time in seconds before he can start watching the target scene in the normal speed.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (ll n) -> ll {
+    ll ret = n - 1;
+
+    // 実際に進める時間は[1~n]
+    n--;
+
+    // 最速が3のfastest乗の場合
+    rep(fastest, 1, 50) {
+        ll ans = 0; // この場合の時間
+
+        ll sum = 0;
+        ll ad = 3;
+        rep(i,0,fastest-1) {
+            sum += ad * 2; // 左と右
+            ans += 2;
+            ad *= 3;
+        }
+        sum += ad; // 真ん中
+        ans++;
+        if (sum > n) break; // 区間を越えたら終了
+        // 真ん中をできるだけ再生する
+        ll left = n - sum;
+        rep(i,0,fastest+1) {
+            assert(ad != 0);
+            ans += left / ad;
+            left %= ad;
+            ad /= 3;
+        }
+        ans += left;
+        dbg(ans);
+        ret = min(ret, ans);
+    }
+    return ret + 1;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    ll n;
+    cin >> n;
+
+    // solve
+    auto ans = solve(n);
+
+    // output
+    cout << ans << endl;
+    
+    return 0;
+}

@@ -17,3 +17,75 @@
 // Output
 // Output Dave's string in one line. If there are multiple candidates, output the minimum in lexicographic order.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (ll n) -> string {
+    ll length;
+    ll left;
+    for (ll i = 0; i < 100000LL; i++) {
+        ll base = (i + 1) * i / 2;
+        if (base >= n) {
+            length = i;
+            left = base - n;
+            break;
+        }
+    }
+
+    string ans = "";
+    rep(i,0,length) ans += ')';
+    rep(i,0,length) ans += '(';
+    
+    // )|)))...))|(((((...
+    int lft = 1;
+    length--;
+    while (left) {
+        ll change = min(left,length);
+        
+        // 長さchangeの)を全部右に一個移動
+        lft += length - change;
+        swap(ans[lft],ans[lft+change]);
+
+        left -= change;
+        lft += 2;
+        dbg(ans);
+        dbg(left);
+    }
+    return ans;
+}
+// ))((
+// ))()((
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    ll n;
+    cin >> n;
+
+    // solve
+    auto ans = solve(n);
+
+    // output
+    cout << ans << endl;
+    
+    return 0;
+}

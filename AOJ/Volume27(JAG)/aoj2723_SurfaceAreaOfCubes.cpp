@@ -17,3 +17,101 @@
 // Output
 // Output the total surface area of the object from which the $N$ cubes were removed.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (ll A, ll B, ll C, ll N, V<ll>& X, V<ll>& Y, V<ll>& Z) -> ll {
+    struct Face{
+        // 0: front
+        // 1: left
+        // 2: down
+        ll x, y, z, id;
+        Face(ll x, ll y, ll z, ll id):x(x),y(y),z(z),id(id) {}
+        bool operator <(const Face& f) const {
+            if (x != f.x) return x < f.x;
+            if (y != f.y) return y < f.y;
+            if (z != f.z) return z < f.z;
+            return id < f.id;
+        }
+    };
+    
+    // 消したキューブの面を数える
+    map<Face,int> mp;
+    rep(i,0,N) {
+        ll x = X[i], y = Y[i], z = Z[i];
+        // 自分が所有する面
+        rep(j,0,3) mp[Face(x,y,z,j)]++;
+        // 上
+        mp[Face(x,y+1,z,2)]++;
+        // 右
+        mp[Face(x+1,y,z,1)]++;
+        // 後ろ
+        mp[Face(x,y,z+1,0)]++;
+    }
+
+    auto in = [&](Face f) -> bool {
+        if ((f.x == 0 || f.x == A) && f.id == 1) return false; // left
+        if ((f.y == 0 || f.y == B) && f.id == 2) return false; // down
+        if ((f.z == 0 || f.z == C) && f.id == 0) return false; // front
+        return true;
+    };
+
+    // 答えを計算する
+    ll ans = (A * B + A * C + B * C) * 2LL;
+    for (auto p: mp) {
+        Face face = p.first;
+        ll cnt = p.second;
+
+        // faceがもともと外か内かを判断する
+        bool inside = in(face);
+
+        // 中の場合，1ならans+=1，2ならそのまま
+        if (inside) {
+            ans += (2 - cnt);
+        }
+        // 外の場合，ans-=1
+        else {
+            ans--;
+        }
+    }
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    ll A, B, C, N;
+    cin >> A >> B >> C >> N;
+    V<ll> X(N), Y(N), Z(N);
+    rep(i,0,N) {
+        cin >> X[i] >> Y[i] >> Z[i];
+    }
+
+    // solve
+    auto ans = solve(A,B,C,N,X,Y,Z);
+
+    // output
+    cout << ans << endl;
+    
+    return 0;
+}
