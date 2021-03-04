@@ -26,3 +26,88 @@
 // Output
 // Print 'Yes' in one line if replies are all valid for the tournament chart. Otherwise, print 'No' in one line.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (string s, int n, V<int>& cnt) -> string {
+    
+    int pos = 0;
+    bool ok = 1;
+    auto winner = [&](auto self) -> int {
+        if (s[pos] != '[') return s[pos++] - 'a'; // skip person
+
+        pos++; // skip '['
+        
+        auto left = self(self);
+        pos++; // skip '-'
+
+        auto right = self(self);
+        pos++; // skip ']'
+    
+        // 合理か判断する
+        if (cnt[left] > cnt[right]) {
+            if (cnt[right] != 0) {
+                ok = 0;
+            }
+            cnt[left]--;
+            return left;
+        } else if (cnt[right] > cnt[left]) {
+            if (cnt[left] != 0) {
+                ok = 0;
+            }
+            cnt[right]--;
+            return right;
+        } else {
+            ok = 0;
+            return left;
+        }
+    };
+
+    winner(winner);
+    if (!ok) return "No";
+    rep(i,0,26) if (cnt[i] != 0) return "No";
+    return "Yes";
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    string s;
+    V<int> cnt(26);
+    cin >> s;
+    int n = (s.size() + 3) / 4;
+    rep(i,0,n) {
+        char a;
+        int v;
+        cin >> a >> v;
+        cnt[a-'a'] = v;
+    }
+
+    // solve
+    auto ans = solve(s,n,cnt);
+
+    // output
+    cout << ans << endl;
+    
+    return 0;
+}

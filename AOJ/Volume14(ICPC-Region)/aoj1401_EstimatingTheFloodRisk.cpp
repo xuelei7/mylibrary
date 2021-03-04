@@ -30,3 +30,112 @@
 
 // If no altitude assignments satisfy the altitude difference assumption, output No.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+struct S {
+    int x, y, z;
+    S(int x=0, int y=0, int z=0) : x(x), y(y), z(z) {}
+    bool operator >(const S& s) const {
+        if (z != s.z) return z > s.z;
+        if (x != s.x) return x > s.x;
+        return y > s.y;
+    }
+    bool operator <(const S& s) const {
+        if (z != s.z) return z < s.z;
+        if (x != s.x) return x < s.x;
+        return y < s.y;
+    }
+};
+
+auto solve (int w, int h, int d, V<S>& s) -> string {
+    
+    VV<int> maze(h,V<int>(w));
+    VV<int> used(h,V<int>(w,0));
+
+    priority_queue<S> pq;
+    rep(i,0,d) {
+        pq.push(s[i]);
+        used[s[i].y][s[i].x] = 1;
+        maze[s[i].y][s[i].x] = s[i].z;
+    }
+    while (!pq.empty()) {
+        auto tp = pq.top(); pq.pop();
+#ifdef LOCAL
+    cerr << tp.x << " " << tp.y << " " << tp.z << endl;
+#endif
+        int dy[4] = {-1,0,1,0};
+        int dx[4] = {0,1,0,-1};
+        
+        rep(i,0,4) {
+            int tx = tp.x + dx[i];
+            int ty = tp.y + dy[i];
+            int tz = tp.z - 1;
+            if (tx < 0 || tx >= w || ty < 0 || ty >= h) continue;
+            if (used[ty][tx]) {
+                if (abs(maze[ty][tx] - tp.z) > 1) return "No";
+            } else {
+                maze[ty][tx] = tz;
+                used[ty][tx] = 1;
+                pq.push(S(tx,ty,tz));
+            }
+        }
+#ifdef LOCAL
+    rep(i,0,h) {
+        rep(j,0,w) {
+            cerr << maze[i][j] << " ";
+        }
+        cerr << endl;
+    }
+#endif
+    }
+
+    int ans = 0;
+    rep(i,0,h) {
+        rep(j,0,w) {
+            ans += maze[i][j];
+        }
+    }
+    return to_string(ans);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int w,h,d;
+    cin >> w >> h >> d;
+    V<S> s(d);
+    rep(i,0,d) {
+        cin >> s[i].x >> s[i].y >> s[i].z;
+        s[i].x--;
+        s[i].y--;
+    }
+
+    // solve
+    auto ans = solve(w,h,d,s);
+
+    // output
+    cout << ans << endl;
+    
+    return 0;
+}
