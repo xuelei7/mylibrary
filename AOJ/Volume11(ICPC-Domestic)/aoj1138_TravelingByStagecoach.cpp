@@ -40,3 +40,110 @@
 
 // 目的地に到達できない場合は，Impossibleと出力すること． これに該当するのは， 到達できるルートが存在しない場合と馬車券の枚数が足りない場合である． Impossibleは，最初の文字が大文字，ほかが小文字であることに注意．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int n, int m, int p, int a, int b, V<int>& t, VV<pair<int,int>>& G) -> string {
+    double inf = 1e9;
+    VV<double> dp(m,V<double>(1<<n,inf));
+
+    struct status {
+        int id, s;
+        double dist;
+        status(int id, int s, double dist):id(id),s(s),dist(dist) {}
+        bool operator <(const status& other) const {
+            if (dist != other.dist) return dist < other.dist;
+            if (id != other.id) return id < other.id;
+            else return s < other.s;
+        }
+        bool operator >(const status& other) const {
+            if (dist != other.dist) return dist > other.dist;
+            if (id != other.id) return id > other.id;
+            else return s > other.s;
+        }
+    };
+
+    dp[a][0] = 0;
+    priority_queue<status,vector<status>,greater<status>> pq;
+    pq.push(status(a,0,0));
+
+    while (!pq.empty()) {
+        auto tp = pq.top(); pq.pop();
+        if (dp[tp.id][tp.s] > tp.dist) continue;
+
+#ifdef LOCAL
+    cerr << tp.id << " " << bitset<8>(tp.s) << " " << tp.dist << endl;
+#endif
+        rep(i,0,G[tp.id].size()) {
+            int to = G[tp.id][i].first;
+            double length = G[tp.id][i].second;
+
+            // 馬券ごと
+            rep(j,0,n) {
+                if ((tp.s >> j) & 1) continue; // used
+                int ts = tp.s + (1<<j);
+                double time = length / (double)t[j];
+                if (dp[to][ts] > tp.dist + time) {
+                    dp[to][ts] = tp.dist + time;
+                    pq.push(status(to,ts,dp[to][ts]));
+                }
+            }
+        }
+    }
+
+    double mi = inf;
+    rep(i,0,(1<<n)) {
+        mi = min(mi, dp[b][i]);
+    }
+
+    if (mi == inf) return "Impossible";
+    else return to_string(mi);
+
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int n,m,p,a,b;
+    while (cin >> n >> m >> p >> a >> b) {
+        if (n+m+p+a+b == 0) break;
+        a--; b--;
+        V<int> t(n);
+        rep(i,0,n) cin >> t[i];
+        VV<pair<int,int>> G(m);
+        rep(i,0,p) {
+            int x,y,z;
+            cin >> x >> y >> z;
+            x--; y--;
+            G[x].push_back({y,z});
+            G[y].push_back({x,z});
+        }
+
+        // solve
+        auto ans = solve(n,m,p,a,b,t,G);
+
+        // output
+        cout << ans << endl;
+    }
+    return 0;
+}

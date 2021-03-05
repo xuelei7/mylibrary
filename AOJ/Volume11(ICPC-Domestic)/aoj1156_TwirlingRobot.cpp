@@ -48,3 +48,114 @@
 // Output
 // 各データセットについて，ロボットをゴールに誘導するために必要な最小コストを求め， 十進数の整数としてそれぞれ 1 行に出力しなさい． 出力行には他の文字があってはならない．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int w, int h, VV<int>& maze, V<int>& cost) -> int {
+    int inf = 1e9;
+    VV<V<int>> dp(h,VV<int>(w,V<int>(4,inf)));
+    int dh[4] = {-1,0,1,0};
+    int dw[4] = {0,1,0,-1};
+
+    struct status {
+        int h, w, d, dist;
+        status(int h=0, int w=0, int d=0, int dist=0):h(h),w(w),d(d),dist(dist) {}
+        bool operator <(const status& other) const {
+            if (dist != other.dist) return dist < other.dist;
+            if (h != other.h) return h < other.h;
+            if (w != other.w) return w < other.w;
+            return d < other.d;
+        }
+        bool operator >(const status& other) const {
+            if (dist != other.dist) return dist > other.dist;
+            if (h != other.h) return h > other.h;
+            if (w != other.w) return w > other.w;
+            return d > other.d;
+        }
+    };
+
+    priority_queue<status,vector<status>,greater<status>> q;
+    q.push(status(0,0,1,0));
+    dp[0][0][1] = 0;
+    while (!q.empty()) {
+        auto tp = q.top(); q.pop();
+        if (tp.h == h-1 && tp.w == w-1) continue;
+        if (dp[tp.h][tp.w][tp.d] > tp.dist) continue;
+#ifdef LOCAL
+    cerr << tp.h << " " << tp.w << " " << tp.d << " " << tp.dist << endl;
+#endif
+        rep(i,0,4) {
+            int c = cost[i];
+            int d = (tp.d + i) % 4;
+            if (i == maze[tp.h][tp.w]) c = 0;
+
+            int th = tp.h + dh[d];
+            int tw = tp.w + dw[d];
+            if (th < 0 || th >= h || tw < 0 || tw >= w) continue;
+            if (dp[th][tw][d] > dp[tp.h][tp.w][tp.d] + c) {
+                dp[th][tw][d] = dp[tp.h][tp.w][tp.d] + c;
+                q.push(status(th,tw,d,dp[th][tw][d]));
+            }
+        }
+    }
+
+#ifdef LOCAL
+    rep(i,0,h) {
+        rep(j,0,w) {
+            rep(k,0,4) {
+                if (dp[i][j][k] == inf) cerr << "inf,";
+                else cerr << dp[i][j][k] << ",";
+            }
+            cerr << "  ";
+        }
+        cerr << endl;
+    }
+#endif
+
+    int mi = inf;
+    rep(i,0,4) mi = min(mi, dp[h-1][w-1][i]);
+    return mi;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int w,h;
+    while (cin >> w >> h) {
+        if (w == 0 && h == 0) break;
+        VV<int> maze(h,V<int>(w));
+        rep(i,0,h) {
+            rep(j,0,w) {
+                cin >> maze[i][j];
+            }
+        }
+        V<int> cost(4);
+        rep(i,0,4) cin >> cost[i];
+        // solve
+        auto ans = solve(w,h,maze,cost);
+
+        // output
+        cout << ans << endl;
+    }
+    return 0;
+}

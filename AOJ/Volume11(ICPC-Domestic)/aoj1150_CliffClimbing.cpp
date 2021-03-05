@@ -28,3 +28,153 @@
 // Output
 // 各データセットについて，崖登りに必要な最小時間を求め， 十進の整数値として，それぞれ1行に出力しなさい． 崖登りを完了できない場合は，代わりに -1 のみを含む行を出力しなさい． 各出力行はこれらの数値以外の文字を含んではならない．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int w, int h, VV<char>& maze) -> int {
+    int inf = 1e9;
+    V<VV<int>> dp(h,VV<int>(w,V<int>(2,inf)));
+
+    struct S{
+        int h,w,foot,dist;
+        S(int h, int w, int foot, int dist) : h(h),w(w),foot(foot),dist(dist) {}
+        bool operator <(const S& other) const {
+            if (dist != other.dist) return dist < other.dist;
+            if (h != other.h) return h < other.h;
+            if (w != other.w) return w < other.w;
+            return foot < other.foot;
+        }
+        bool operator >(const S& other) const {
+            if (dist != other.dist) return dist > other.dist;
+            if (h != other.h) return h > other.h;
+            if (w != other.w) return w > other.w;
+            return foot > other.foot;
+        }
+    };
+
+    priority_queue<S,vector<S>,greater<S>> pq;
+    
+    // set start
+    V<int> sh,sw,gh,gw;
+    rep(i,0,h) rep(j,0,w) {
+        if (maze[i][j] == 'S') {
+            sh.push_back(i);
+            sw.push_back(j);
+
+            // begin point
+            pq.push(S(i,j,0,0));
+            pq.push(S(i,j,1,0));
+            dp[i][j][0] = 0;
+            dp[i][j][1] = 0;
+        }
+        if (maze[i][j] == 'T') {
+            gh.push_back(i);
+            gw.push_back(j);
+        }
+    }
+
+    while (!pq.empty()) {
+        auto tp = pq.top(); pq.pop();
+
+        if (dp[tp.h][tp.w][tp.foot] < tp.dist) continue;
+#ifdef LOCAL
+    cerr << "search: " << tp.h << " " << tp.w << " " << tp.foot << " " << tp.dist << endl;
+#endif
+        int hh = tp.h;
+        int ww = tp.w + (tp.foot?-1:1);
+        rep(i,-2,3) {
+            rep(j,-2,3) {
+                if (abs(i) + abs(j) > 2) continue;
+                int th = hh + i;
+                int tw = ww + j;
+                if (th < 0 || th >= h || tw < 0 || tw >= w) continue;
+                if (maze[th][tw] == 'X') continue;
+
+                int tf = (tp.foot?0:1); // next foot
+
+                if (tf == 0) { // left <- right
+                    if (j > 0) continue;
+                }
+                else { // left -> right
+                    if (j < 0) continue;
+                }
+
+                if (maze[th][tw] == 'T') {
+                    dp[th][tw][tf] = min(dp[th][tw][tf], tp.dist);
+                    continue;
+                }
+                int cost = maze[th][tw] - '0';
+                if (dp[th][tw][tf] > tp.dist + cost) {
+                    dp[th][tw][tf] = tp.dist + cost;
+#ifdef LOCAL
+    cerr << "renew: " << th << " " << tw << " " << tf << " " << tp.dist + cost << endl;
+#endif
+                    pq.push(S(th,tw,tf,dp[th][tw][tf]));
+                }
+            }
+        }
+
+    }
+
+#ifdef LOCAL
+    rep(i,0,h) {
+        rep(j,0,w) {
+            rep(k,0,2) {
+                if (dp[i][j][k] == inf) cerr << "inf";
+                else cerr << dp[i][j][k];
+                cerr << ", "[k==1];
+            }
+        }
+        cerr << endl;
+    }
+#endif
+
+    // result
+    int mi = inf;
+    rep(i,0,gh.size()) {
+        rep(j,0,2) {
+            mi = min(mi, dp[gh[i]][gw[i]][j]);
+        }
+    }
+    if (mi == inf) return -1;
+    else return mi;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int w,h;
+    while (cin >> w >> h) {
+    if (w+h == 0) break;
+    VV<char> maze(h,V<char>(w));
+    rep(i,0,h) rep(j,0,w) cin >> maze[i][j];
+
+    // solve
+    auto ans = solve(w,h,maze);
+
+    // output
+    cout << ans << endl;
+    }
+    
+    return 0;
+}
