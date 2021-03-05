@@ -48,7 +48,57 @@ template <class T> using VV = vector<V<T>>;
 #define dbg(x) true
 #endif
 
+struct edge {
+    int to, cost, enemy;
+    edge(int to = 0, int cost = 0, int enemy = 0) : to(to), cost(cost), enemy(enemy) {}
+};
 
+auto solve (int n, int m, int l, VV<edge>& G) -> int {
+    struct S{
+        int enemy, left, id;
+        S(int enemy = 0, int left = 0, int id = 0) : enemy(enemy), left(left), id(id) {}
+        bool operator >(const S& other) const {
+            if (enemy != other.enemy) return enemy > other.enemy;
+            if (left != other.left) return left > other.left;
+            return id > other.id;
+        }
+    };
+    
+    priority_queue<S,vector<S>,greater<S>> pq;
+    pq.push(S(0,l,0));
+
+    int inf = 1e9;
+    VV<int> dp(n,V<int>(l+1,inf));
+    dp[0][0] = 0;
+    
+    while (!pq.empty()) {
+        auto tp = pq.top(); pq.pop();
+
+        if (dp[tp.id][tp.left] < tp.enemy) continue;
+
+        rep(i,0,G[tp.id].size()) {
+            auto e = G[tp.id][i];
+
+            // 払う場合
+            if (tp.left >= e.cost && dp[e.to][tp.left - e.cost] > tp.enemy) {
+                dp[e.to][tp.left - e.cost] = tp.enemy;
+                pq.push(S(dp[e.to][tp.left-e.cost], tp.left-e.cost, e.to));
+            }
+            // 払わない場合
+            if (dp[e.to][tp.left] > tp.enemy + e.enemy) {
+                dp[e.to][tp.left] = tp.enemy + e.enemy;
+                pq.push(S(dp[e.to][tp.left], tp.left, e.to));
+            }
+        }
+    }
+
+    int mi = inf;
+    rep(i,0,l+1) {
+        mi = min(mi, dp[n-1][i]);
+    }
+    if (mi == inf) return -1;
+    else return mi;
+}
 
 int main() {
     ios::sync_with_stdio(false);
@@ -56,12 +106,23 @@ int main() {
     constexpr char endl = '\n';
     
     // input
+    int n,m,l;
+    while (cin >> n >> m >> l) {
+        if (n+m+l == 0) break; 
+        VV<edge> G(n);
+        rep(i,0,m) {
+            int a,b,d,e;
+            cin >> a >> b >> d >> e;
+            a--; b--;
+            G[a].push_back(edge(b,d,e));
+            G[b].push_back(edge(a,d,e));
+        }
 
+        // solve
+        auto ans = solve(n,m,l,G);
 
-    // solve
-    auto ans = solve();
-
-    // output
-
+        // output
+        cout << ans << endl;
+    }
     return 0;
 }

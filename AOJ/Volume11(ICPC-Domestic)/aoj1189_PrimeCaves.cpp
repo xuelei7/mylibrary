@@ -16,3 +16,156 @@
 // Output
 // 各データセットについて，洞穴 n から始めて，最も多く素数洞穴を調査する経路について，素数洞穴の個数と経路上最後に通過した素数洞穴の番号を空白で区切って1行に出力せよ．ただし最初に入る洞穴nも経路上の洞穴に含める．最も多くの素数洞穴を調査する経路が複数ある場合は，最後に通過した素数洞穴の番号が最も大きい経路について出力せよ．素数洞穴を調査する経路が1つもない場合には"0 0"を(引用符を除いて)出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+vector<bool> getPrimeList() {
+    const int MAXN = 1000010;
+    vector<bool> isprime(MAXN);
+    for (int i = 0; i < MAXN; i++) isprime[i] = 1;
+    for (int i = 2; i < MAXN; i++) {
+        if (!isprime[i]) continue;
+        for (int j = i + i; j < MAXN; j+=i) isprime[j] = 0;
+    }
+    isprime[0] = isprime[1] = 0;
+    return isprime;
+}
+struct P {
+    int y, x;
+    P(int y=0, int x=0):y(y),x(x){}
+    bool operator <(const P& other) const {
+        if (x != other.x) return x < other.x;
+        return y < other.y;
+    }
+};
+VV<int> maze(3000,V<int>(3000));
+V<int> x(2000010), y(2000010);
+V<bool> primeList;
+
+auto solve (int m, int n) -> string {
+    // 初期メンバー
+    V<int> dp(m+1,0);
+    V<int> rec(m+1,0);
+    V<bool> used(m+1,0);
+    dp[n] = primeList[n];
+    used[n] = 1;
+    if (primeList[n]) rec[n] = n;
+
+    int mx = dp[n];
+    int last = rec[n];
+
+    // bfs
+    queue<int> q;
+    q.push(n);
+    while (!q.empty()) {
+        auto tp = q.front(); q.pop();
+#ifdef LOCAL
+    dbg(tp);
+    cerr << y[tp] << " " << x[tp] << endl;
+    cerr << dp[tp] << " " << rec[tp] << endl;
+#endif
+        auto go = [&](int k) -> void {
+            if (k > m) return;
+            if (primeList[k]) {
+                dp[k] = max(dp[k], dp[tp] + 1);
+                rec[k] = k;
+            } else {
+                if (dp[tp] > dp[k]) {
+                    dp[k] = dp[tp];
+                    rec[k] = rec[tp];
+                }
+            }
+            if (dp[k] > mx) {
+                mx = dp[k];
+                last = rec[k];
+            } else if (dp[k] == mx) {
+                last = max(last, rec[k]);
+            }
+            if (!used[k]) {
+                q.push(k);
+                used[k] = 1;
+            }
+        };
+
+        rep(i,-1,2) go(maze[y[tp]+1][x[tp]+i]);
+    }
+
+    // answer
+    return to_string(mx) + " " + to_string(last);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+
+    // prepare map
+    {
+        int h = 1500, w = 1500;
+        x[1] = w;
+        y[1] = h;
+        maze[h][w] = 1;
+        int id = 1;
+        int length = 0;
+        bool flg = 1;
+        int d = 1;
+        int dh[4] = {-1,0,1,0};
+        int dw[4] = {0,1,0,-1};
+        
+        while (id < 2e6) {
+            // 直線の長さを管理
+            if (!flg) {
+                flg = 1;
+            } else {
+                flg = 0;
+                length++;
+            }
+
+            rep(i,0,length) {
+                id++;
+                if (id >= 2e6) break;
+                h += dh[d];
+                w += dw[d];
+                maze[h][w] = id;
+                x[id] = w;
+                y[id] = h;
+            }
+
+            // 方向の管理
+            d = (d + 3) % 4;         
+        }
+    }
+
+    // prepare prime list
+    primeList = getPrimeList();
+
+    // input
+    int n,m;
+    while (cin >> m >> n) {
+        if (m+n == 0) break;
+
+        // solve
+        auto ans = solve(m,n);
+
+        // output
+        cout << ans << endl;
+    }
+    
+    return 0;
+}
