@@ -34,3 +34,112 @@
 
 // 目的地に到達できない場合は，unreachableと出力すること． unreachableの文字はすべて小文字であることに注意．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+struct edge {
+    int to;
+    double len;
+    int limit;
+    edge(int to=0, double len=0, int limit=0) : to(to), len(len), limit(limit) {}
+};
+
+auto solve (int n, int m, int s, int g, VV<edge>& G) -> string {
+    double inf = 1e9;
+    V<VV<double>> dp(n,VV<double>(n,V<double>(31,inf)));
+
+    struct S {
+        double time;
+        int id, from;
+        double v;
+        S(double time=0, int id=0, int from=0, int v=0) : time(time), id(id), from(from), v(v) {}
+        bool operator >(const S& other) const {
+            if (time != other.time) return time > other.time;
+            return id > other.id;
+        }
+    };
+
+    priority_queue<S,vector<S>,greater<S>> pq;
+    pq.push(S(0,s,s,0));
+    dp[s][s][0] = 0;
+    while (!pq.empty()) {
+        auto tp = pq.top(); pq.pop();
+#ifdef LOCAL
+    cerr << "* " << tp.id << " " << tp.from << " " << tp.v << " " << tp.time << endl;
+#endif
+        if (dp[tp.id][tp.from][tp.v] < tp.time) continue;
+
+        rep(i,0,G[tp.id].size()) {
+            auto e = G[tp.id][i];
+            if (e.to == tp.from) continue;
+
+            rep(j,-1,2) {
+                int new_v = tp.v + j;
+                if (new_v <= 0 || new_v > e.limit) continue;
+                double time_add = (double)e.len / (double)new_v;
+#ifdef LOCAL
+    cerr << e.to << " " << e.limit << " " << new_v << " " << dp[e.to][tp.id][new_v] << " " << tp.time + time_add << endl;
+#endif
+                if (dp[e.to][tp.id][new_v] > tp.time + time_add) {
+                    dp[e.to][tp.id][new_v] = tp.time + time_add;
+                    pq.push(S(dp[e.to][tp.id][new_v], e.to, tp.id, new_v));
+                }
+            }
+        }
+    }
+
+    // answer
+    double ans = inf;
+    rep(i,0,G[g].size()) {
+        ans = min(ans, dp[g][G[g][i].to][1]);
+    }
+    if (abs(ans-inf) < 1e-10) return "unreachable";
+    else return to_string(ans);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int n,m;
+    int s,g;
+    while (cin >> n >> m >> s >> g) {
+        s--; g--;
+        VV<edge> G(n);
+        rep(i,0,m) {
+            int x,y,c;
+            double d;
+            cin >> x >> y >> d >> c;
+            x--;
+            y--;
+            G[x].push_back(edge(y,d,c));
+            G[y].push_back(edge(x,d,c));
+        }
+
+        // solve
+        auto ans = solve(n,m,s,g,G);
+
+        // output
+        cout << ans << endl;
+    }
+    return 0;
+}
