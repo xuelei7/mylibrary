@@ -13,3 +13,54 @@
 
 // You can assume the answer fits in a 32-bit signed integer.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve(string s) -> ll {
+    V<int> pre(11,0);
+    ll ans = 0;
+    rep(i,0,s.size()) {
+        V<int> now(11,0);
+        if (s[i] != '0') now[s[i] - '0']++;
+
+        rep(j,0,11) {
+            now[(j*10+s[i]-'0') % 11] += pre[j];
+        }
+
+        rep(j,0,11) pre[j] = now[j];
+        ans += pre[0];
+    }
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    string s;
+    while (cin >> s) {
+        if (s == "0") break;
+        cout << solve(s) << endl;
+    }
+
+
+    return 0;
+}

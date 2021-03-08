@@ -50,3 +50,113 @@
 
 // 各データセットの後には空行を入れること．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+map<int,V<int>> rec;
+set<pair<int,int>> st;
+
+void Write(int id, int len) {
+    int pre = 0;
+    V<pair<int,int>> dlt, inst;
+    for (auto& p: st) {
+        if (p.second == -1) {
+            if (p.first - pre < len) {
+                dlt.push_back(p);
+                inst.push_back({p.first, id});
+                rec[id].push_back(p.first);
+                len -= p.first - pre;
+            } else if (p.first - pre == len) {
+                dlt.push_back(p);
+                inst.push_back({p.first, id});
+                rec[id].push_back(p.first);
+                break;
+            } else {
+                inst.push_back({pre+len, id});
+                rec[id].push_back(pre+len);
+                break;
+            }
+        }
+        pre = p.first;
+    }
+    for (auto p:dlt) {
+        st.erase(p);
+    }
+    for (auto p:inst) {
+        st.insert(p);
+    }
+#ifdef LOCAL
+    cerr << "Write " << id << " " << len << endl;
+    for (auto p:st) {
+        cerr << "{" << p.first << "," << p.second << "}";
+    }
+    cerr << endl;
+#endif
+}
+
+void Delete(int id) {
+    for (auto p: rec[id]) {
+        st.erase({p,id});
+        st.insert({p,-1});
+    }
+    rec.erase(id);
+}
+
+int Read(int id) {
+    return (*lower_bound(all(st),make_pair(id+1,-2))).second;
+}
+
+auto solve (int n) -> V<int> {
+    rec.clear();
+    st.clear();
+    st.insert({1e9+1,-1});
+    V<int> ret;
+    rep(i,0,n) {
+        char c;
+        int id, len;
+        cin >> c >> id;
+        if (c == 'W') cin >> len;
+
+        if (c == 'W') Write(id, len);
+        else if (c == 'D') Delete(id);
+        else ret.push_back(Read(id));
+    }
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    int n;
+    while (cin >> n) {
+        if (n == 0) break;
+        // solve
+        auto ans = solve(n);
+
+        for (auto a: ans) {
+            cout << a << endl;
+        }
+        cout << endl;
+    }
+    return 0;
+}

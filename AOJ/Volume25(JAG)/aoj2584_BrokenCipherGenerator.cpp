@@ -21,3 +21,110 @@
 // Output
 // 各データセットに対して，復号後の文字列が辞書順最小になるように暗号文を復号したときの，復号後の文字列を出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+string Cipher(string s);
+string String(string s);
+char Letter(string s);
+
+int pos;
+
+string Cipher(string s) {
+#ifdef LOCAL
+    cerr << "Cipher " << pos << endl;
+#endif
+    string ret = "";
+    while (pos < s.size() && s[pos] != ']') {
+        ret += String(s);
+    }
+#ifdef LOCAL
+    cerr << "-> Cipher " << ret << endl;
+#endif
+    return ret;
+}
+
+string String(string s) {
+#ifdef LOCAL
+    cerr << "String " << pos << endl;
+#endif
+    if (s[pos] == '[') {
+        pos++; // '['
+        string ret = Cipher(s);
+        pos++; // ']'
+        reverse(all(ret));
+        return ret;
+    }
+    string ret = "";
+    ret += Letter(s);
+    return ret;
+}
+
+char Letter(string s) {
+#ifdef LOCAL
+    cerr << "Letter " << pos << endl;
+#endif
+    if (s[pos] >= 'A' && s[pos] <= 'Z') {
+        return s[pos++];
+    }
+    if (s[pos] == '?') {
+        return s[pos++];
+    }
+    char op = s[pos++];
+    char c = Letter(s);
+    if (c == '?') return '?';
+    else {
+        if (op == '+') c++;
+        else c--;
+        if (c > 'Z') c -= 26;
+        if (c < 'A') c += 26;
+        return c;
+    }
+}
+
+auto solve (string s) -> string {
+    pos = 0;
+    string ss = Cipher(s);
+    dbg(ss);
+    for (auto& c: ss) {
+        if (c == '?') c = 'A';
+    }
+    return ss;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    string s;
+    while (cin >> s) {
+        if (s == ".") break;
+
+        // solve
+        auto ans = solve(s);
+
+        // output
+        cout << ans << endl;
+        
+    }
+    return 0;
+}

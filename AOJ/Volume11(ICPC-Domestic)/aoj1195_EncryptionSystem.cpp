@@ -23,3 +23,88 @@
 // x1 と y1 が同じ文字であり x2 ... xk が y2 ... yl よりも辞書順で前に現れる
 // ことをいう．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (string s) -> void {
+    int n = s.size();
+    set<string> st;
+
+    auto f = [&](auto self, int pos, int u) -> void {
+        if (pos == n) {
+            st.insert(s);
+            return;
+        }
+
+        // 非暗号
+        if (s[pos] == 'a' || ((u>>(s[pos]-'a')) & 1)) {
+            self(self,pos+1,u);
+        }
+
+        // 暗号
+        if (s[pos] != 'z' && !((u>>(s[pos]-'a'+1))&1)) {
+            s[pos]++;
+            self(self,pos+1,u+(1<<(s[pos]-'a')));
+            s[pos]--;
+        }
+    };
+
+    f(f,0,0);
+
+    // out
+    if (st.size() <= 10) {
+        cout << st.size() << endl;
+        for (auto ss: st) {
+            cout << ss << endl;
+        }
+    } else {
+        cout << st.size() << endl;
+        auto it = st.begin();
+        rep(i,0,5) {
+            cout << *it << endl;
+            it++;
+        }
+        it = st.end();
+        rep(i,0,5) {
+            it--;
+        }
+        rep(i,0,5) {
+            cout << *it << endl;
+            it++;
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    // input
+    string s;
+    while (cin >> s) {
+        if (s == "#") break;
+
+        // solve
+        solve(s);
+    }
+
+    return 0;
+}
