@@ -29,7 +29,7 @@ pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, doub
 
 // from
 // aoj0012, aoj0035, aoj0059, aoj0068, aoj0076, aoj0079, aoj0081, aoj0090
-// aoj0143
+// aoj0143, aoj2402
 // returns if a polygon contains a point
 #define EPS (1e-10)
 class Point{
@@ -319,6 +319,84 @@ bool intersect(Circle3D c, Point3D a, Point3D b) {
 
     return b.abs() + EPS > h.abs();
 }
+
+Vector rotate(Vector a, double arg) {
+    Vector b;
+    b.x = cos(arg) * a.x - sin(arg) * a.y;
+    b.y = sin(arg) * a.x + cos(arg) * a.y;
+    return b;
+}
+
+struct Star {
+    double a = 0, r = 0;
+    Point p[5], c;
+    Star(){}
+    Star(double _x, double _y, double _a, double _r) {
+        c.x = _x;
+        c.y = _y;
+        a = _a;
+        r = _r;
+        p[0] = rotate(Point(c.x, c.y + r) - c, acos(-1)*a/180.0) + c;
+        for (int i = 1; i < 5; i++) {
+            p[i] = rotate(p[i-1]-c, acos(-1)*72.0/180.0) + c;
+        }
+    }
+};
+
+struct Line {
+    Point a, b;
+    Line() {}
+    Line(Point a, Point b):a(a), b(b) {}
+};
+
+bool on(Point p, Point x1, Point x2) {
+    Vector v1 = p - x1;
+    Vector v2 = x2 - x1;
+    Vector v3 = x2 - p;
+    return abs(v1.abs() + v3.abs() - v2.abs()) < EPS;
+}
+
+double dist(Point p, Point x1, Point x2) {
+    double ret = 1e9;
+    Point pp = projection(x1, x2, p);
+    if (on(pp, x1, x2)) {
+        ret = min(ret, (p - pp).abs());
+    } else {
+        ret = min(ret, min((p-x1).abs(), (p-x2).abs()));
+    }
+    return ret;
+}
+
+double dist(Line a, Line b) {
+    if (intersect(a.a,a.b,b.a,b.b)) return 0;
+    double ret = 1e9;
+    ret = min(ret, dist(a.a, b.a, b.b));
+    ret = min(ret, dist(a.b, b.a, b.b));
+    ret = min(ret, dist(b.a, a.a, a.b));
+    ret = min(ret, dist(b.b, a.a, a.b));
+    return ret;
+}
+
+double min_dist(Star a, Star b) {
+    vector<Line> la(5), lb(5);
+    int s = 0;
+    for (int i = 0; i < 5; i++) {
+        la[i] = Line(a.p[s], a.p[(s+2)%5]);
+        lb[i] = Line(b.p[s], b.p[(s+2)%5]);
+        s = (s + 2) % 5;
+    }
+
+    double mi = 1e9;
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            mi = min(mi, dist(la[i], lb[j]));
+        }
+    }
+
+    return mi;
+}
+
+
 // menu
 // bool isRightTriangle(int a, int b, int c)
 // pair<pair<double,double>, double> CircumscribedCircleOfATriangle(double x1, double y1, double x2, double y2, double x3, double y3)
@@ -347,3 +425,10 @@ bool intersect(Circle3D c, Point3D a, Point3D b) {
 // -- cross (Point3D)
 // -- intersect (Point3D)
 // -- intersect (Circle3D, Point3D from, Point3D to)
+// rotate(Vector a, double arg) -> Vector
+// struct Star
+// struct Line
+// on(Point p, Point x1, Point x2) -> bool
+// dist(Point p, Point x1, Point x2) -> double
+// dist(Line a, Line b) -> double (直接つながるとき距離)
+// min_dist(Star a, Star b) -> double
