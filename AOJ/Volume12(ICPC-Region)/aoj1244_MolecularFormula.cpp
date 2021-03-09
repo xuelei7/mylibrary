@@ -23,3 +23,129 @@
 // Output
 // The output is a sequence of lines, one for each line of the second part of the input. Each line contains either an integer, the molecular weight for a given molecular formula in the correspond- ing input line if all its atomic symbols appear in the Atomic Table, or UNKNOWN otherwise. No extra characters are allowed.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+map<string,int> table;
+int pos;
+string s;
+bool unknown;
+
+int Number() {
+#ifdef LOCAL
+    cerr << "Num " << pos << " " << s[pos] << endl;
+#endif
+    int ret = 0;
+    if (s[pos] >= '1' && s[pos] <= '9') {
+        ret = s[pos] - '0';
+        pos++;
+    }
+    if (s[pos] >= '0' && s[pos] <= '9') {
+        ret *= 10;
+        ret += s[pos] - '0';
+        pos++;
+    }
+    if (ret == 0) return 1;
+    return ret;
+}
+
+int Atom() {
+#ifdef LOCAL
+    cerr << "Atm " << pos << " ";
+#endif
+    string ret = "";
+    ret += s[pos];
+    pos++;
+    if (s[pos] >= 'a' && s[pos] <= 'z') {
+        ret += s[pos++];
+    }
+#ifdef LOCAL
+    cerr << ret << endl;
+#endif
+    if (!table.count(ret)) {
+        unknown = 1;
+        return -1;
+    }
+    dbg(table[ret]);
+    return table[ret];
+}
+
+int Molecule() {
+#ifdef LOCAL
+    cerr << "Mol " << pos << " " << s[pos] << endl;
+#endif
+    int ret = 0;
+    while (pos < s.size() && s[pos] != ')') {
+        if (s[pos] == '(') {
+            pos++;
+            int mole = Molecule();
+            pos++;
+            ret += mole * Number();
+        } else {
+            ret += Atom() * Number();
+        }
+        if (ret < 0) return -1;
+    }
+    dbg(ret);
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    while (getline(cin,s)) {
+
+        // make map
+        table.clear();
+        do {
+            stringstream ss(s);
+            string atom;
+            int weight;
+            ss >> atom;
+            if (atom == "END_OF_FIRST_PART") break;
+            ss >> weight;
+            table[atom] = weight;
+            dbg(atom);
+        } while (getline(cin,s));
+
+        dbg("part 1");
+        
+        // quests
+        while (getline(cin,s)) {
+            string mole;
+            stringstream ss(s);
+            ss >> mole;
+            s = mole;
+            if (s == "0") break;
+            dbg(s);
+            pos = 0;
+            unknown = 0;
+            int ret = Molecule();
+            if (unknown) cout << "UNKNOWN" << endl;
+            else cout << ret << endl;
+        }
+
+        dbg("part 2");
+    }
+
+    return 0;
+}
