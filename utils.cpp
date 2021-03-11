@@ -177,29 +177,29 @@ const int MAXN = /* set here */;
 int par[MAXN];
 int rk[MAXN];
 void init (int n) {
-  for (int i = 0; i < n; i++) {
-    par[i] = i;
-    rk[i] = 0;
-  }
+    for (int i = 0; i < n; i++) {
+        par[i] = i;
+        rk[i] = 0;
+    }
 }
 int fd(int x) {
-  if (par[x] == x) {
-    return x;
-  } else {
-    return par[x] = fd(par[x]);
-  }
+    if (par[x] == x) {
+        return x;
+    } else {
+        return par[x] = fd(par[x]);
+    }
 }
 void unite (int x, int y) {
-  x = fd(x);
-  y = fd(y);
-  if (x == y) return;
+    x = fd(x);
+    y = fd(y);
+    if (x == y) return;
 
-  if (rk[x] < rk[y]) {
-    par[x] = y;
-  } else {
-    par[y] = x;
-    if (rk[x] == rk[y]) rk[x]++;
-  }
+    if (rk[x] < rk[y]) {
+        par[x] = y;
+    } else {
+        par[y] = x;
+        if (rk[x] == rk[y]) rk[x]++;
+    }
 }
 
 // from
@@ -239,24 +239,24 @@ vector<edge> G[MAX_V];
 int d[MAX_V];
 
 void dijkstra(int s, int *d, vector<edge> *G, int V) {
-  priority_queue<P, vector<P>, greater<P>> que;
-  fill(d, d + V, INF);
-  d[s] = 0;
-  que.push(P(0, s));
+    priority_queue<P, vector<P>, greater<P>> que;
+    fill(d, d + V, INF);
+    d[s] = 0;
+    que.push(P(0, s));
 
-  while (!que.empty()) {
-    P p = que.top();
-    que.pop();
-    int v = p.second;
-    if (d[v] < p.first) continue;
-    for (int i = 0; i < G[v].size(); i++) {
-      edge e = G[v][i];
-      if (d[e.to] > d[v] + e.cost) {
-        d[e.to] = d[v] + e.cost;
-        que.push(P(d[e.to], e.to));
-      }
+    while (!que.empty()) {
+        P p = que.top();
+        que.pop();
+        int v = p.second;
+        if (d[v] < p.first) continue;
+        for (int i = 0; i < G[v].size(); i++) {
+            edge e = G[v][i];
+            if (d[e.to] > d[v] + e.cost) {
+                d[e.to] = d[v] + e.cost;
+                que.push(P(d[e.to], e.to));
+            }
+        }
     }
-  }
 }
 
 // from
@@ -297,23 +297,23 @@ int takeStones(int n, int m, int k) {
 
 class Dice{
 private:
-  int ue, st, me, usr, hdr, mg;
+    int ue, st, me, usr, hdr, mg;
 public:
-  Dice (int a, int b, int c, int d, int e, int f) {
-    ue = a;
-    me = b;
-    mg = c;
-    hdr = d;
-    usr = e;
-    st = f;
-  }
-  void Roll (char c);
-  bool operator==(const Dice& b) const {
-    return (ue == b.ue && st == b.st && me == b.me && usr == b.usr && hdr == b.hdr && mg == b.mg);
-  }
+    Dice (int a, int b, int c, int d, int e, int f) {
+        ue = a;
+        me = b;
+        mg = c;
+        hdr = d;
+        usr = e;
+        st = f;
+    }
+    void Roll (char c);
+    bool operator==(const Dice& b) const {
+        return (ue == b.ue && st == b.st && me == b.me && usr == b.usr && hdr == b.hdr && mg == b.mg);
+    }
 };
 
-  void Dice::Roll (char c) {
+void Dice::Roll (char c) {
     int t1 = ue;
     int t2 = me;
     int t3 = mg;
@@ -321,69 +321,69 @@ public:
     int t5 = usr;
     int t6 = st;
     if (c == 'S') {
-      ue = t5;
-      st = t2;
-      me = t1;
-      usr = t6;
-      hdr = t4;
-      mg = t3;
+        ue = t5;
+        st = t2;
+        me = t1;
+        usr = t6;
+        hdr = t4;
+        mg = t3;
     } else if (c == 'N') {
-      ue = t2;
-      st = t5;
-      me = t6;
-      usr = t1;
-      hdr = t4;
-      mg = t3;
+        ue = t2;
+        st = t5;
+        me = t6;
+        usr = t1;
+        hdr = t4;
+        mg = t3;
     } else if (c == 'W') {
-      ue = t3;
-      st = t4;
-      me = t2;
-      usr = t5;
-      hdr = t1;
-      mg = t6;
+        ue = t3;
+        st = t4;
+        me = t2;
+        usr = t5;
+        hdr = t1;
+        mg = t6;
     } else if (c == 'E') {
-      ue = t4;
-      st = t3;
-      me = t2;
-      usr = t5;
-      hdr = t6;
-      mg = t1;
+        ue = t4;
+        st = t3;
+        me = t2;
+        usr = t5;
+        hdr = t6;
+        mg = t1;
     } else {
-      ue = t1;
-      st = t6;
-      me = t3;
-      usr = t4;
-      hdr = t2;
-      mg = t5;
+        ue = t1;
+        st = t6;
+        me = t3;
+        usr = t4;
+        hdr = t2;
+        mg = t5;
     }
-  }
+}
 
 bool IsSame(Dice d1, Dice d2) {
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      if (d1 == d2) {
-        return 1;
-      }
-      d2.Roll('R');
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (d1 == d2) {
+                return 1;
+            }
+            d2.Roll('R');
+        }
+        d2.Roll('W');
     }
-    d2.Roll('W');
-  }
-  d2.Roll('N');
+    d2.Roll('N');
     for (int j = 0; j < 4; j++) {
-      if (d1 == d2) {
-        return 1;
-      }
-      d2.Roll('R');
+        if (d1 == d2) {
+           return 1;
+        }
+        d2.Roll('R');
     }
-  d2.Roll('N');
-  d2.Roll('N');
+    d2.Roll('N');
+    d2.Roll('N');
     for (int j = 0; j < 4; j++) {
-      if (d1 == d2) {
-        return 1;
-      }
-      d2.Roll('R');
+        if (d1 == d2) {
+            return 1;
+        }
+        d2.Roll('R');
     }
-  return 0;
+    return 0;
 }
 
 

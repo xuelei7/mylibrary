@@ -33,7 +33,7 @@ template <class T> using V = vector<T>;
 template <class T> using VV = vector<V<T>>;
 
 /* 提出時これをコメントアウトする */
-#define LOCAL true
+// #define LOCAL true
 
 #ifdef LOCAL
 #define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
@@ -42,13 +42,33 @@ template <class T> using VV = vector<V<T>>;
 #endif
 
 int solve(int n, string a, string b) {
-    // 0 <= pre <= 9
-    auto dfs = [&](auto self, int k, int pre) -> int {
-        if (k == n) return 0;
-        int ans = 0;
-        int nxt 
-    };
-    return dfs(dfs,0,-1);
+    queue<pair<string,int>> q;
+    q.push({a,0});
+    set<string> st;
+    int ans = 1e9;
+    while (!q.empty()) {
+        auto tp = q.front(); q.pop();
+        string s = tp.first;
+        if (s == b) {
+            ans = min(ans, tp.second);
+            continue;
+        }
+
+        int i = 0;
+        while (s[i] == b[i]) i++;
+        int dif = (b[i] - s[i] + 10) % 10;
+        for (;i<n;i++) {
+            s[i] = (s[i] - '0' + dif) % 10 + '0';
+            if (!st.count(s)) {
+                st.insert(s);
+                q.push({s, tp.second + 1});
+#ifdef LOCAL
+    cerr << i << " " << s << " " << tp.second + 1 << endl;
+#endif
+            }
+        }
+    }
+    return ans;
 }
 
 int main() {

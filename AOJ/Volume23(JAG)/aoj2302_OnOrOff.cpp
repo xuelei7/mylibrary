@@ -21,3 +21,135 @@
 // Output
 // Print one integer that describes the minimal amount of electric power consumed when you finished all the tasks.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+int dh[4] = {-1,0,1,0};
+int dw[4] = {0,1,0,-1};
+
+auto solve (int H, int W, int M, VV<char>& maze, V<int>& t, V<int>& on, V<int>& off, V<pair<int,int>>& mission) -> int {
+    dbg("here");
+    auto getid = [&](int h, int w) {
+        return h * W + w;
+    };
+    
+    // i -> jのとき，次に行くマスを記録
+    VV<int> nxt(H*W, V<int>(H*W));
+    rep(i,0,H) {
+        rep(j,0,W) {
+            int parent = getid(i,j);
+            queue<int> q;
+            V<bool> used(H*W);
+            q.push(parent);
+            used[parent] = 1;
+            nxt[parent][parent] = parent;
+
+            while (!q.empty()) {
+                auto now = q.front(); q.pop();
+                int h = now / W;
+                int w = now % W;
+                rep(k,0,4) {
+                    int th = h + dh[k];
+                    int tw = w + dw[k];
+                    if (th < 0 || th >= H || tw < 0 || tw >= W) continue;
+                    if (maze[th][tw] == '#') continue;
+                    int tid = getid(th,tw);
+                    if (used[tid]) continue;
+                    used[tid] = 1;
+                    nxt[tid][parent] = now;
+                    q.push(tid);               
+                }
+            }
+
+        }
+    }
+dbg("here1");
+    // ルートを確定する
+    VV<int> rec(H*W);
+    int time = 0;
+    rep(i,0,M-1) {
+        int id = getid(mission[i].first, mission[i].second);
+        int nxtid = getid(mission[i+1].first, mission[i+1].second);
+        while (id != nxtid) {
+            rec[id].push_back(time++);
+            id = nxt[id][nxtid];
+        }
+    }
+    rec[getid(mission[M-1].first, mission[M-1].second)].push_back(time);
+
+dbg("here2");
+    // result
+    int ans = 0;
+    rep(i,0,H*W) {
+        if (rec[i].size() == 0) continue;
+        ans += on[i];
+        ans += off[i];
+        rep(j,1,rec[i].size()) {
+            int ad = (rec[i][j] - rec[i][j-1]) * t[i];
+            ans += min(on[i] + off[i], ad);
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    int r,c,m;
+    cin >> r >> c >> m;
+    VV<char> maze(r,V<char>(c));
+    V<int> t(r*c);
+    V<int> on(r*c);
+    V<int> off(r*c);
+    rep(i,0,r) {
+        rep(j,0,c) {
+            cin >> maze[i][j];
+        }
+    }
+    rep(i,0,r) {
+        rep(j,0,c) {
+            cin >> t[i*c+j];
+        }
+    }
+    rep(i,0,r) {
+        rep(j,0,c) {
+            cin >> on[i*c+j];
+        }
+    }
+    rep(i,0,r) {
+        rep(j,0,c) {
+            cin >> off[i*c+j];
+        }
+    }
+
+    V<pair<int,int>> mission(m);
+    rep(i,0,m) {
+        cin >> mission[i].first >> mission[i].second;
+    }
+
+    auto ans = solve(r,c,m,maze,t,on,off,mission);
+
+    cout << ans << endl;
+    
+    return 0;
+}
