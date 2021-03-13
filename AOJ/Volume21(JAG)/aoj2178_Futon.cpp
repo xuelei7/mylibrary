@@ -21,3 +21,136 @@
 // Output
 // For each dataset, print "Yes" in a line if it is possible to avoid a bad case, or "No" otherwise.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int N, V<int>& X, V<int>& Y, V<char>& D) -> string {
+    struct P{
+        int x,y;
+        P(){}
+        P(int x, int y) : x(x), y(y) {}
+        bool operator < (const P& other) const {
+            if (x != other.x) return x < other.x;
+            return y < other.y;
+        }
+    }; 
+    map<P, bool> decided;
+    set<P> undecided;
+    map<P, int> ids;
+    
+    // put points into undecided set
+    rep(i,0,N) {
+        P p(X[i], Y[i]);
+        undecided.insert(p);
+        ids[p] = i;
+
+        p = P(X[i] + (D[i] == 'x'), Y[i] + (D[i] == 'y'));
+        undecided.insert(p);
+        ids[p] = i;
+    }
+
+
+    int dh[4] = {-1,0,1,0};
+    int dw[4] = {0,1,0,-1};
+
+    while (!undecided.empty()) {
+
+        // take out a point and decide
+        auto p = *(undecided.begin());
+        undecided.erase(p);
+        
+        bool flg = 1; // head or tail
+        decided[p] = flg;
+        
+
+        // see all the linked futons
+        queue<pair<P,bool>> q;
+        q.push({p,flg});
+
+        while (!q.empty()) {
+            auto tp = q.front();
+            p = tp.first;
+            flg = tp.second; // head or tail
+            q.pop();
+#ifdef LOCAL
+    cerr << p.x << " " << p.y << " " << flg << endl;
+#endif
+
+            rep(i,0,4) {
+                int th = p.y + dh[i];
+                int tw = p.x + dw[i];
+                P nxtp(tw,th);
+                // already decided
+                if (decided.count(nxtp)) {
+                    // check if they are good
+                    // same id
+                    if (ids[nxtp] == ids[p]){
+                        if (flg != decided[nxtp]) continue;
+                        else return "No";
+                    }
+                    // different id
+                    else {
+                        if (flg == decided[nxtp]) continue;
+                        else return "No";
+                    }
+                }
+                // undecided
+                else if (undecided.count(nxtp)) {
+                    undecided.erase(nxtp);
+                    // same id
+                    if (ids[nxtp] == ids[p]) {
+                        decided[nxtp] = !flg;
+                        q.push({nxtp, !flg});
+                    }
+                    // different id
+                    else {
+                        decided[nxtp] = flg;
+                        q.push({nxtp, flg});
+                    }
+                }
+                // else not a futon
+                // do nothing
+            }
+        }
+
+    }
+
+    return "Yes";
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    int n;
+    while (cin >> n) {
+        if (n == 0) break;
+        V<int> X(n), Y(n);
+        V<char> D(n);
+        rep(i,0,n) {
+            cin >> X[i] >> Y[i] >> D[i];
+        }
+        auto ans = solve(n,X,Y,D);
+        cout << ans << endl;
+    }
+    
+    return 0;
+}

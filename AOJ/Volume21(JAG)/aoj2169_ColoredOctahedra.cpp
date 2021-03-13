@@ -15,3 +15,80 @@
 // Output
 // For each dataset, output the number of different octahedra that can be made of given panels.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+int a[3][8] = {
+    {0,1,2,3,7,6,5,4},
+    
+    {0,7,6,1,3,4,5,2},
+
+    {1,6,5,2,0,7,4,3},
+};
+
+auto solve (V<string>& Vec) -> int {
+    sort(all(Vec));
+    set<V<string>> st;
+    int ans = 0;
+    do {
+        bool unique = 0;
+        set<V<string>> newst;
+        rep(i,0,3) {
+            V<string> tmp(8);
+            rep(j,0,4) {
+                rep(k,0,8) {
+                    tmp[k] = Vec[a[i][(k+j)%4+k/4*4]];
+                }
+                if (!st.count(tmp)) unique = 1;
+                st.insert(tmp);
+                reverse(all(tmp));
+                if (!st.count(tmp)) unique = 1;
+                st.insert(tmp);
+            }            
+        }
+        ans += unique;
+#ifdef LOCAL
+if (unique) {
+    rep(i,0,8) {
+        cerr << Vec[i] << " ";
+    }
+    cerr << endl;
+}
+#endif
+    } while (next_permutation(all(Vec)));
+    return ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    V<string> v(8);
+    string s;
+    while (getline(cin,s)) {
+        stringstream ss(s);
+        rep(i,0,8) ss >> v[i];
+        auto ans = solve(v);
+        cout << ans << endl;
+    }
+    
+    return 0;
+}

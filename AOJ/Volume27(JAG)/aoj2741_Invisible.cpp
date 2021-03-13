@@ -28,3 +28,73 @@
 // Output
 // お互いのプレイヤーが最適に行動した時の (プレイヤー1のスコア) - (プレイヤー2のスコア) を出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+// head a, head b
+// point a, point b
+// player, pass
+int dp[51][51][51][51][2][3];
+bool used[51][51][51][51][2][3];
+
+int dfs(V<int>& me, V<int>& you, int ha, int hb, int pa, int pb, bool player, int pass) {
+    if (used[ha][hb][pa][pb][player][pass]) return dp[ha][hb][pa][pb][player][pass];
+    used[ha][hb][pa][pb][player][pass] = 1;
+
+    int ret = -1e9;
+
+    // 出す
+    if (ha < me.size()) {
+        if (me[ha] == -1) {
+            ret = max(ret, -dfs(you, me, hb, ha+1, hb, pa, !player, 0));
+        } else {
+            ret = max(ret, -dfs(you, me, hb, ha+1, pb, pa, !player, 0));
+        }
+    }
+
+    // pass
+    int score = 0;
+    rep(i,pa,ha) {
+        if (me[i] != -1) score += me[i];
+    }
+    rep(i,pb,hb) {
+        if (you[i] != -1) score -= you[i];
+    }
+    // 3 passes
+    if (pass == 2) ret = max(ret, 0);
+    else ret = max(ret, score - dfs(you, me, hb, ha, hb, ha, !player, pass+1));
+
+    return dp[ha][hb][pa][pb][player][pass] = ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    int n,m;
+    cin >> n >> m;
+    V<int> a(n), b(m);
+    rep(i,0,n) cin >> a[i];
+    rep(i,0,m) cin >> b[i];
+    
+    cout << dfs(a,b,0,0,0,0,0,1) << endl;
+    return 0;
+}

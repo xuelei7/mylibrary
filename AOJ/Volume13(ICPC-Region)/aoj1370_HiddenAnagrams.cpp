@@ -19,3 +19,75 @@
 // Output
 // Output the length of the longest hidden anagrams of $s_1$ and $s_2$. If there are no hidden anagrams, print a zero.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+const int MAX = 500000, MS = 2;
+const long long mod[] = {999999937LL, 1000000007LL}, base = 9973;
+
+auto solve (string S, string T) -> int {
+
+    int n = S.size();
+    int m = T.size();
+
+    rrep(i,1,min(m,n)+1) { // 長さ
+        V<int> cnt(26,0);
+        set<V<int>> st;
+
+        // Sの構築
+        rep(j,0,i) {
+            cnt[S[j] - 'a']++;
+        }
+        st.insert(cnt);
+        rep(j,i,n) {
+            cnt[S[j-i]-'a']--;
+            cnt[S[j]-'a']++;
+            st.insert(cnt);
+        }
+
+        // Tの探索
+        rep(i,0,26) cnt[i] = 0;
+        rep(j,0,i) {
+            cnt[T[j] - 'a']++;
+        }
+        if (st.count(cnt)) return i;
+        rep(j,i,m) {
+            cnt[T[j-i]-'a']--;
+            cnt[T[j]-'a']++;
+            if (st.count(cnt)) return i;
+        }
+    }
+
+    return 0;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    string s1,s2;
+    cin >> s1 >> s2;
+    auto ans = solve(s1,s2);
+    cout << ans << endl;
+    
+    
+    return 0;
+}
