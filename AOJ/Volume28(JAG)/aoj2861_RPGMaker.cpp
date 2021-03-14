@@ -31,3 +31,151 @@
 // Output
 // Print a map indicating a journey. If several maps satisfy the condition, you can print any of them.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int H, int W, VV<char>& maze) -> VV<char> {
+    VV<char> ret(H,V<char>(W));
+    int sh, sw;
+    rep(i,0,H) {
+        rep(j,0,W) {
+            if (maze[i][j] == '@') {
+                sh = i;
+                sw = j;
+            }
+            ret[i][j] = '.';
+        }
+    }
+
+    // 回字サークルを作る
+    int u = 0, l = 0, b = H, r = W;
+    while (u < b && l < r) {
+        rep(i,u,b) {
+            ret[i][l] = '#';
+            ret[i][r-1] = '#';
+        }
+        rep(i,l,r) {
+            ret[u][i] = '#';
+            ret[b-1][i] = '#';
+        }
+        u+=2; b-=2;
+        l+=2; r-=2;
+    }
+#ifdef LOCAL
+    rep(i,0,H) {
+        rep(j,0,W) {
+            cerr << ret[i][j];
+        }
+        cerr << endl;
+    }    
+#endif
+
+
+    // 橋を作る
+    int mid = W / 2;
+    u-=2; b+=2;
+    l-=2; r+=2;
+    bool f = 1;
+    // 中から外側に
+    b--; // 上の開区間が疲れたので閉区間にする
+    while (u - 2 >= 0) {
+        if (f) {
+            ret[u][mid] = '.';
+            ret[u-2][mid] = '.';
+            ret[u-1][mid-1] = '#';
+            ret[u-1][mid+1] = '#';
+        } else {
+            ret[b][mid] = '.';
+            ret[b+2][mid] = '.';
+            ret[b+1][mid-1] = '#';
+            ret[b+1][mid+1] = '#';
+        }
+        u -= 2;
+        b += 2;
+        f = !f;
+    }
+
+    // 始点の周辺一つを削除する
+    int dh[4] = {-1,0,1,0};
+    int dw[4] = {0,1,0,-1};
+    rep(i,0,4) {
+        int th = sh + dh[i];
+        int tw = sw + dw[i];
+        if (th < 0 || tw < 0 || th >= H || tw >= W) continue;
+        if (ret[th][tw] != '#') continue;
+        ret[th][tw] = '.';
+        th += dh[i];
+        tw += dw[i];
+        sh = th;
+        sw = tw;
+        break;
+    }
+
+    // 最初の街まで行く
+    while (1) {
+        if (maze[sh][sw] == '*') break;
+        ret[sh][sw] = '.';
+        rep(i,0,4) {
+            int th = sh + dh[i];
+            int tw = sw + dw[i];
+            if (th < 0 || tw < 0 || th >= H || tw >= W) continue;
+            if (ret[th][tw] != '#') continue;
+            sh = th;
+            sw = tw;
+            break;
+        }
+    }
+
+    // いろいろ入れる
+    rep(i,0,H) {
+        rep(j,0,W) {
+            if (maze[i][j] != '.') {
+                ret[i][j] = maze[i][j];
+            }
+        }
+    }
+
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    int h,w;
+    cin >> h >> w;
+
+    VV<char> maze(h,V<char>(w));
+    rep(i,0,h) {
+        rep(j,0,w) {
+            cin >> maze[i][j];
+        }
+    }
+
+    auto ans = solve(h,w,maze);
+    rep(i,0,h) {
+        rep(j,0,w) {
+            cout << ans[i][j];
+        }
+        cout << endl;
+    }
+    return 0;
+}

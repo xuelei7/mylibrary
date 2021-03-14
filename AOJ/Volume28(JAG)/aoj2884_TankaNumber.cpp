@@ -18,3 +18,116 @@
 // Output
 // 各データセットについて，N 番目に小さい短歌数を 1 行に出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (ll N) -> string {
+
+    // それぞれのnについて桁->先頭の感じで探す
+
+    ll sum = 0;
+    
+    // 桁数を決める
+    ll keta = 2;
+    while (1) {
+        ll ad = 81 * ((1LL<<(keta-1)) - 1);
+        if (sum + ad >= N) break;
+        sum += ad;
+        keta++;
+    }
+
+    // 先頭数字を決める
+    ll num1 = 1;
+    while (1) {
+        ll ad = 9 * ((1LL<<(keta-1)) - 1);
+        if (sum + ad >= N) break;
+        sum += ad;
+        num1++;
+    }
+
+    string ret = to_string(num1);
+
+    // 第二の数字を決める
+    ll num2 = 0;
+    keta--;
+    while (1) {
+        if (num2 == num1) {
+            // 全部同じ数字
+            if (keta - 1 == 0) {
+                num2++;
+                continue;
+            }
+
+            // 次の桁を見る
+            ll ad = 9 * ((1LL<<(keta-1)) - 1);
+            if (sum + ad >= N) { // 桁確定
+                ret += to_string(num2);
+                keta--;
+                num2 = 0;
+                continue;
+            } else {
+                sum += ad;
+                num2++;
+            }
+        }
+
+        else if (num2 != num1) {
+            ll ad = 1LL<<(keta-1);
+            if (sum + ad >= N) {
+                ret += to_string(num2);
+                keta--;
+                break;
+            } else {
+                sum += ad;
+                num2++;
+            }
+        }
+    }
+
+    dbg(ret);
+    
+    // 残りを決める
+    if (num1 > num2) swap(num1, num2);
+    while (keta) {
+        ll ad = 1LL << (keta-1);
+        if (sum + ad >= N) {
+            ret += to_string(num1);
+        } else {
+            sum += ad;
+            ret += to_string(num2);
+        }
+        keta--;
+    }
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+
+    ll n;
+    while (cin >> n) {
+        if (n == 0) break;
+        auto ans = solve(n);
+        cout << ans << endl;
+    }
+    return 0;
+}

@@ -49,3 +49,86 @@
 // Two integers s1 and s2 should be output in a line in this order, separated by a space. s1 and s2 are the numbers of seats required under the policy-1 and -2, respectively.
 
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int N, V<int>& A, V<int>& B) -> void {
+
+    // min
+    int mi = 0;
+    {
+        
+        V<pair<int,int>> v(N*2);
+        rep(i,0,N) {
+            v[i*2] = {A[i],1};
+            v[i*2+1] = {B[i],-1};
+        }
+        sort(all(v));
+        int cnt = 0;
+        for (auto p:v) {
+            if (p.second == 1) cnt++;
+            else cnt--;
+            mi = max(mi, cnt);
+        }
+
+    }
+
+
+    // max
+    int mx = 0;
+    {
+
+        V<pair<pair<int,int>,int>> v(N*2);
+        rep(i,0,N) {
+            v[i*2] = {{A[i],1},i};
+            v[i*2+1] = {{B[i],-1},i};
+        }
+        sort(all(v));
+        int in = 0, out = 0;
+        V<int> pre(N);
+        for (auto p:v) {
+            if (p.first.second == 1) {
+                in++;
+                pre[p.second] = out;
+            } else {
+                out++;
+                mx = max(mx, in - pre[p.second]);
+            }
+        }
+
+    }
+
+
+    cout << mx << " " << mi << endl;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    int N;
+    cin >> N;
+    V<int> A(N), B(N);
+    rep(i,0,N) cin >> A[i] >> B[i];
+
+    solve(N,A,B);
+    return 0;
+}

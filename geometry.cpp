@@ -304,7 +304,7 @@ bool intersect(Point3D from, Point3D to, Point3D p1, Point3D p2, Point3D p3, Poi
 }
 // from
 // aoj2641
-bool intersect(Circle3D c, Point3D a, Point3D b) {
+bool intersect (Circle3D c, Point3D a, Point3D b) {
     if ((a-c.o).abs() < c.r + EPS || (b-c.o).abs() < c.r + EPS) return 1;
     b = b - a;
     Point3D o = c.o - a;
