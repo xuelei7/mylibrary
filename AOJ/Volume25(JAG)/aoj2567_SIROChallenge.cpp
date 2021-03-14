@@ -78,3 +78,103 @@
 // Output
 // For each data set, output the maximum number of different restaurants where Jiro can go within the time limit.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int N, int L, int S, ll T, VV<pair<int,ll>>& G, V<pair<int,ll>>& E, V<int>& jiroid) -> int {
+    // find min distance between jiros
+    VV<ll> dist(N,V<ll>(N,1e18));
+    rep(i,0,N) dist[i][i] = 0;
+    rep(i,0,N) {
+        rep(j,0,G[i].size()) {
+            dist[i][G[i][j].first] = G[i][j].second;
+        }
+    }
+
+    rep(k,0,N) {
+        rep(i,0,N) {
+            rep(j,0,N) {
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+            }
+        }
+    }
+
+    VV<ll> dp((1<<L),V<ll>(L,1e18));
+    int ret = 0;
+    rep(i,0,L) {
+        dp[1<<i][i] = dist[S][E[i].first] + E[i].second;
+    }
+    rep(i,0,(1<<L)) {
+        rep(j,0,L) {
+            if (!(i>>j)&1) continue;
+            int cnt = 0;
+            rep(k,0,L) {
+                if ((i>>k)&1) {
+                    cnt++;
+                    continue;
+                }
+                ll cost = dist[E[j].first][E[k].first] + E[k].second;
+                dp[i+(1<<k)][k] = min(dp[i+(1<<k)][k], dp[i][j] + cost);
+            }
+            if (dp[i][j] + dist[E[j].first][S] <= T) {
+                ret = max(ret,cnt);
+#ifdef LOCAL
+    cerr << bitset<4>(i) << " " << j+1 << " " << cnt << " " << dp[i][j] << "+" <<  dist[E[j].first][S] << endl;
+#endif
+            }
+        }
+    }
+
+    return ret;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    int n,m,l,s,t;
+    while (cin >> n >> m >> l >> s >> t) {
+        if (n+m+l+s+t == 0) break;
+        s--;
+        VV<pair<int,ll>> G(n);
+        rep(i,0,m) {
+            ll a,b,c;
+            cin >> a >> b >> c;
+            a--; b--;
+            G[a].push_back({b,c});
+            G[b].push_back({a,c});
+        }
+        V<pair<int,ll>> E;
+        V<int> jiro(n,-1);
+        rep(i,0,l) {
+            int j,e;
+            cin >> j >> e;
+            j--;
+            E.push_back({j,e});
+            jiro[j] = i;
+        }
+        auto ans = solve(n,l,s,t,G,E,jiro);
+        cout << ans << endl;
+    }
+
+    
+    return 0;
+}

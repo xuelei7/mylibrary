@@ -25,3 +25,91 @@
 // Output
 // 各データセットについて，ゲームクリアまでに必要となる戦闘の回数が M 回以上となるパラメーター X の内の最大値 Xmax を整数で出力せよ．X をどのように設定しても M 回未満の戦闘回数でゲームクリアできてしまうかゲームをクリアできなくなってしまうテストケースの場合には -1 のみからなる行を出力せよ．
 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+// #define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (int N, int M, V<int>& S) -> int {
+    auto f = [&](int X) -> int {
+#ifdef LOCAL
+    cerr << "search " << X << endl;
+#endif
+        int ret = 0;
+        int lv = 1;
+        while (1) {
+            ret++;
+// #ifdef LOCAL
+//     cerr << ret << ": " << lv << endl;
+// #endif
+            if (lv + X > S[S.size() - 1]) break;
+            int lvup = 1;
+            int pos = lower_bound(all(S), lv) - S.begin();
+            if (pos == N) {
+                pos--;
+                lvup = max(lvup, X - abs(lv - S[pos]));
+            } else if (S[pos] == lv) {
+                lvup = max(lvup, X);
+            } else {
+                if (S[pos] < lv + X) {
+                    lvup = max(lvup, X - abs(lv - S[pos]));
+                }
+                if (pos > 0) {
+                    lvup = max(lvup, X - abs(lv - S[pos-1]));
+                }
+            }
+            lv += lvup;
+        }
+#ifdef LOCAL
+    cerr << X << " " << ret << endl;
+#endif
+        return ret;
+    };
+    
+    int l = max(1, S[0]), r = 1e9;
+    if (f(l) < M) return -1;
+    while (l < r) {
+        int mid = (l + r + 1) / 2;
+        if (f(mid) < M) {
+            r = mid - 1;
+        } else {
+            l = mid;
+        }
+    }
+
+    return l;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    int n,m;
+    while (cin >> n >> m) {
+        if (n+m == 0) break;
+        V<int> s(n);
+        rep(i,0,n) {
+            cin >> s[i];
+        }
+        auto ans = solve(n,m,s);
+        cout << ans << endl;
+    }
+    
+    return 0;
+}
