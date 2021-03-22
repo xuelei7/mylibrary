@@ -227,38 +227,6 @@ void WarshallFloyd() {
     }
 }
 
-//------------------------------
-// from
-// aoj0156, aoj2332, aoj2608
-typedef pair<int,int> P;
-struct edge{int to, cost;};
-const int INF = 1e9;
-int V;
-const int MAX_V = 1e5;
-vector<edge> G[MAX_V];
-int d[MAX_V];
-
-void dijkstra(int s, int *d, vector<edge> *G, int V) {
-    priority_queue<P, vector<P>, greater<P>> que;
-    fill(d, d + V, INF);
-    d[s] = 0;
-    que.push(P(0, s));
-
-    while (!que.empty()) {
-        P p = que.top();
-        que.pop();
-        int v = p.second;
-        if (d[v] < p.first) continue;
-        for (int i = 0; i < G[v].size(); i++) {
-            edge e = G[v][i];
-            if (d[e.to] > d[v] + e.cost) {
-                d[e.to] = d[v] + e.cost;
-                que.push(P(d[e.to], e.to));
-            }
-        }
-    }
-}
-
 // from
 // aoj0167
 void BubbleSort(int n, int* a) {
@@ -400,6 +368,5 @@ bool IsSame(Dice d1, Dice d2) {
 // union find
 // int count_days(int y, int m, int d)
 // void WarshallFloyd
-// void dijkstra
 // void takeStones(n個の石がある円，始点m，間隔kでとり，残った石の番号を返す)
 // class Dice (サイコロを扱うクラス)
