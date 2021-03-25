@@ -28,13 +28,114 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-string s[8];
+#define rep(i, a, b) for (int i = (int)(a); (i) < (int)(b); (i)++)
+#define rrep(i, a, b) for (int i = (int)(b) - 1; (i) >= (int)(a); (i)--)
+#define all(v) v.begin(), v.end()
+
+typedef long long ll;
+template <class T> using V = vector<T>;
+template <class T> using VV = vector<V<T>>;
+
+/* 提出時これをコメントアウトする */
+#define LOCAL true
+
+#ifdef LOCAL
+#define dbg(x) cerr << __LINE__ << " : " << #x << " = " << (x) << endl
+#else
+#define dbg(x) true
+#endif
+
+auto solve (V<string>& s) -> void {
+    int r[8][3] = {
+        0,1,2,
+        0,2,4,
+        0,4,3,
+        0,3,1,
+        5,1,3,
+        5,3,4,
+        5,4,2,
+        5,2,1
+    };
+
+    int rec[8][3] = {};
+    bool used[8] = {};
+    auto dfs = [&] (auto self, int id) -> bool {
+        if (id == 8) return true;
+
+        rep(i,0,8) { // 使うダイス
+            if (used[i]) continue;
+            used[i] = true;
+            rec[id][0] = i;
+
+            rep(j,0,8) { // 使う3つの面
+                rec[id][1] = j;
+                rep(k,0,3) { // 使う面の回転
+                    rec[id][2] = k;
+
+                    if (id&1) { // 前後
+                        int a1 = rec[id][0];
+                        int b1 = rec[id][1];
+                        int c1 = rec[id][2];
+                        int a2 = rec[id-1][0];
+                        int b2 = rec[id-1][1];
+                        int c2 = rec[id-1][2];
+
+                        int cc1 = (c1+1) % 3;
+                        int cc2 = (c2+1) % 3;
+                        if ((s[a1][r[b1][cc1]] ^ 32) != s[a2][5-r[b2][cc2]]) continue;
+                    }
+
+                    if (id&2) { // 左右
+                        int a1 = rec[id][0];
+                        int b1 = rec[id][1];
+                        int c1 = rec[id][2];
+                        int a2 = rec[id-2][0];
+                        int b2 = rec[id-2][1];
+                        int c2 = rec[id-2][2];
+
+                        int cc1 = (c1+2) % 3;
+                        int cc2 = (c2+2) % 3;
+                        if ((s[a1][5-r[b1][cc1]] ^ 32) != s[a2][r[b2][cc2]]) continue;
+                    }
+
+                    if (id&4) { // 上下
+                        int a1 = rec[id][0];
+                        int b1 = rec[id][1];
+                        int c1 = rec[id][2];
+                        int a2 = rec[id-4][0];
+                        int b2 = rec[id-4][1];
+                        int c2 = rec[id-4][2];
+
+                        int cc1 = c1;
+                        int cc2 = c2;
+                        if ((s[a1][r[b1][cc1]] ^ 32) != s[a2][5-r[b2][cc2]]) continue;
+                    }
+
+                    if (self(self, id+1)) return true;
+
+                }
+            }
+
+            used[i] = 0;
+        }
+
+        return false;
+    };
+
+    cout << (dfs(dfs, 0)? "YES": "NO") << endl;
+}
 
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    constexpr char endl = '\n';
+    
+    V<string> s(8);
     while (cin >> s[0]) {
         if (s[0] == "0") break;
-        for (int i = 1; i < 8; i++) cin >> s[i];
-        
+        rep(i,1,8) cin >> s[i];
+        solve(s);
     }
+    
     return 0;
 }
