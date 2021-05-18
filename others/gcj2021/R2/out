@@ -1,0 +1,4 @@
+
+Judge return code: 0
+Solution return code: 0
+A solution and judge both finishing with exit code 0 (without exceeding time or memory limits) would be interpreted as Correct in the system.
