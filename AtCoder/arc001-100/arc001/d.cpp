@@ -65,22 +65,38 @@ int main() {
     l[0] = s, r[0] = s;
     l[n] = g, r[n] = g;
 
-    Point now(s,0), pl(l[1],1), pr(r[1],1);
-    Vector lft(l[1] - l[0], 1), rt(r[1] - r[0]);
-    rep(i,2,n+1) {
-        Vector tl(l[i] - now.x, i - now.y), tr(r[i] - now.x, i - now.y);
-
-        // turn left
-        if (cross(lft, tr) > EPS) {
-
+    Point now(l[0],0);
+    double ans = 0;
+    int h = 0;
+    while (h <= n) {
+      int bh = now.y + 1;
+      h = bh + 1;
+      Vector lft(Point(l[bh], bh) - now), rt(Point(r[bh], bh) - now);
+      while (h <= n) {
+        Vector tl(Point(l[h], h) - now), tr(Point(r[h], h) - now);
+        bool fl = 0, fr = 0;
+        if (cross(lft, tl) < 0) {
+          lft = tl;
+          fl = 1;
         }
-        // turn right
-        if (cross(rt, tl) < -EPS) {
-            
+        if (cross(rt, tr) > 0) {
+          rt = tr;
+          fr = 1;
         }
-        // shrink area
-
+        if (cross(lft,rt) > 0) {
+          if (fl) {
+            ans += rt.abs();
+            now = now + rt;
+          } else {
+            ans += lft.abs();
+            now = now + lft;
+          }
+          break;
+        }
+        h++;
+      }
     }
-    
+    ans += (Point(g,n) - now).abs();
+    cout << fixed << setprecision(20) << ans << endl;
     return 0;
 }
